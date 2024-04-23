@@ -1,7 +1,73 @@
-## Simple Deep learning application
+# Simple Deep learning application
 
-[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning) is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label). Here I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively. 
+[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning) is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label).
 
+> I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+
+## Microservices
+
+https://fastapi.tiangolo.com/tutorial/
+fastapi + docker + minikube + k8s service + k8s ingress with nginx
+
+1. frontend: nodejs + javascript + html + css
+2. backend/web: golang (gin framework)
+3. backend/worker: python (fast api, numpy, scikit-learn)
+
+
+### Communication between services
+
+- REST API
+  - Javascript &rarr; Golang
+- GRPC
+  - Golang &harr; python
+
+I considered various communication method:
+
+There are several ways to enable communication between a Golang web server and a Python backend. Here are a few methods:
+
+1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server¹.
+
+2. **gRPC/Protobuf**: gRPC is a high-performance, open-source universal RPC framework, and Protobuf (short for Protocol Buffers) is a method for serializing structured data. You can use gRPC and Protobuf for communication between your Golang and Python applications¹. This method is efficient and type-safe, but it might be a bit more complex to set up compared to a REST API¹.
+
+3. **Message Queue**: If your use case involves asynchronous processing or you want to decouple your Golang and Python applications, you can use a message queue like RabbitMQ or Apache Kafka. In this setup, your Golang application would publish messages to the queue, and your Python application would consume these messages³.
+
+4. **Socket Programming**: You can use sockets for communication if both your Golang and Python applications are running on the same network³. This method requires a good understanding of network programming³.
+
+5. **Database**: If both applications have access to a shared database, you can use the database as a communication medium. One application writes to the database, and the other one reads from it².
+
+
+
+### Prerequisite for microsservices
+
+- [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+
+```
+For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts. For example, fetch() and XMLHttpRequest follow the same-origin policy.
+
+This means that a web application using those APIs can only request resources from the same origin the application was loaded from unless the response from other origins includes the right CORS headers.
+
+-> Add appropriate headers in golang server.
+```
+
+
+### Backend - gin server (golang)
+
+
+```sh
+cd simpledl/backend/web
+
+go mod init github.com/jnuho/simpledl/backend/web
+
+# download library dependencies specified in main.go
+go mod tidy
+```
+
+```golang
+```
+
+#### Mathematical operations for deep learning
+
+The basic operations for forward and backward propagations in deep learning algorithm are as follows:
 
 - Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
 

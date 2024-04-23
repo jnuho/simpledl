@@ -2,6 +2,17 @@
 
 
 window.onload = function(){
+	// cat
+	// https://cdn.pixabay.com/photo/2024/01/29/20/40/cat-8540772_1280.jpg
+	// https://cdn.pixabay.com/photo/2024/02/17/00/18/cat-8578562_1280.jpg
+	// https://cdn.pixabay.com/photo/2023/06/01/06/22/british-shorthair-8032816_1280.jpg
+
+
+	// non-cat
+	// https://cdn.pixabay.com/photo/2023/06/29/10/33/lion-8096155_1280.png
+	// https://cdn.pixabay.com/photo/2016/03/27/21/52/woman-1284411_1280.jpg
+	// https://cdn.pixabay.com/photo/2021/10/09/06/46/baloch-6693129_1280.jpg
+
 	var catUrl = document.querySelector('.cat-url')
 	var runCatBtn = document.querySelector('.run-cat-btn')
 	var emptyCatBtn = document.querySelector('.empty-cat-btn')
@@ -29,12 +40,13 @@ window.onload = function(){
 		try{
 			const response1 = await axios({
 				method: 'post',
-				url: '/work/cat',
+				url: 'http://localhost:3001/work/cat',
 				data: {
 					cat_url: url
-				}
+				},
 			});
 
+			console.log(response1)
 			showCat(response1.data)
 		} catch(error) {
 			console.error("Error calling /work/cat:", error);
