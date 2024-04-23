@@ -6,15 +6,21 @@
 - Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
 
   $Z^{[l]} = W^{[l]} A^{[l-1]} + b^{[l]}$
+
   $A^{[l]} = g^{[l]} (Z^{[l]})$
+
   (for $i=1,\dots,L$ with initial value $A^{[0]} = X$)
 
 - Backward propagation for layer $l$: $da^{[l]} \rightarrow da^{[l-1]},dW^{[l]}, db^{[l]}$
 
   $dZ^{[l]} = dA^{[l]} * {g^{[l]}}^{'}(Z^{[l]})$
+
   $dW^{[l]} = \frac{1}{m}dZ^{[l]}{A^{[l-1]}}^T$
+
   $db^{[l]} = \frac{1}{m}np.sum(dZ^{[l]}, axis=1, keepdims=True)$
+
   $dA^{[l-1]} = {W^{[l]}}^T dZ^{[l]} = \frac{dJ}{dA^{[l-1]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} \frac{dJ}{dZ^{[l]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} dZ^{[l]}$
+
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
 
