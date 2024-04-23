@@ -1,22 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-type url struct {
+type urlObject struct {
 	URL string `json:"cat_url"`
 }
 
 func main() {
-	// router
+	// Router
 	r := gin.Default()
-	// encountering a CORS (Cross-Origin Resource Sharing) issue
-	// when a web application tries to make a request to a server that’s on a different domain, protocol, or port.
+
 	// Apply the CORS middleware to the router
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost"}, // or use "*" to allow all origins
@@ -26,31 +28,49 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	r.POST("/work/cat", func(c *gin.Context) {
-		fmt.Println("hello!!")
-
-		var catUrl url
+	// Handle REST API request
+	r.POST("/web/cat", func(c *gin.Context) {
+		var catUrl urlObject
 		if err := c.BindJSON(&catUrl); err != nil {
-			fmt.Println(err)
-			c.IndentedJSON(http.StatusBadRequest, gin.H{
+			log.Println(err)
+
+			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "Invalid request",
 			})
 			return
 		}
 
-		// Add the new album to the slice.
-		c.IndentedJSON(http.StatusCreated, catUrl)
+		// Validate url format
+		_, err := url.ParseRequestURI(catUrl.URL)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Invalid URL format",
+			})
+			return
+		}
+
+		// Python backend
+		jsonData := []byte(`{"key1": "value1", "key2": "value2"}`) // replace with your actual data
+
+		resp, err := http.Post("http://localhost:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData)) // replace with your Python server URL
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		defer resp.Body.Close()
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Println(string(body))
+
+		// Response
+		c.JSON(http.StatusOK, catUrl)
 		// c.JSON(http.StatusOK, gin.H{
-		// 	"result":  0,
-		// 	"message": "success!",
+		// 	"cat_url": catUrl.URL,
 		// })
 	})
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	// listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
 	r.Run("localhost:3001")
-	// r.Run()
 }

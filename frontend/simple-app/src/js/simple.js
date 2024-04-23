@@ -1,23 +1,15 @@
 'use strict';
 
-
 window.onload = function(){
-	// cat
-	// https://cdn.pixabay.com/photo/2024/01/29/20/40/cat-8540772_1280.jpg
-	// https://cdn.pixabay.com/photo/2024/02/17/00/18/cat-8578562_1280.jpg
-	// https://cdn.pixabay.com/photo/2023/06/01/06/22/british-shorthair-8032816_1280.jpg
 
-
-	// non-cat
-	// https://cdn.pixabay.com/photo/2023/06/29/10/33/lion-8096155_1280.png
-	// https://cdn.pixabay.com/photo/2016/03/27/21/52/woman-1284411_1280.jpg
-	// https://cdn.pixabay.com/photo/2021/10/09/06/46/baloch-6693129_1280.jpg
-
+	// Input
 	var catUrl = document.querySelector('.cat-url')
+
+	// Buttons events
 	var runCatBtn = document.querySelector('.run-cat-btn')
 	var emptyCatBtn = document.querySelector('.empty-cat-btn')
 	
-	// 검색버튼클릭 또는 엔터키
+	// Input 'Enter key' event
 	catUrl.addEventListener("keydown", function(event) {
 		if (event.keyCode == 13) {
 			identityCat()
@@ -40,16 +32,20 @@ window.onload = function(){
 		try{
 			const response1 = await axios({
 				method: 'post',
-				url: 'http://localhost:3001/work/cat',
+				url: 'http://localhost:3001/web/cat',
 				data: {
 					cat_url: url
 				},
 			});
 
-			console.log(response1)
 			showCat(response1.data)
 		} catch(error) {
-			console.error("Error calling /work/cat:", error);
+			// console.error("Error calling /work/cat:", error);
+			if (error.response) {
+				console.log(error.response.data)
+
+				// alert(JSON.stringify(error.response.message))
+			}
 		}
 	}
 	function showCat(data) {
@@ -73,7 +69,7 @@ window.onload = function(){
 			var digit = "";
 
 			try {
-					const response2 = await axios.post("/work/mnist", {
+					const response2 = await axios.post("/web/mnist", {
 							drawn_digit: digit
 					});
 
@@ -87,6 +83,40 @@ window.onload = function(){
 		console.log("draw the result,", data)
 	}
 
+	var cat_btn1 = document.querySelector('#cat_btn1')
+	var cat_btn2 = document.querySelector('#cat_btn2')
+	var cat_btn3 = document.querySelector('#cat_btn3')
+	var noncat_btn1 = document.querySelector('#noncat_btn1')
+	var noncat_btn2 = document.querySelector('#noncat_btn2')
+	var noncat_btn3 = document.querySelector('#noncat_btn3')
+
+	cat_btn1.addEventListener("click", function(event) {
+		copyToClipboard("cat_url1");
+	});
+	cat_btn2.addEventListener("click", function(event) {
+		copyToClipboard("cat_url2");
+	});
+	cat_btn3.addEventListener("click", function(event) {
+		copyToClipboard("cat_url3");
+	});
+	noncat_btn1.addEventListener("click", function(event) {
+		copyToClipboard("noncat_url1");
+	});
+	noncat_btn2.addEventListener("click", function(event) {
+		copyToClipboard("noncat_url2");
+	});
+	noncat_btn3.addEventListener("click", function(event) {
+		copyToClipboard("noncat_url3");
+	});
+
+	function copyToClipboard(id) {
+		var textToCopy = document.getElementById(id).innerText.trim();
+		navigator.clipboard.writeText(textToCopy).then(function() {
+				// console.log('Copying to clipboard was successful!');
+		}, function(err) {
+				console.error('Could not copy text: ', err);
+		});
+	}
 
 }
 

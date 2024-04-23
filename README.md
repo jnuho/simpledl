@@ -40,6 +40,7 @@ There are several ways to enable communication between a Golang web server and a
 ### Prerequisite for microsservices
 
 - [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+	- when a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue
 
 ```
 For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts. For example, fetch() and XMLHttpRequest follow the same-origin policy.
