@@ -1,4 +1,4 @@
-# simpledl
+## Simple Deep learning application
 
 [Deep learning](#https://en.wikipedia.org/wiki/Deep_learning) is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label). Here I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively. 
 
@@ -18,7 +18,7 @@
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
 
-### Typescript(optional)
+### Typescript (optional)
 
 - Download  & install nodejs 20.12.2
 
