@@ -2,7 +2,8 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -49,21 +50,21 @@ func main() {
 			return
 		}
 
-		// Python backend
-		jsonData := []byte(`{"key1": "value1", "key2": "value2"}`) // replace with your actual data
+		// Python backend call
+		jsonData := []byte(fmt.Sprintf(`{"cat_url": "%s"}`, catUrl.URL))
 
-		resp, err := http.Post("http://localhost:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData)) // replace with your Python server URL
+		resp, err := http.Post("http://localhost:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Fatalln(err)
 		}
 
 		defer resp.Body.Close()
 
-		body, err := ioutil.ReadAll(resp.Body)
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		log.Println(string(body))
+		log.Println("RESULT FROM Python ASGI SERVER!!!", string(body))
 
 		// Response
 		c.JSON(http.StatusOK, catUrl)

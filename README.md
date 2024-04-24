@@ -63,8 +63,82 @@ go mod init github.com/jnuho/simpledl/backend/web
 go mod tidy
 ```
 
-```golang
+### Backend - Python Fast API and Uvicorn web server
+
+- Use FastAPI + Unicorn
+  - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
+  - Unicorn is a lightning-fast ASGI server implementation
+
+
+- install python (download .exe from python.org)
+  - check Add to PATH option (required)
+
+
+- `.tmux.conf`
+
 ```
+# NOTE: to apply the changes:
+# tmux source-file .tmux.conf
+
+unbind C-b
+set -g prefix C-a
+
+# SELECT
+bind -n M-Left select-pane -L
+bind -n M-Right select-pane -R
+bind -n M-Up select-pane -U
+bind -n M-Down select-pane -D
+
+
+# RESIZE by {5}
+bind -n M-S-Left resize-pane -L 3
+bind -n M-S-Right resize-pane -R 3
+bind -n M-S-Up resize-pane -U 3
+bind -n M-S-Down resize-pane -D 3
+
+# SWAP
+bind -n C-S-Up swap-pane -U
+bind -n C-S-Down swap-pane -D
+
+set -g mouse on
+```
+
+
+- `requirements.txt`
+
+```
+numpy==1.26.4
+h5py==3.10.0
+matplotlib==3.8.3
+scipy==1.12.0
+pillow==10.2.0
+imageio==2.34.0
+scikit-image==0.23.1
+
+glog==0.3.1
+
+fastapi==0.110.2
+pydantic==2.7.1
+pydantic_core==2.18.2
+
+uvicorn==0.29.0
+```
+
+- `.bashrc`
+
+```
+alias python='winpty /c/Users/user/AppData/Local/Programs/Python/Python312/python.exe'
+alias pip='winpty /c/Users/user/AppData/Local/Programs/Python/Python312/Scripts/pip.exe'
+alias uvicorn='winpty /c/Users/user/AppData/Local/Programs/Python/Python312/Scripts/uvicorn.exe'
+```
+
+
+- Run the python web server
+
+```sh
+uvicorn main:app --port 3002
+```
+
 
 #### Mathematical operations for deep learning
 
