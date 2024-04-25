@@ -6,10 +6,17 @@ pillow==10.2.0
 imageio==2.34.0
 scikit-image==0.23.1
 
-glog==0.3.1
-
 fastapi==0.110.2
 pydantic==2.7.1
 pydantic_core==2.18.2
 
 uvicorn==0.29.0
+
+keyboard==0.13.5
+mouse==0.7.1
+PyAutoGUI==0.9.54
+PyGetWindow==0.0.9
+pynput==1.7.6
+PyScreeze==0.1.30
+opencv-python==4.9.0.80
+pywinauto==0.6.8
