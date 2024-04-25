@@ -101,6 +101,8 @@ bind -n C-S-Up swap-pane -U
 bind -n C-S-Down swap-pane -D
 
 set -g mouse on
+
+set -g default-terminal "screen-256color"
 ```
 
 
@@ -115,21 +117,30 @@ pillow==10.2.0
 imageio==2.34.0
 scikit-image==0.23.1
 
-glog==0.3.1
-
 fastapi==0.110.2
 pydantic==2.7.1
 pydantic_core==2.18.2
 
 uvicorn==0.29.0
+
+keyboard==0.13.5
+mouse==0.7.1
+PyAutoGUI==0.9.54
+PyGetWindow==0.0.9
+pynput==1.7.6
+PyScreeze==0.1.30
+opencv-python==4.9.0.80
+pywinauto==0.6.8
 ```
 
 - `.bashrc`
 
 ```
-alias python='winpty /c/Users/user/AppData/Local/Programs/Python/Python312/python.exe'
-alias pip='winpty /c/Users/user/AppData/Local/Programs/Python/Python312/Scripts/pip.exe'
-alias uvicorn='winpty /c/Users/user/AppData/Local/Programs/Python/Python312/Scripts/uvicorn.exe'
+# Use python in .venv install for simpledl workspace
+alias python='winpty /c/Users/user/Repos/simpledl/.venv/Scripts/python.exe'
+alias pip='winpty /c/Users/user/Repos/simpledl/.venv/Scripts/pip.exe'
+alias uvicorn='winpty /c/Users/user/Repos/simpledl/.venv/Scripts/uvicorn.exe'
+alias tmux='tmux -2'
 ```
 
 
@@ -207,3 +218,17 @@ npm run dev
   - Define models and templates
   - Edit `main.ts`
 
+
+
+## Dockerize
+
+
+```
+Important Reminder: It is crucial to optimize Docker images to be as compact as possible. One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
+```
+
+- frontend node
+
+
+```Dockerfile
+```

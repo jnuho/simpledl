@@ -43,13 +43,11 @@ window.onload = function(){
 			// console.error("Error calling /work/cat:", error);
 			if (error.response) {
 				console.log(error.response.data)
-
-				// alert(JSON.stringify(error.response.message))
 			}
 		}
 	}
 	function showCat(data) {
-		console.log("draw the result,", data)
+		alert(JSON.stringify(data, null, 4))
 	}
 	
 	
