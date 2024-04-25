@@ -1,0 +1,21 @@
+# Use an official Node.js runtime as the base image
+FROM golang:1.22.2-alpine as build
+
+# Set the working directory in the container to /app
+WORKDIR /golang
+
+# Copy package.json and package-lock.json into the working directory
+COPY ./backend/web/go.mod ./
+COPY ./backend/web/go.sum ./
+
+# Install the app dependencies inside the docker image
+RUN go mod download && go mod verify
+
+
+# Define the command to run your app using CMD which defines your runtime
+COPY ./backend/web/main.go .
+RUN go build -v -o /usr/local/bin/go-app
+
+EXPOSE 3001
+
+CMD ["go-app"]
