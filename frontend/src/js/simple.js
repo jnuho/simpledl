@@ -67,7 +67,7 @@ window.onload = function(){
 			var digit = "";
 
 			try {
-					const response2 = await axios.post("/web/mnist", {
+					const response2 = await axios.post("http://localhost:3001/web/mnist", {
 							drawn_digit: digit
 					});
 

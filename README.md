@@ -227,8 +227,13 @@ npm run dev
 Important Reminder: It is crucial to optimize Docker images to be as compact as possible. One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
 ```
 
-- frontend node
+- [NOTE on defining backend endpoint in frontend](https://stackoverflow.com/a/56375180/23876187)
+  - frontend app is not in any container, but the javascript is served from container as a js script file to <b>your browser</b>!
 
+- frontend nodejs service
 
 ```Dockerfile
 ```
+
+
+curl -X POST -H "Content-Type: application/json" -d '{"cat_url":"aa"}' http://backend_python:3002/worker/cat

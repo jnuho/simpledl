@@ -50,22 +50,11 @@ def open_terminal():
 
 
 def split_panes():
-  pag.write("tmux new-session \\; ")
-  pag.write("split-window -h \\; ")
-  pag.write("select-pane -L \\; ")
-  pag.write("split-window -v \\; ")
-  pag.write("select-pane -U \\; ")
-  pag.write("split-window -v \\; ")
-  pag.write("select-pane -R \\; ")
-  pag.write("split-window -v \\; ")
-  # pag.write("select-layout tiled \; ")
-  # Move back to the upper left pane
-  pag.write("select-pane -L \\; ")
-  pag.write("select-pane -U \\; ")
-  pag.write("select-pane -U \\; ")
-  pag.write("attach")
+  pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -U \\; split-window -v \\; select-pane -R \\; split-window -v \\; ")
 
-  time.sleep(.1)
+  # Move back to the upper left pane
+  pag.write("select-pane -L \\; select-pane -U \\; select-pane -U \\; attach")
+  time.sleep(.2)
   keyboard.press("enter")
   time.sleep(.1)
   keyboard.release("enter")

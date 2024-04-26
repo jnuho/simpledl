@@ -1,0 +1,46 @@
+version: "3"
+services:
+  frontend_nodejs:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/Dockerfile-nodejs
+    ports:
+      - 80:80
+    depends_on:
+      - backend_golang
+      - backend_python
+    networks:
+      - mynetwork
+    restart: always
+
+  backend_golang:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/Dockerfile-golang
+    ports:
+      - 3001:3001
+    depends_on:
+      - backend_python
+    networks:
+      - mynetwork
+    restart: always
+
+  backend_python:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/Dockerfile-python
+    ports:
+      - 3002:3002
+    networks:
+      - mynetwork
+    restart: always
+
+
+networks:
+  mynetwork:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.168.16.0/24
+

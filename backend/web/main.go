@@ -28,12 +28,15 @@ func main() {
 
 	// Apply the CORS middleware to the router
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost"}, // or use "*" to allow all origins
-		AllowMethods:     []string{"POST"},
+		AllowOrigins:     []string{"http://localhost", "http://localhost:3001"}, // or use "*" to allow all origins
+		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+	r.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
 
 	// Handle REST API request
 	r.POST("/web/cat", func(c *gin.Context) {
@@ -59,7 +62,7 @@ func main() {
 		// Python backend call
 		jsonData := []byte(fmt.Sprintf(`{"cat_url": "%s"}`, catObj.URL))
 
-		resp, err := http.Post("http://localhost:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+		resp, err := http.Post("http://backend_python:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -87,5 +90,6 @@ func main() {
 		})
 	})
 
-	r.Run("localhost:3001")
+	// NOTE: r.Run("localhost:3001") means your server will only be accessible via the same machine on which it is running. So, another docker container cannot access it.
+	r.Run(":3001")
 }
