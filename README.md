@@ -190,7 +190,9 @@ npm create vite@latest
 
 ```json
   "scripts": {
-    "dev": "vite --port 4200",
+    "dev": "vite --host 0.0.0.0 --port 80",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
 
   "dependencies": {
