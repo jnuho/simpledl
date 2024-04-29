@@ -1,2 +1,53 @@
-**/node_modules/
-**/dist/
+### 1.nginx
+# Ignore git and version control
+.git
+
+# Ignore logs
+*.log
+
+# Ignore OS generated files
+.DS_Store
+
+# Ignore temporary files
+*.tmp
+*.swp
+*.bak
+
+# Ignore configuration files that are not needed in the container
+*.conf
+*.cfg
+*.config
+
+# Ignore SSL certificates
+*.crt
+*.key
+
+
+### 2.golang
+
+# Ignore compiled files
+*.exe
+*.out
+
+# Ignore Go build files
+go.sum
+go.mod
+*.o
+*.a
+*.so
+vendor/
+
+
+### 3.python
+# Ignore Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment directories
+venv/
+ENV/
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints

@@ -1,9 +1,9 @@
 version: "3"
 services:
-  frontend_nodejs:
+  frontend_nginx:
     build:
       context: ../
-      dockerfile: ./dockerfiles/Dockerfile-nodejs
+      dockerfile: ./dockerfiles/Dockerfile-nginx
     ports:
       - 80:80
     depends_on:

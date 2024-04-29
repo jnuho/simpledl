@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as the base image
-FROM FROM nginx:alpine
+FROM nginx:alpine
 
 # Set the working directory in the container to /app
 # WORKDIR 
@@ -12,7 +12,7 @@ FROM FROM nginx:alpine
 
 
 # Copy static files to a different directory in the Nginx server
-COPY ./frontend/src /usr/share/nginx/html
+COPY ./frontend/src /usr/share/nginx/html/src
 COPY ./frontend/index.html /usr/share/nginx/html
 
 
