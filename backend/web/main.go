@@ -28,7 +28,7 @@ func main() {
 
 	// Apply the CORS middleware to the router
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost", "http://localhost:3001"}, // or use "*" to allow all origins
+		AllowOrigins:     []string{"http://localhost:8080"}, // or use "*" to allow all origins
 		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -62,7 +62,7 @@ func main() {
 		// Python backend call
 		jsonData := []byte(fmt.Sprintf(`{"cat_url": "%s"}`, catObj.URL))
 
-		resp, err := http.Post("http://backend_python:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+		resp, err := http.Post("http://be-py:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Fatalln(err)
 		}

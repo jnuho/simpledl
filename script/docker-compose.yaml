@@ -1,34 +1,34 @@
 version: "3"
 services:
-  frontend_nginx:
+  fe-nginx:
     build:
       context: ../
       dockerfile: ./dockerfiles/Dockerfile-nginx
     ports:
-      - 80:80
+      - 8080:80
     depends_on:
-      - backend_golang
-      - backend_python
+      - be-go
+      - be-py
     networks:
       - mynetwork
     restart: always
 
-  backend_golang:
+  be-go:
     build:
       context: ../
-      dockerfile: ./dockerfiles/Dockerfile-golang
+      dockerfile: ./dockerfiles/Dockerfile-go
     ports:
       - 3001:3001
     depends_on:
-      - backend_python
+      - be-py
     networks:
       - mynetwork
     restart: always
 
-  backend_python:
+  be-py:
     build:
       context: ../
-      dockerfile: ./dockerfiles/Dockerfile-python
+      dockerfile: ./dockerfiles/Dockerfile-py
     ports:
       - 3002:3002
     networks:
@@ -42,5 +42,5 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 172.168.16.0/24
+        - subnet: 172.16.6.0/24
 

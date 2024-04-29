@@ -9,7 +9,7 @@
 https://fastapi.tiangolo.com/tutorial/
 fastapi + docker + minikube + k8s service + k8s ingress with nginx
 
-1. frontend: nodejs + javascript + html + css
+1. frontend: nginx (nodejs vite in local) + javascript + html + css
 2. backend/web: golang (gin framework)
 3. backend/worker: python (fast api, numpy, scikit-learn)
 
@@ -176,9 +176,10 @@ The basic operations for forward and backward propagations in deep learning algo
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
 
-### Typescript (optional)
+### Frontend local setup
 
 - Download  & install nodejs 20.12.2
+  - for local development using `vite`
 
 ```sh
 npm create vite@latest
@@ -190,7 +191,7 @@ npm create vite@latest
 
 ```json
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 80",
+    "dev": "vite --host 0.0.0.0 --port 8080",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -201,6 +202,8 @@ npm create vite@latest
 ```
 
 ### Node server
+
+Note that I will be using nginx instead in production environment. I used nodejs vite for local development environment for convenience.
 
 ```sh
 # install dependencies specified in package.json
@@ -232,10 +235,74 @@ Important Reminder: It is crucial to optimize Docker images to be as compact as 
 - [NOTE on defining backend endpoint in frontend](https://stackoverflow.com/a/56375180/23876187)
   - frontend app is not in any container, but the javascript is served from container as a js script file to <b>your browser</b>!
 
-- frontend nodejs service
+- frontend nginx service
 
 ```Dockerfile
 ```
 
 
 curl -X POST -H "Content-Type: application/json" -d '{"cat_url":"aa"}' http://backend_python:3002/worker/cat
+
+
+### Nginx lua module
+
+
+Nginx Lua is a module for Nginx that embeds Lua, a lightweight and powerful scripting language, directly into Nginx.
+
+The use of OpenResty and Lua is not necessary if you don't have any dynamic content or complex logic that needs to be executed at the Nginx level. The power of OpenResty and Lua comes into play when you need to perform operations that are beyond the capabilities of standard Nginx configuration.
+
+Here are a few examples of what you can do with Lua in Nginx:
+
+1. **Dynamic Routing**: You can use Lua to dynamically determine where to route requests based on complex logic that can't be expressed in standard Nginx configuration.
+
+2. **Advanced Caching**: While Nginx has built-in caching, Lua allows you to implement more advanced caching strategies. For example, you could cache responses in a Redis database and use Lua to fetch and update these cached responses.
+
+3. **Custom Authentication**: You can use Lua to implement custom authentication mechanisms. For example, you could use Lua to validate JSON Web Tokens (JWTs) or to implement OAuth 2.0.
+
+4. **Complex Load Balancing**: While Nginx supports basic load balancing, Lua allows you to implement more complex load balancing algorithms.
+
+5. **Real-time Metrics and Monitoring**: You can use Lua to collect real-time metrics about your requests and responses, which can be useful for monitoring and debugging.
+
+6. **Modifying Requests and Responses**: Lua can be used to modify both incoming requests and outgoing responses. This can be useful for a variety of purposes, such as adding or modifying headers, rewriting URLs, or transforming response bodies.
+
+If your use case doesn't require any of these features, then you might not need to use Lua with Nginx. However, if you anticipate needing these features in the future, it could be beneficial to start with OpenResty and Lua from the beginning.
+
+
+
+### Minikube deployement
+
+To set up your Nginx, Golang, and Python microservices on Minikube, you'll need to create Kubernetes Deployment and Service YAML files for each of your microservices. You'll also need to set up an Ingress controller to expose your services to the public. Here's a high-level overview of the steps:
+
+1. **Install Minikube**: If you haven't already, you'll need to install Minikube on your machine. Minikube is a tool that lets you run Kubernetes locally.
+
+2. **Start Minikube**: Once installed, you can start a local Kubernetes cluster with the command `minikube start`.
+
+3. **Enable Ingress Controller**: To set up the Ingress controller on Minikube, you can use the command `minikube addons enable ingress`¹[5].
+
+4. **Create Deployment and Service YAML Files**: For each of your microservices (Nginx, Golang, Python), you'll need to create a Deployment and a Service. The Deployment defines your application and the Docker image it uses, while the Service defines how your application is exposed to the network²[1]. 
+
+5. **Apply the YAML Files**: Once you've created your YAML files, you can apply them to your Kubernetes cluster with the command `kubectl apply -f <filename.yaml>`.
+
+6. **Create an Ingress YAML File**: The Ingress YAML file will define the rules for routing external traffic to your services. You'll need to specify the host and path for each service, and the service that should handle traffic to each host/path¹[5].
+
+7. **Apply the Ingress YAML File**: Just like with the Deployment and Service files, you can apply the Ingress file with `kubectl apply -f <ingress-filename.yaml>`.
+
+8. **Access Your Services**: With the Ingress set up, you should be able to access your services from outside your Kubernetes cluster. You can get the IP address of your Minikube cluster with the command `minikube ip`, and then access your services at that IP¹[5].
+
+Remember, these are just high-level steps. The exact details may vary depending on your specific microservices and configuration. Let me know if you need more detailed guidance on any of these steps! 😊
+
+(1) Set up Ingress on Minikube with the NGINX Ingress Controller. https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/.
+(2) Kubernetes Deployment YAML File with Examples. https://spacelift.io/blog/kubernetes-deployment-yaml.
+(3) Kubernetes YAML Generator. https://k8syaml.com/.
+(4) How to create Kubernetes YAML files | HackerNoon. https://hackernoon.com/how-to-create-kubernetes-yaml-files.
+(5) How To Create Kubernetes YAML Manifests Quickly - DevOpsCube. https://devopscube.com/create-kubernetes-yaml/.
+(6) Setting up Ingress on Minikube - Medium. https://medium.com/@Oskarr3/setting-up-ingress-on-minikube-6ae825e98f82.
+(7) How to Setup NGINX Ingress Controller in Kubernetes - LinuxTechi. https://www.linuxtechi.com/setup-nginx-ingress-controller-in-kubernetes/.
+(8) Minikube with ingress example not working - Stack Overflow. https://stackoverflow.com/questions/58561682/minikube-with-ingress-example-not-working.
+(9) How to Setup Ingress on Minikube Kubernetes with example - Geeks Terminal. https://geeksterminal.com/setup-ingress-on-minikube-for-kubernetes/2972/.
+(10) How to Run Nginx on Kubernetes Using Minikube | Cloud Native Daily - Medium. https://medium.com/cloud-native-daily/how-to-run-nginx-on-kubernetes-using-minikube-df3319b80511.
+(11) NGINX Tutorial: How to Deploy and Configure Microservices. https://www.nginx.com/blog/nginx-tutorial-deploy-configure-microservices/.
+(12) Kubernetes for Beginners: Nginx Deployment with Minikube. https://techbeats.blog/kubernetes-for-beginners-nginx-deployment-with-minikube.
+(13) undefined. https://kubernetes.io/docs/tasks/tools/.
+(14) undefined. http://www.sandtable.com/a-single-aws-elastic-load-balancer-for-several-kubernetes-services-using-kubernetes-ingress/.
+(15) undefined. https://gist.github.com/0sc/77d8925cc378c9a6a92890e7c08937ca.
