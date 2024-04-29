@@ -453,3 +453,17 @@ spec:
 (15) undefined. https://gist.github.com/0sc/77d8925cc378c9a6a92890e7c08937ca.
 
 
+### ingress
+
+```sh
+k get ingress -n simple
+  NAME               CLASS   HOSTS                ADDRESS        PORTS   AGE
+  fe-nginx-ingress   nginx   my-app.example.com   192.168.49.2   80      4m35s
+```
+
+- edit hosts file
+  - `C:\Windows\System32\drivers\etc\hosts`
+
+```
+192.168.49.2 my-app.example.com
+```
