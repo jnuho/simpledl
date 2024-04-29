@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-nginx-deployment
+  namespace: simple
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fe-nginx
+  template:
+    metadata:
+      labels:
+        app: fe-nginx
+    spec:
+      containers:
+      - name: fe-nginx
+        image: jnuho/fe-nginx:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred

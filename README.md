@@ -277,19 +277,164 @@ To set up your Nginx, Golang, and Python microservices on Minikube, you'll need 
 
 2. **Start Minikube**: Once installed, you can start a local Kubernetes cluster with the command `minikube start`.
 
-3. **Enable Ingress Controller**: To set up the Ingress controller on Minikube, you can use the command `minikube addons enable ingress`¹[5].
+```sh
+docker context use default
+  default
+  Current context is now "default"
 
-4. **Create Deployment and Service YAML Files**: For each of your microservices (Nginx, Golang, Python), you'll need to create a Deployment and a Service. The Deployment defines your application and the Docker image it uses, while the Service defines how your application is exposed to the network²[1]. 
+minikube start
+* minikube v1.33.0 on Microsoft Windows 11 Pro 10.0.22631.3527 Build 22631.3527
+* Automatically selected the docker driver. Other choices: hyperv, ssh
+* Using Docker Desktop driver with root privileges
+* Starting "minikube" primary control-plane node in "minikube" cluster
+* Pulling base image v0.0.43 ...
+* Creating docker container (CPUs=2, Memory=10000MB) ...
+* Preparing Kubernetes v1.30.0 on Docker 26.0.1 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Configuring bridge CNI (Container Networking Interface) ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 
-5. **Apply the YAML Files**: Once you've created your YAML files, you can apply them to your Kubernetes cluster with the command `kubectl apply -f <filename.yaml>`.
+k get no
+  NAME       STATUS   ROLES           AGE   VERSION
+  minikube   Ready    control-plane   8s    v1.30.0
 
-6. **Create an Ingress YAML File**: The Ingress YAML file will define the rules for routing external traffic to your services. You'll need to specify the host and path for each service, and the service that should handle traffic to each host/path¹[5].
+k cluster-info
+  Kubernetes control plane is running at https://127.0.0.1:63222
+  CoreDNS is running at https://127.0.0.1:63222/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
 
-7. **Apply the Ingress YAML File**: Just like with the Deployment and Service files, you can apply the Ingress file with `kubectl apply -f <ingress-filename.yaml>`.
+  To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+```
 
-8. **Access Your Services**: With the Ingress set up, you should be able to access your services from outside your Kubernetes cluster. You can get the IP address of your Minikube cluster with the command `minikube ip`, and then access your services at that IP¹[5].
 
-Remember, these are just high-level steps. The exact details may vary depending on your specific microservices and configuration. Let me know if you need more detailed guidance on any of these steps! 😊
+3. **Enable Ingress Controller**: To set up the Ingress controller on Minikube, you can use the command `minikube addons enable ingress`
+
+```sh
+minikube addons enable ingress
+* ingress is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
+You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
+* After the addon is enabled, please run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
+  - Using image registry.k8s.io/ingress-nginx/controller:v1.10.0
+  - Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.0
+  - Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.0
+* Verifying ingress addon...
+* The 'ingress' addon is enabled
+```
+
+4. **Create secret**
+
+4-1. Login to docker hub
+
+```
+docker login --username YOUR_USERNAME
+```
+
+4-2. Create secret
+
+```
+k create namespace simple
+
+k create secret docker-registry regcred \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=jnuho \
+  --docker-password=lee1277149 \
+  --docker-email=cactoos555@gmail.com \
+  --namespace=simple
+
+k get secret -n simple
+  NAME      TYPE                             DATA   AGE
+  regcred   kubernetes.io/dockerconfigjson   1      4s
+```
+
+
+4-3. refer to secret
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-nginx-deployment
+  namespace: simple
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fe-nginx
+  template:
+    metadata:
+      labels:
+        app: fe-nginx
+    spec:
+      containers:
+      - name: fe-nginx
+        image: jnuho/fe-nginx:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
+```
+
+5. **Create Deployment and Service YAML Files**: For each of your microservices (Nginx, Golang, Python), you'll need to create a Deployment and a Service. The Deployment defines your application and the Docker image it uses, while the Service defines how your application is exposed to the network
+
+5-1. deployment.yaml
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-nginx-deployment
+  namespace: simple
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fe-nginx
+  template:
+    metadata:
+      labels:
+        app: fe-nginx
+    spec:
+      containers:
+      - name: fe-nginx
+        image: jnuho/fe-nginx:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
+
+```
+
+5-2. service.yaml
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fe-nginx-service
+  namespace: simple
+spec:
+  selector:
+    app: fe-nginx
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+  type: LoadBalancer
+```
+
+
+6. **Apply the YAML Files**: Once you've created your YAML files, you can apply them to your Kubernetes cluster with the command `kubectl apply -f <filename.yaml>`.
+
+7. **Create an Ingress YAML File**: The Ingress YAML file will define the rules for routing external traffic to your services. You'll need to specify the host and path for each service, and the service that should handle traffic to each host/path
+
+8. **Apply the Ingress YAML File**: Just like with the Deployment and Service files, you can apply the Ingress file with `kubectl apply -f <ingress-filename.yaml>`.
+
+9. **Access Your Services**: With the Ingress set up, you should be able to access your services from outside your Kubernetes cluster. You can get the IP address of your Minikube cluster with the command `minikube ip`, and then access your services at that IP
+
 
 (1) Set up Ingress on Minikube with the NGINX Ingress Controller. https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/.
 (2) Kubernetes Deployment YAML File with Examples. https://spacelift.io/blog/kubernetes-deployment-yaml.
@@ -306,3 +451,5 @@ Remember, these are just high-level steps. The exact details may vary depending 
 (13) undefined. https://kubernetes.io/docs/tasks/tools/.
 (14) undefined. http://www.sandtable.com/a-single-aws-elastic-load-balancer-for-several-kubernetes-services-using-kubernetes-ingress/.
 (15) undefined. https://gist.github.com/0sc/77d8925cc378c9a6a92890e7c08937ca.
+
+

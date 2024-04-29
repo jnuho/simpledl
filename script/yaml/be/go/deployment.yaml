@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: be-go-deployment
+  namespace: simple
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: be-go
+  template:
+    metadata:
+      labels:
+        app: be-go
+    spec:
+      containers:
+      - name: be-go
+        image: jnuho/be-go:latest
+        ports:
+        - containerPort: 3001
+      imagePullSecrets:
+      - name: regcred

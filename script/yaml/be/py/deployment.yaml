@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: be-py-deployment
+  namespace: simple
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: be-py
+  template:
+    metadata:
+      labels:
+        app: be-py
+    spec:
+      containers:
+      - name: be-py
+        image: jnuho/be-py:latest
+        ports:
+        - containerPort: 3002
+      imagePullSecrets:
+      - name: regcred
