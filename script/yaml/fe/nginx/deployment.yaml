@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fe-nginx-deployment
-  namespace: simple
+  #namespace: simple
 spec:
   replicas: 1
   selector:
@@ -16,6 +16,7 @@ spec:
       containers:
       - name: fe-nginx
         image: jnuho/fe-nginx:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
       imagePullSecrets:

@@ -10,7 +10,3 @@ kubectl apply -f be/py/service.yaml
 
 kubectl apply -f ingress.yaml
 
-kubectl get pod -n simple
-kubectl get service -n simple
-kubectl get ingress -n simple
-

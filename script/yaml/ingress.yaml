@@ -2,14 +2,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: fe-nginx-ingress
-  namespace: simple
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  #namespace: simple
 spec:
+  # This field is used to specify the class of the Ingress. The Ingress class is used by the Ingress Controller to determine whether or not it should act on a particular Ingress resource. For example, if you have multiple Ingress Controllers running in your cluster, you can use the ingressClassName field to specify which Ingress Controller should handle this Ingress12.
+  ingressClassName: nginx
   rules:
-  - host: my-app.example.com
+  - host: "my-simple-app.com"
     http:
       paths:
-      - pathType: Prefix
-        path: "/"
+      - path: "/"
+        pathType: Prefix
         backend:
           service:
             name: fe-nginx-service

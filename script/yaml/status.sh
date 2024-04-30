@@ -1,16 +1,25 @@
 #!/bin/bash
 
-echo ""
-
-kubectl get namespace
-
-echo ""
-
-kubectl get pod -n simple
-kubectl get service -n simple
-kubectl get ingress -n simple
+#echo ""
+#kubectl get namespace
 
 echo ""
+echo "-------[pod]-------"
+kubectl get pod
 
-kubectl get secret -n simple
+echo ""
+echo "-------[service]-------"
+kubectl get service
+
+echo ""
+echo "-------[ingress]-------"
+kubectl get ingress
+
+echo ""
+echo "-------[configmap]-------"
+kubectl get configmap
+
+echo ""
+echo "-------[secret]-------"
+kubectl get secret
 

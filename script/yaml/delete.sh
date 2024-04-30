@@ -11,7 +11,7 @@ kubectl delete -f be/go/deployment.yaml
 kubectl delete -f be/py/deployment.yaml
 
 
-kubectl get pod -n simple
-kubectl get service -n simple
-kubectl get ingress -n simple
+kubectl get pod
+kubectl get service
+kubectl get ingress
 

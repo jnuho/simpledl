@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: be-py-deployment
-  namespace: simple
+  #namespace: simple
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: be-py
@@ -16,6 +16,7 @@ spec:
       containers:
       - name: be-py
         image: jnuho/be-py:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3002
       imagePullSecrets:

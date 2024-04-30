@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: be-go-deployment
-  namespace: simple
+  #namespace: simple
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: be-go
@@ -16,6 +16,7 @@ spec:
       containers:
       - name: be-go
         image: jnuho/be-go:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3001
       imagePullSecrets:
