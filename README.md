@@ -1,8 +1,8 @@
 # Simple Deep learning application
 
-[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning) is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label).
+I implemented a simple MSA service - nginx, golang, python. I tried to use docker-compose.yaml for **docker** implementation and then **minikube** to deploy a single node cluster in local environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
-> I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+**[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning)** is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label).
 
 ## Microservices
 
@@ -310,84 +310,38 @@ k cluster-info
   To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
+3. **Create secret**
 
-3. **Enable Ingress Controller**: To set up the Ingress controller on Minikube, you can use the command `minikube addons enable ingress`
-
-```sh
-minikube addons enable ingress
-* ingress is an addon maintained by Kubernetes. For any concerns contact minikube on GitHub.
-You can view the list of minikube maintainers at: https://github.com/kubernetes/minikube/blob/master/OWNERS
-* After the addon is enabled, please run "minikube tunnel" and your ingress resources would be available at "127.0.0.1"
-  - Using image registry.k8s.io/ingress-nginx/controller:v1.10.0
-  - Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.0
-  - Using image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.0
-* Verifying ingress addon...
-* The 'ingress' addon is enabled
-```
-
-4. **Create secret**
-
-4-1. Login to docker hub
+3-1. Login to docker hub
 
 ```
 docker login --username YOUR_USERNAME
 ```
 
-4-2. Create secret
+3-2. Create secret
 
 ```
-k create namespace simple
-
 k create secret docker-registry regcred \
   --docker-server=https://index.docker.io/v1/ \
-  --docker-username=jnuho \
-  --docker-password=lee1277149 \
-  --docker-email=cactoos555@gmail.com \
-  --namespace=simple
+  --docker-username=USER \
+  --docker-password=PW \
+  --docker-email=EMAIL
 
-k get secret -n simple
+k get secret
   NAME      TYPE                             DATA   AGE
   regcred   kubernetes.io/dockerconfigjson   1      4s
 ```
 
 
-4-3. refer to secret
+4. **Create Deployment and Service YAML Files**: For each of your microservices (Nginx, Golang, Python), you'll need to create a Deployment and a Service. The Deployment defines your application and the Docker image it uses, while the Service defines how your application is exposed to the network
+
+4-1. deployment.yaml
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fe-nginx-deployment
-  namespace: simple
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: fe-nginx
-  template:
-    metadata:
-      labels:
-        app: fe-nginx
-    spec:
-      containers:
-      - name: fe-nginx
-        image: jnuho/fe-nginx:latest
-        ports:
-        - containerPort: 80
-      imagePullSecrets:
-      - name: regcred
-```
-
-5. **Create Deployment and Service YAML Files**: For each of your microservices (Nginx, Golang, Python), you'll need to create a Deployment and a Service. The Deployment defines your application and the Docker image it uses, while the Service defines how your application is exposed to the network
-
-5-1. deployment.yaml
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: fe-nginx-deployment
-  namespace: simple
 spec:
   replicas: 1
   selector:
@@ -408,7 +362,7 @@ spec:
 
 ```
 
-5-2. service.yaml
+4-2. service.yaml
 
 ```yaml
 apiVersion: v1
@@ -423,17 +377,159 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 80
-  type: LoadBalancer
+  type: ClusterIP
 ```
 
 
-6. **Apply the YAML Files**: Once you've created your YAML files, you can apply them to your Kubernetes cluster with the command `kubectl apply -f <filename.yaml>`.
+5. **Apply the YAML Files**: Once you've created your YAML files, you can apply them to your Kubernetes cluster with the command `kubectl apply -f <filename.yaml>`.
+
+
+6. **Enable Ingress Controller**:
+
+6-1. (NOT WORKING: check 3-2 instead) NGINX ingress controller using Minikube addons: you can use the command `minikube addons enable ingress`
+
+```sh
+minikube addons enable ingress
+```
+
+6-2. (USE THIS!) Nginx ingress controller
+
+- [setting up an NGINX ingress controller](#https://medium.com/@amirhosseineidy/how-to-set-up-nginx-ingress-controller-in-local-server-6cc4bd7d6a6b) in a bare metal or local server:
+
+
+Ingress is an API in Kubernetes that routes traffic to different services, making applications accessible to clients from the Kubernetes cluster. Among multiple choices like HAProxy or Envoy for setting up an ingress controller, NGINX is the most popular one. It is powered by the NGINX web server and is a fast and secure controller that delivers your applications to the clients easily.
+
+- Install NGINX ingress controller with `helm`
+
+```sh
+# inside cmd or powershell
+winget install Helm.Helm
+
+# RESTART terminal
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm install ingress-nginx ingress-nginx/ingress-nginx
+```
+
+- Check if ingress controller is working:
+
+```sh
+helm list
+  NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+  ingress-nginx   default         1               2024-04-30 14:26:18.9350713 +0900 KST   deployed        ingress-nginx-4.10.1    1.10.1
+
+k get ClusterRole | grep ingress
+  ingress-nginx                                                          2024-04-30T07:01:05Z
+
+k get all
+  NAME                                           READY   STATUS    RESTARTS   AGE
+  pod/ingress-nginx-controller-cf668668c-zvkd9   1/1     Running   0          44s
+
+  NAME                                         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+  service/ingress-nginx-controller             LoadBalancer   10.100.168.236   <pending>     80:32020/TCP,443:31346/TCP   44s
+  service/ingress-nginx-controller-admission   ClusterIP      10.107.208.79    <none>        443/TCP                      44s
+  service/kubernetes                           ClusterIP      10.96.0.1        <none>        443/TCP                      4m8s
+
+  NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+  deployment.apps/ingress-nginx-controller   1/1     1            1           44s
+
+  NAME                                                 DESIRED   CURRENT   READY   AGE
+  replicaset.apps/ingress-nginx-controller-cf668668c   1         1         1       44s
+```
+
 
 7. **Create an Ingress YAML File**: The Ingress YAML file will define the rules for routing external traffic to your services. You'll need to specify the host and path for each service, and the service that should handle traffic to each host/path
 
 8. **Apply the Ingress YAML File**: Just like with the Deployment and Service files, you can apply the Ingress file with `kubectl apply -f <ingress-filename.yaml>`.
 
+- Ingress rules
+  - Ingress rules are resources that help route services to your desired domain name or prefix. They are divided into prefix and DNS.
+  - .yaml mainifest for ingress rules
+
+```sh
+k apply ingress.yaml
+k get ingress
+  NAME               CLASS   HOSTS                ADDRESS        PORTS   AGE
+  fe-nginx-ingress   nginx   my-app.example.com   192.168.49.2   80      4m35s
+```
+
+
 9. **Access Your Services**: With the Ingress set up, you should be able to access your services from outside your Kubernetes cluster. You can get the IP address of your Minikube cluster with the command `minikube ip`, and then access your services at that IP
+
+
+- Accessing application
+  - For accessing these applications in a local cluster, you should access it through node port (30000 ports) or use a reverse proxy to send them.
+  - But is there any way to access app on port 80 or 443?
+    - use Port-forward or `MetalLB` to allow access to app on port 80 or 443.
+
+- Installing Metallb
+
+```sh
+# strictARP to true
+kubectl edit configmap -n kube-system kube-proxy
+
+  apiVersion: kubeproxy.config.k8s.io/v1alpha1
+  kind: KubeProxyConfiguration
+  mode: "ipvs"
+  ipvs:
+    strictARP: true
+
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
+
+kubectl get pods -n metallb-system
+  NAME                          READY   STATUS    RESTARTS   AGE
+  controller-596589985b-jrnmk   1/1     Running   0          34m
+  speaker-hdrmc                 4/4     Running   0          34m
+```
+
+- Now set a range IPs for your local load balancer by creating a configMap. 
+  - Remember that the set of IP addresses you apply must be in the same range as your nodes IPs
+
+The range of IP addresses you choose for MetalLB should be in the same subnet as your nodes' IPs. These IP addresses are used by MetalLB to assign to services of type LoadBalancer.
+Using command, `k get node -o wide`, the INTERNAL-IP of my node is 192.168.49.2. So, choose a range of IP addresses in the 192.168.49.x range for MetalLB. For example, 192.168.49.100-192.168.49.110 as my range.
+
+The IP addresses you choose for MetalLB should be reserved for MetalLB's use and should not conflict with any other devices on your network.
+
+```yaml
+# to see ip range for node
+kubectl get nodes -o wide
+  NAME       STATUS   ROLES           AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION                       CONTAINER-RUNTIME
+  minikube   Ready    control-plane   41m   v1.30.0   192.168.49.2   <none>        Ubuntu 22.04.4 LTS   5.15.146.1-microsoft-standard-WSL2   docker://26.0.1
+
+cat > configmap.yaml
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: nat
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.49.100-192.168.49.110
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: empty
+  namespace: metallb-system
+
+
+k apply -f configmap.yaml
+
+kubectl rollout restart deployment controller -n metallb-system
+
+# check EXTERNAL-IP for nginx-controller is assigned!!!
+# the external IPS is assigned to your NGINX load balancer service and all other load balancer typed services.
+k get svc
+  NAME                                 TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                      AGE
+  ingress-nginx-controller             LoadBalancer   10.100.168.236   192.168.49.100   80:32020/TCP,443:31346/TCP   68m
+```
+
+- DNS Setup
+  - Finally, you need to set the domain names defined in the ingress rules in your DNS server or hosts file
+  - edit hosts file, `C:\Windows\System32\drivers\etc\hosts`
+
+```
+192.168.49.100 my-app.example.com
+```
 
 
 (1) Set up Ingress on Minikube with the NGINX Ingress Controller. https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/.
@@ -453,17 +549,3 @@ spec:
 (15) undefined. https://gist.github.com/0sc/77d8925cc378c9a6a92890e7c08937ca.
 
 
-### ingress
-
-```sh
-k get ingress -n simple
-  NAME               CLASS   HOSTS                ADDRESS        PORTS   AGE
-  fe-nginx-ingress   nginx   my-app.example.com   192.168.49.2   80      4m35s
-```
-
-- edit hosts file
-  - `C:\Windows\System32\drivers\etc\hosts`
-
-```
-192.168.49.2 my-app.example.com
-```

@@ -1,11 +1,10 @@
 import keyboard
-import mouse
+import psutil
 import time
 import os
 import pyautogui as pag
 import pygetwindow as gw
 from pywinauto import Application
-import subprocess
 
 from pynput.keyboard import Key, Controller
 
@@ -13,13 +12,8 @@ from pynput.keyboard import Key, Controller
 kb = Controller()
 window = None
 
-# a =pag.position()
-# pag.screenshot('python_work/1.png', region=(400,100, 1200, 1000))
-# button7location = pag.locateCenterOnScreen('python_work/1.png', confidence=0.9, grayscale=True)
-# print(button7location)
 
-
-def kill_all():
+def kill_gitbash():
   # focus on window
   # windows = gw.getWindowsWithTitle('MINGW64:/c/Users/user/Repos')
   windows = gw.getWindowsWithTitle('MINGW64')
@@ -33,8 +27,7 @@ def kill_all():
     os.system(f'taskkill /PID {pid} /F')
 
 
-
-def open_terminal():
+def run_gitbash():
   path = 'C:\\Program Files\\Git\\git-bash.exe'
   os.system('start "" "' + path+ '"')
   time.sleep(1.5)
@@ -49,24 +42,46 @@ def open_terminal():
   keyboard.release("enter")
 
 
-def split_panes():
-  pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -U \\; split-window -v \\; select-pane -R \\; split-window -v \\; ")
+def kill_ahk():
+  PROCNAME = "AutoHotkey.exe"
+  for proc in psutil.process_iter():
+    # check whether the process name matches
+    if proc.name() == PROCNAME:
+      proc.kill()
 
-  # Move back to the upper left pane
-  pag.write("select-pane -L \\; select-pane -U \\; select-pane -U \\; attach")
+
+def run_ahk():
+  path = 'C:\\Users\\user\\Downloads\\etc\\esc_win11.ahk'
+  os.system('start "" "' + path+ '"')
+  time.sleep(.5)
+
+
+def split_panes():
+  # 0: LAPTOP, 1: MONITOR
+  loc = 0
+
+  if loc == 0:
+    pag.write("tmux new-session \\; split-window -v \\; attach")
+  elif loc ==1:
+    # pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -U \\; split-window -v \\; select-pane -R \\; split-window -v \\; ")
+    pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -R \\; split-window -v \\; ")
+    # Move back to the upper left pane
+    # pag.write("select-pane -L \\; select-pane -U \\; attach")
+
   time.sleep(.2)
   keyboard.press("enter")
   time.sleep(.1)
   keyboard.release("enter")
-
   exit(0)
 
 
 if __name__ == "__main__":
-  kill_all()
 
-  open_terminal()
+  kill_ahk()
+  run_ahk()
 
+  kill_gitbash()
+  run_gitbash()
   time.sleep(3)
 
   split_panes()
