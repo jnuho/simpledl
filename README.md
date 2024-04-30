@@ -278,36 +278,12 @@ To set up your Nginx, Golang, and Python microservices on Minikube, you'll need 
 2. **Start Minikube**: Once installed, you can start a local Kubernetes cluster with the command `minikube start`.
 
 ```sh
+# As a TROUBLE SHOOTING:
 docker context use default
   default
   Current context is now "default"
 
 minikube start
-* minikube v1.33.0 on Microsoft Windows 11 Pro 10.0.22631.3527 Build 22631.3527
-* Automatically selected the docker driver. Other choices: hyperv, ssh
-* Using Docker Desktop driver with root privileges
-* Starting "minikube" primary control-plane node in "minikube" cluster
-* Pulling base image v0.0.43 ...
-* Creating docker container (CPUs=2, Memory=10000MB) ...
-* Preparing Kubernetes v1.30.0 on Docker 26.0.1 ...
-  - Generating certificates and keys ...
-  - Booting up control plane ...
-  - Configuring RBAC rules ...
-* Configuring bridge CNI (Container Networking Interface) ...
-* Verifying Kubernetes components...
-  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
-* Enabled addons: storage-provisioner, default-storageclass
-* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
-
-k get no
-  NAME       STATUS   ROLES           AGE   VERSION
-  minikube   Ready    control-plane   8s    v1.30.0
-
-k cluster-info
-  Kubernetes control plane is running at https://127.0.0.1:63222
-  CoreDNS is running at https://127.0.0.1:63222/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-  To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
 ```
 
 3. **Create secret**
@@ -328,8 +304,6 @@ k create secret docker-registry regcred \
   --docker-email=EMAIL
 
 k get secret
-  NAME      TYPE                             DATA   AGE
-  regcred   kubernetes.io/dockerconfigjson   1      4s
 ```
 
 
@@ -344,9 +318,12 @@ metadata:
   name: fe-nginx-deployment
 spec:
   replicas: 1
+  # Deployement manages pods with label 'app: fe-nginx
   selector:
     matchLabels:
       app: fe-nginx
+  # define labels for the Pods:
+  #   must be matched by service.yaml > spec.selector
   template:
     metadata:
       labels:
@@ -371,6 +348,7 @@ metadata:
   name: fe-nginx-service
   namespace: simple
 spec:
+  # must match deployment.yaml > spec.template.metadata.labels
   selector:
     app: fe-nginx
   ports:

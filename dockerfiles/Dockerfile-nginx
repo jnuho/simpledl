@@ -23,8 +23,8 @@ COPY ./frontend/src /usr/local/openresty/nginx/html/src
 COPY ./frontend/index.html /usr/local/openresty/nginx/html
 
 
-# Expose port 8080
-EXPOSE 8080
+# Expose port 80
+EXPOSE 80
 
 # Start Nginx when the container has provisioned
 # NOTE : 'nginx -t' to check syntax error before deploying!
