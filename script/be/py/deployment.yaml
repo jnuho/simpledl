@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: be-py-deployment
-  #namespace: simple
 spec:
   replicas: 1
   selector:
@@ -19,5 +18,5 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 3002
-      imagePullSecrets:
-      - name: regcred
+      #imagePullSecrets:
+      #- name: regcred

@@ -10,7 +10,7 @@ kubectl delete -f fe/nginx/deployment.yaml
 kubectl delete -f be/go/deployment.yaml
 kubectl delete -f be/py/deployment.yaml
 
-kubectl delete secret regcred
+#kubectl delete secret regcred
 
 kubectl get pod
 kubectl get service

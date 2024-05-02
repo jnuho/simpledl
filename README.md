@@ -76,6 +76,9 @@ go mod tidy
 
 - `.tmux.conf`
 
+https://unix.stackexchange.com/a/669231
+https://github.com/tmux-plugins/tmux-yank
+
 ```
 # NOTE: to apply the changes:
 # tmux source-file .tmux.conf
@@ -103,8 +106,17 @@ bind -n C-S-Down swap-pane -D
 set -g mouse on
 
 set -g default-terminal "screen-256color"
+
+run-shell ~/clone/path/yank.tmux
 ```
 
+```sh
+cd ~
+git clone https://github.com/tmux-plugins/tmux-yank ~/clone/path
+
+# type this inside tmux
+tmux source-file ~/.tmux.conf
+```
 
 - `requirements.txt`
 
@@ -526,4 +538,124 @@ k get svc
 (14) undefined. http://www.sandtable.com/a-single-aws-elastic-load-balancer-for-several-kubernetes-services-using-kubernetes-ingress/.
 (15) undefined. https://gist.github.com/0sc/77d8925cc378c9a6a92890e7c08937ca.
 
+
+
+
+### Using Minikube for image build and local development
+
+- https://www.youtube.com/watch?v=_1uWY1GdDVY&ab_channel=GoogleOpenSource
+
+
+```sh
+minikube docker-env
+$ minikube docker-env
+    W0502 10:17:02.728250   12636 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\user\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
+    export DOCKER_TLS_VERIFY="1"
+    export DOCKER_HOST="tcp://127.0.0.1:57853"
+    export DOCKER_CERT_PATH="C:\Users\user\.minikube\certs"
+    export MINIKUBE_ACTIVE_DOCKERD="minikube"
+
+# To point your shell to minikube's docker-daemon, run:
+# eval $(minikube -p minikube docker-env)
+
+
+# Now your PC directs to minikube's docker
+# From now, Any image you build will be directory on built on minikube's docker
+
+# list images inside minikube cluster
+docker images -a
+
+cd dockerfiles
+docker build -f dockerfiles/Dockerfile-nginx -t fe-nginx .
+
+```
+
+- deployment.yaml
+
+```yaml
+spec:
+  templates:
+    spec:
+      containers:
+      - name: fe-nginx
+        image: fe-nginx:latest
+        ports:
+        - containerPort: 80
+```
+
+```sh
+k apply -f deployment.yaml
+```
+
+- suppose source changed -> change image
+
+```sh
+docker rmi fe-nginx:latest
+docker build -f dockerfiles/Dockerfile-nginx -t fe-nginx .
+k delete -f deployment.yaml
+k apply -f deployment.yaml
+```
+
+- mount data to minikube cluster
+  - suppose golang docker container source does:
+
+
+```go
+var version = "0.0.2"
+func indexHandler(w http.ResponseWriter, req *http.Request){ 
+    // after deployment.yaml volumeMount, this will printout
+    // NOTE:
+    localFile, err := os.ReadFile("/tmp/data/hello-world.txt")
+    if err != nil {
+        fmt.Printf("couldn't read file %v\n", err)
+    }
+    // before deployment.yaml volumeMount, this will printout
+    fmt.FPrintf(w,"<h1>hello world :) </h1> \n Version %s\n File Content:%s", version, localFile)
+}
+```
+
+
+```sh
+minikube mount  {localdir}:{minikube hostdir}
+
+# mount a volume to minikube cluster (persistant storage)
+# mount files to minikube cluster
+minikube mount  /c/Users/user/Downloads/tmp:/tmp/data
+```
+
+```yaml
+spec:
+  templates:
+    spec:
+      containers:
+      - name: fe-nginx
+        image: fe-nginx:latest
+        ports:
+        - containerPort: 80
+        # target dir inside pod: /tmp/data
+        volumeMounts:
+        - mountPath: /tmp/data
+          name: test-volume
+      volumes:
+        - name: test-volume
+          # host is kubernetes host(vm)
+          hostPath:
+            # directory location on host
+            path: /tmp/data
+```
+
+- apply the changes:
+
+```sh
+docker rmi fe-nginx:latest
+docker build -f dockerfiles/Dockerfile-nginx -t fe-nginx .
+k delete -f deployment.yaml
+k apply -f deployment.yaml
+
+# deploy the app
+minikube service my-fe-nginx
+```
+
+- now edit local hello-world.txt file
+- then refresh browser to check the change is immediately applied
 
