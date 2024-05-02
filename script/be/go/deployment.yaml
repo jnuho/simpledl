@@ -15,7 +15,7 @@ spec:
       containers:
       - name: be-go
         image: jnuho/be-go:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3001
       #imagePullSecrets:

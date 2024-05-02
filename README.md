@@ -451,6 +451,12 @@ k get ingress
   - But is there any way to access app on port 80 or 443?
     - use Port-forward or `MetalLB` to allow access to app on port 80 or 443.
 
+- port forward
+
+```sh
+kubectl port-forward --address 0.0.0.0 svc/fe-nginx-service 8080:80
+```
+
 - Installing Metallb
 
 ```sh

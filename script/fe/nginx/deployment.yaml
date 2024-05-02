@@ -15,7 +15,7 @@ spec:
       containers:
       - name: fe-nginx
         image: jnuho/fe-nginx:latest
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
       #imagePullSecrets:

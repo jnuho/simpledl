@@ -16,7 +16,6 @@ kubectl apply -f kube-proxy-configmap.yaml
 rm kube-proxy-configmap.yaml
 
 
-
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
 
 

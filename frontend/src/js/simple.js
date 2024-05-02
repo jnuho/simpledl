@@ -32,7 +32,7 @@ window.onload = function(){
 		try{
 			const response1 = await axios({
 				method: 'post',
-				url: 'http://localhost:3001/web/cat',
+				url: 'http://my-simple-app.com:3001/web/cat',
 				data: {
 					cat_url: url
 				},
@@ -67,7 +67,7 @@ window.onload = function(){
 			var digit = "";
 
 			try {
-					const response2 = await axios.post("http://localhost:3001/web/mnist", {
+					const response2 = await axios.post("http://my-simple-app.com:3001/web/mnist", {
 							drawn_digit: digit
 					});
 
