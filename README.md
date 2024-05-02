@@ -665,3 +665,24 @@ minikube service my-fe-nginx
 - now edit local hello-world.txt file
 - then refresh browser to check the change is immediately applied
 
+
+
+### GCP test
+
+- create ubuntu vm
+
+- ip restriction
+
+```sh
+gcloud compute security-policies create my-security-policy
+gcloud compute security-policies rules create 1000 \
+  --security-policy my-security-policy \
+  --action allow \
+  --src-ip-ranges <your-home-ip>
+gcloud compute security-policies rules create 2000 \
+  --security-policy my-security-policy \
+  --action deny \
+  --src-ip-ranges 0.0.0.0/0
+gcloud compute backend-services update <your-backend-service> \
+  --security-policy my-security-policy
+```
