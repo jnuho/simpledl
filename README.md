@@ -1,5 +1,12 @@
 # Simple Deep learning application
 
+
+- cover Service ip, ingress, DNS(concept)
+
+Hetzner plus minikube nginx hello world in go
+Plus tail scale funnel
+https://tailscale.com/kb/1223/funnel
+
 I implemented a simple MSA service - nginx, golang, python. I tried to use docker-compose.yaml for **docker** implementation and then **minikube** to deploy a single node cluster in local environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
 **[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning)** is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label).
