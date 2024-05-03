@@ -742,10 +742,28 @@ gcloud compute backend-services update <your-backend-service> \
 minikube ip
 minikube dashboard --url
     http://127.0.0.1:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
-kubectl proxy --address='0.0.0.0' --disable-filter=true
-
-http://{GCP_vm_external_ip}:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
+
+- minikube ingress
+
+https://stackoverflow.com/a/73735009
+
+```sh
+minikube start
+minikube addons enable ingress
+minikube addons enable ingress-dns
+
+# Wait until you see the ingress-nginx-controller-XXXX is up and running using Kubectl get pods -n ingress-nginx
+# Create an ingress using the K8s example yaml file
+# Update the service section to point to the NodePort Service that you already created
+# Append 127.0.0.1 hello-world.info to your /etc/hosts file on MacOS (NOTE: Do NOT use the Minikube IP)
+
+# ( Keep the window open. After you entered the password there will be no more messages, and the cursor just blinks)
+minikube tunnel
+
+# Hit the hello-world.info ( or whatever host you configured in the yaml file) in a browser and it should work
+```
+
 
 - GCP console setup
   - vm instacne : create with machine type(E2- memory 4GB)

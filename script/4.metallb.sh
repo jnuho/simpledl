@@ -19,7 +19,7 @@ rm kube-proxy-configmap.yaml
 minikube kubectl -- apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
 
 
-cat <<EOF >> configmap.yaml
+cat <<EOF > configmap.yaml
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:

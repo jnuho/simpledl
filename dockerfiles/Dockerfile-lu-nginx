@@ -1,6 +1,6 @@
-FROM nginx:alpine
+# FROM nginx:alpine
 # Use an official OpenResty image as the base image
-#FROM openresty/openresty:alpine
+FROM openresty/openresty:alpine
 
 
 # Remove the default Nginx configuration file
@@ -17,10 +17,10 @@ RUN mkdir -p /var/log/nginx/ && \
     ln -sf /dev/stderr /var/log/nginx/error.log
 
 # Copy static files to a different directory in the Nginx server
-COPY ./frontend/src /usr/share/nginx/html/src
-COPY ./frontend/index.html /usr/share/nginx/html
-#COPY ./frontend/src /usr/local/openresty/nginx/html/src
-#COPY ./frontend/index.html /usr/local/openresty/nginx/html
+# COPY ./frontend/src /usr/share/nginx/html/src
+# COPY ./frontend/index.html /usr/share/nginx/html
+COPY ./frontend/src /usr/local/openresty/nginx/html/src
+COPY ./frontend/index.html /usr/local/openresty/nginx/html
 
 
 # Expose port 80
@@ -28,6 +28,6 @@ EXPOSE 80
 
 # Start Nginx when the container has provisioned
 # NOTE : 'nginx -t' to check syntax error before deploying!
-CMD ["nginx", "-g", "daemon off;"]
-#CMD ["openresty", "-g", "daemon off;"]
+# CMD ["nginx", "-g", "daemon off;"]
+CMD ["openresty", "-g", "daemon off;"]
 
