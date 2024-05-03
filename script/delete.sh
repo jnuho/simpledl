@@ -2,11 +2,11 @@
 
 minikube kubectl -- delete -f ingress.yaml
 
-minikube kubectl -- delete -f fe/nginx/service.yaml
+minikube kubectl -- delete -f service.yaml
 minikube kubectl -- delete -f be/go/service.yaml
 minikube kubectl -- delete -f be/py/service.yaml
 
-minikube kubectl -- delete -f fe/nginx/deployment.yaml
+minikube kubectl -- delete -f deployment.yaml
 minikube kubectl -- delete -f be/go/deployment.yaml
 minikube kubectl -- delete -f be/py/deployment.yaml
 

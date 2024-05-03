@@ -425,13 +425,13 @@ spec:
 
 6. **Enable Ingress Controller**:
 
-6-1. (NOT WORKING: check 3-2 instead) NGINX ingress controller using Minikube addons: you can use the command `minikube addons enable ingress`
+6-1. NGINX ingress controller using Minikube addons: you can use the command `minikube addons enable ingress`
 
 ```sh
 minikube addons enable ingress
 ```
 
-6-2. (USE THIS!) Nginx ingress controller
+6-2. Nginx ingress controller
 
 - [setting up an NGINX ingress controller](#https://medium.com/@amirhosseineidy/how-to-set-up-nginx-ingress-controller-in-local-server-6cc4bd7d6a6b) in a bare metal or local server:
 
@@ -444,9 +444,10 @@ Ingress is an API in Kubernetes that routes traffic to different services, makin
 # inside cmd or powershell
 winget install Helm.Helm
 
-# RESTART terminal
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm install ingress-nginx ingress-nginx/ingress-nginx
+# RESTART terminal and do:
+helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
 ```
 
 - Check if ingress controller is working:
@@ -503,7 +504,14 @@ k get ingress
 - port forward
 
 ```sh
-kubectl port-forward --address 0.0.0.0 svc/fe-nginx-service 8080:80
+k get svc -n ingress-nginx
+NAME                                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx-controller             NodePort    10.107.26.28   <none>        80:32361/TCP,443:31064/TCP   3h9m
+ingress-nginx-controller-admission   ClusterIP   10.106.14.66   <none>        443/TCP                      3h9m
+
+kubectl port-forward -n <namespace> svc/<service-name> <local-port>:<service-port>
+kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80 3001:3001 3002:3002
+
 ```
 
 - Installing Metallb
@@ -782,4 +790,24 @@ minikube tunnel
 gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 ```
 
+
+
+
+
+
+Sure, here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
+
+1. **Browser Request**: When you type `http://localhost` into your browser and hit enter, your browser sends a HTTP request to `localhost`, which is resolved to the IP address `127.0.0.1`.
+
+2. **Port Forwarding**: Since you've set up port forwarding with the command `kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80`, the request to `localhost` on port 80 is forwarded to port 80 on the `ingress-nginx-controller` service.
+
+3. **Ingress Controller**: The Ingress Controller, which is part of the `ingress-nginx-controller` service, receives the request. The Ingress Controller is responsible for routing the request based on the rules defined in your Ingress resource.
+
+4. **Ingress Rules**: In your case, you've set up an Ingress rule to route traffic to the `nginx-service` service on port 80 when the host is `simple-app.com`. However, since you're accessing `localhost` and not `simple-app.com`, this rule does not apply.
+
+5. **Service**: If there were a matching Ingress rule, the Ingress Controller would forward the request to the `nginx-service` service on port 80.
+
+6. **Pod**: The service then load balances the request to one of the pods that match its selector. In your case, this would be the pod running the Nginx application.
+
+Please note that since you're accessing `localhost` and not `simple-app.com`, the Ingress rule does not apply, and the request will not be routed to your Nginx application. To access your application, you need to either use `simple-app.com` as the host or modify your Ingress rule to match `localhost`.
 
