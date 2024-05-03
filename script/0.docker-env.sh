@@ -13,12 +13,6 @@
 #unset DOCKER_CERT_PATH
 #unset MINIKUBE_ACTIVE_DOCKERD
 
-#if [ -z "$1" ]
-  #then
-  #echo "argument {bash|cmd|powershell} is required for --shell"
-  #exit 1
-#fi
-
 set -e
 # check shell type for corresponding operating systems
 # in order to use it as a command argument

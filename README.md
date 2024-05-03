@@ -280,12 +280,54 @@ Here are a few examples of what you can do with Lua in Nginx:
 If your use case doesn't require any of these features, then you might not need to use Lua with Nginx. However, if you anticipate needing these features in the future, it could be beneficial to start with OpenResty and Lua from the beginning.
 
 
+### Docker install (ubuntu 24.04)
+
+
+- https://docs.docker.com/engine/install/ubuntu/
+
+```sh
+for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
+
+
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Manage Docker as a non-root user
+# https://docs.docker.com/engine/install/linux-postinstall/
+
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
+# Log out and log back in so that your group membership is re-evaluated.
+# You can also run the following command to activate the changes to groups:
+newgrp docker
+```
 
 ### Minikube deployement
 
 To set up your Nginx, Golang, and Python microservices on Minikube, you'll need to create Kubernetes Deployment and Service YAML files for each of your microservices. You'll also need to set up an Ingress controller to expose your services to the public. Here's a high-level overview of the steps:
 
 1. **Install Minikube**: If you haven't already, you'll need to install Minikube on your machine. Minikube is a tool that lets you run Kubernetes locally.
+
+- ubuntu 24.04 install minikube
+
+```sh
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
+sudo dpkg -i minikube_latest_amd64.deb
+```
 
 2. **Start Minikube**: Once installed, you can start a local Kubernetes cluster with the command `minikube start`.
 
@@ -686,7 +728,7 @@ gcloud compute security-policies rules create 1000 \
   --security-policy my-security-policy \
   --action allow \
   --src-ip-ranges <your-home-ip>
-gcloud compute security-policies rules create 2000 \
+gcloud compute security-policies rules create 2000 
   --security-policy my-security-policy \
   --action deny \
   --src-ip-ranges 0.0.0.0/0
@@ -705,9 +747,14 @@ kubectl proxy --address='0.0.0.0' --disable-filter=true
 http://{GCP_vm_external_ip}:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
 
-- gcp ssh
+- GCP console setup
+  - vm instacne : create with machine type(E2- memory 4GB)
+  - VPC network : firewalls > add filewall rule (your ip)
+
+- gcp ssh connect
 
 ```sh
 gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 ```
+
 
