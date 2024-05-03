@@ -12,13 +12,33 @@
 #unset DOCKER_HOST
 #unset DOCKER_CERT_PATH
 #unset MINIKUBE_ACTIVE_DOCKERD
+
+#if [ -z "$1" ]
+  #then
+  #echo "argument {bash|cmd|powershell} is required for --shell"
+  #exit 1
+#fi
+
 set -e
-if [ -z "$1" ]
-  then
-  echo "argument {bash|cmd|powershell} is required for --shell"
+# check shell type for corresponding operating systems
+# in order to use it as a command argument
+if [ -n "$BASH_VERSION" ]; then
+  SHELL_TYPE="bash"
+elif [ -n "$COMSPEC" ] && [ -z "$BASH_VERSION" ]; then
+  SHELL_TYPE="cmd"
+elif [ -n "$PSVersionTable" ]; then
+  SHELL_TYPE="powershell"
+else
+  echo "unknown"
   exit 1
 fi
 
-SHELL=$1
 PROFILE_NAME=$(minikube profile list | awk '/\*/ {print $2}')
-eval $(minikube -p ${PROFILE_NAME} docker-env --shell=${SHELL})
+
+# configure your local Docker client to use the Docker daemon inside the Minikube instance.
+# This allows your local Docker client and the Docker client inside Minikube
+# to share the same Docker daemon, so images built by one client can be run by the other.
+eval $(minikube -p ${PROFILE_NAME} docker-env --shell=${SHELL_TYPE})
+
+echo "Configured to use the Docker daemon inside the Minikube instance!"
+

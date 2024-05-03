@@ -693,3 +693,21 @@ gcloud compute security-policies rules create 2000 \
 gcloud compute backend-services update <your-backend-service> \
   --security-policy my-security-policy
 ```
+
+- dashboard
+
+```sh
+minikube ip
+minikube dashboard --url
+    http://127.0.0.1:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+kubectl proxy --address='0.0.0.0' --disable-filter=true
+
+http://{GCP_vm_external_ip}:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+```
+
+- gcp ssh
+
+```sh
+gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
+```
+
