@@ -670,8 +670,15 @@ minikube service my-fe-nginx
 ### GCP test
 
 - create ubuntu vm
-
 - ip restriction
+
+
+- install google cloud sdk and init
+
+```sh
+```
+
+
 
 ```sh
 gcloud compute security-policies create my-security-policy

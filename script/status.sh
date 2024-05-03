@@ -8,6 +8,10 @@ echo "-------[pod]-------"
 kubectl get pod
 
 echo ""
+echo "-------[deployment]-------"
+kubectl get deploy
+
+echo ""
 echo "-------[service]-------"
 kubectl get service
 

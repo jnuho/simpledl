@@ -64,7 +64,7 @@ def split_panes():
     pag.write("tmux new-session \\; split-window -v \\; attach")
   elif loc ==1:
     # pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -U \\; split-window -v \\; select-pane -R \\; split-window -v \\; ")
-    pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -R \\; split-window -v \\; ")
+    pag.write("tmux new-session \\; split-window -h \\; select-pane -L \\; split-window -v \\; select-pane -R \\; split-window -v \\; attach")
     # Move back to the upper left pane
     # pag.write("select-pane -L \\; select-pane -U \\; attach")
 
@@ -80,8 +80,7 @@ if __name__ == "__main__":
   kill_ahk()
   run_ahk()
 
-  kill_gitbash()
-  run_gitbash()
-  time.sleep(3)
-
-  split_panes()
+  # kill_gitbash()
+  # run_gitbash()
+  # time.sleep(3)
+  # split_panes()
