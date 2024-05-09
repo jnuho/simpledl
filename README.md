@@ -803,11 +803,14 @@ Please note that since you're accessing `localhost` and not `simple-app.com`, th
 - download ubuntu iso image
 - run vm instacne using iso image
 - install ubuntu
-  - Edit ipv4
-    - Subnet: 172.16.9.0/24
-    - Address: 172.16.9.101
-    - Gateway: 172.16.9.1
-    - Name servers: 8.8.8.8, 8.8.4.4
+
+```bat
+vboxmanage list dhcpservers
+vboxmanage list natnetworks
+vboxmanage list vms
+
+./vb-create.bat > log.txt 2>&1
+```
 
 
 ```sh
