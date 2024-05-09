@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dashboard-ingress
+  namespace: kubernetes-dashboard
+spec:
+  rules:
+  - host: dashboard.com
+    http:
+      paths:
+      #k get all -n kubernetes-dashboard
+      #NAME                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+      #service/dashboard-metrics-scraper   ClusterIP   10.101.235.234   <none>        8000/TCP   5d1h
+      #service/kubernetes-dashboard        ClusterIP   10.111.39.48     <none>        80/TCP     5d1h
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubernetes-dashboard
+            port:
+              number: 80

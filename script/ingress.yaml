@@ -8,8 +8,8 @@ spec:
   # This field is used to specify the class of the Ingress. The Ingress class is used by the Ingress Controller to determine whether or not it should act on a particular Ingress resource. For example, if you have multiple Ingress Controllers running in your cluster, you can use the ingressClassName field to specify which Ingress Controller should handle this Ingress12.
   ingressClassName: nginx
   rules:
-  - host: localhost
-  #- host: "simple-app.com"
+  #- host: localhost
+  - host: "simple-app.com"
     http:
       paths:
       - path: /

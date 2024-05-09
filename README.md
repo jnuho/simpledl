@@ -1,15 +1,19 @@
 # Simple Deep learning application
 
+It covers
 
-- cover Service ip, ingress, DNS(concept)
+- Kubernetes (using service ip, ingress, DNS(concept))
+- docker-compose
+- frontend and backend services and REST api
+
 
 Hetzner plus minikube nginx hello world in go
 Plus tail scale funnel
 https://tailscale.com/kb/1223/funnel
 
-- $6 per month; tailscale exit node VPN
+- tailscale exit node VPN
 
-I implemented a simple MSA service - nginx, golang, python. I tried to use docker-compose.yaml for **docker** implementation and then **minikube** to deploy a single node cluster in local environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+I implemented a simple web applicaiton with nginx, golang, python. I implemented with docker compose and then with kubernetes **minikube** to deploy a single node cluster in local environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
 **[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning)** is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label).
 
@@ -34,33 +38,36 @@ I considered various communication method:
 
 There are several ways to enable communication between a Golang web server and a Python backend. Here are a few methods:
 
-1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server¹.
+1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server
 
-2. **gRPC/Protobuf**: gRPC is a high-performance, open-source universal RPC framework, and Protobuf (short for Protocol Buffers) is a method for serializing structured data. You can use gRPC and Protobuf for communication between your Golang and Python applications¹. This method is efficient and type-safe, but it might be a bit more complex to set up compared to a REST API¹.
+2. **gRPC/Protobuf**: gRPC is a high-performance, open-source universal RPC framework, and Protobuf (short for Protocol Buffers) is a method for serializing structured data. You can use gRPC and Protobuf for communication between your Golang and Python applications. This method is efficient and type-safe, but it might be a bit more complex to set up compared to a REST API.
 
-3. **Message Queue**: If your use case involves asynchronous processing or you want to decouple your Golang and Python applications, you can use a message queue like RabbitMQ or Apache Kafka. In this setup, your Golang application would publish messages to the queue, and your Python application would consume these messages³.
+3. **Message Queue**: If your use case involves asynchronous processing or you want to decouple your Golang and Python applications, you can use a message queue like RabbitMQ or Apache Kafka. In this setup, your Golang application would publish messages to the queue, and your Python application would consume these messages.
 
-4. **Socket Programming**: You can use sockets for communication if both your Golang and Python applications are running on the same network³. This method requires a good understanding of network programming³.
+4. **Socket Programming**: You can use sockets for communication if both your Golang and Python applications are running on the same network. This method requires a good understanding of network programming.
 
-5. **Database**: If both applications have access to a shared database, you can use the database as a communication medium. One application writes to the database, and the other one reads from it².
+5. **Database**: If both applications have access to a shared database, you can use the database as a communication medium. One application writes to the database, and the other one reads from it.
 
 
+### Prerequisite
 
-### Prerequisite for microsservices
+Due to [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), I added headers to backend server.
 
-- [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
-	- when a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue
+When a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue
 
 ```
-For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts. For example, fetch() and XMLHttpRequest follow the same-origin policy.
+For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts.
+For example, fetch() and XMLHttpRequest follow the same-origin policy.
 
-This means that a web application using those APIs can only request resources from the same origin the application was loaded from unless the response from other origins includes the right CORS headers.
+This means that a web application using those APIs can only request resources
+from the same origin the application was loaded from unless the response
+from other origins includes the right CORS headers.
 
 -> Add appropriate headers in golang server.
 ```
 
 
-### Backend - gin server (golang)
+### Backend - Golang web server
 
 
 ```sh
@@ -72,7 +79,7 @@ go mod init github.com/jnuho/simpledl/backend/web
 go mod tidy
 ```
 
-### Backend - Python Fast API and Uvicorn web server
+### Backend - Python web server
 
 - Use FastAPI + Unicorn
   - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
@@ -184,6 +191,8 @@ The basic operations for forward and backward propagations in deep learning algo
 
   (for $i=1,\dots,L$ with initial value $A^{[0]} = X$)
 
+<br>
+
 - Backward propagation for layer $l$: $da^{[l]} \rightarrow da^{[l-1]},dW^{[l]}, db^{[l]}$
 
   $dZ^{[l]} = dA^{[l]} * {g^{[l]}}^{'}(Z^{[l]})$
@@ -197,7 +206,7 @@ The basic operations for forward and backward propagations in deep learning algo
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
 
-### Frontend local setup
+### Frontend - local setup
 
 - Download  & install nodejs 20.12.2
   - for local development using `vite`
@@ -222,9 +231,7 @@ npm create vite@latest
   }
 ```
 
-### Node server
-
-Note that I will be using nginx instead in production environment. I used nodejs vite for local development environment for convenience.
+Note that I will be using nginx instead in production environment. I used nodejs vite just for local development environment.
 
 ```sh
 # install dependencies specified in package.json
@@ -249,9 +256,8 @@ npm run dev
 ## Dockerize
 
 
-```
-Important Reminder: It is crucial to optimize Docker images to be as compact as possible. One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
-```
+**NOTE**: It is crucial to optimize Docker images to be as compact as possible.
+One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
 
 - [NOTE on defining backend endpoint in frontend](https://stackoverflow.com/a/56375180/23876187)
   - frontend app is not in any container, but the javascript is served from container as a js script file to <b>your browser</b>!
@@ -263,30 +269,6 @@ Important Reminder: It is crucial to optimize Docker images to be as compact as 
 
 
 curl -X POST -H "Content-Type: application/json" -d '{"cat_url":"aa"}' http://backend_python:3002/worker/cat
-
-
-### Nginx lua module
-
-
-Nginx Lua is a module for Nginx that embeds Lua, a lightweight and powerful scripting language, directly into Nginx.
-
-The use of OpenResty and Lua is not necessary if you don't have any dynamic content or complex logic that needs to be executed at the Nginx level. The power of OpenResty and Lua comes into play when you need to perform operations that are beyond the capabilities of standard Nginx configuration.
-
-Here are a few examples of what you can do with Lua in Nginx:
-
-1. **Dynamic Routing**: You can use Lua to dynamically determine where to route requests based on complex logic that can't be expressed in standard Nginx configuration.
-
-2. **Advanced Caching**: While Nginx has built-in caching, Lua allows you to implement more advanced caching strategies. For example, you could cache responses in a Redis database and use Lua to fetch and update these cached responses.
-
-3. **Custom Authentication**: You can use Lua to implement custom authentication mechanisms. For example, you could use Lua to validate JSON Web Tokens (JWTs) or to implement OAuth 2.0.
-
-4. **Complex Load Balancing**: While Nginx supports basic load balancing, Lua allows you to implement more complex load balancing algorithms.
-
-5. **Real-time Metrics and Monitoring**: You can use Lua to collect real-time metrics about your requests and responses, which can be useful for monitoring and debugging.
-
-6. **Modifying Requests and Responses**: Lua can be used to modify both incoming requests and outgoing responses. This can be useful for a variety of purposes, such as adding or modifying headers, rewriting URLs, or transforming response bodies.
-
-If your use case doesn't require any of these features, then you might not need to use Lua with Nginx. However, if you anticipate needing these features in the future, it could be beneficial to start with OpenResty and Lua from the beginning.
 
 
 ### Docker install (ubuntu 24.04)
@@ -336,6 +318,9 @@ To set up your Nginx, Golang, and Python microservices on Minikube, you'll need 
 ```sh
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
 sudo dpkg -i minikube_latest_amd64.deb
+
+# unintstall
+#sudo dpkg -r minikube
 ```
 
 2. **Start Minikube**: Once installed, you can start a local Kubernetes cluster with the command `minikube start`.
@@ -613,7 +598,6 @@ k get svc
 
 ```sh
 minikube docker-env
-$ minikube docker-env
     W0502 10:17:02.728250   12636 main.go:291] Unable to resolve the current Docker CLI context "default": context "default": context not found: open C:\Users\user\.docker\contexts\meta\37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f\meta.json: The system cannot find the path specified.
     export DOCKER_TLS_VERIFY="1"
     export DOCKER_HOST="tcp://127.0.0.1:57853"
@@ -812,4 +796,44 @@ Sure, here's a high-level overview of the traffic flow when you access `http://l
 6. **Pod**: The service then load balances the request to one of the pods that match its selector. In your case, this would be the pod running the Nginx application.
 
 Please note that since you're accessing `localhost` and not `simple-app.com`, the Ingress rule does not apply, and the request will not be routed to your Nginx application. To access your application, you need to either use `simple-app.com` as the host or modify your Ingress rule to match `localhost`.
+
+
+### Virtualbox
+
+- download ubuntu iso image
+- run vm instacne using iso image
+- install ubuntu
+  - Edit ipv4
+    - Subnet: 172.16.9.0/24
+    - Address: 172.16.9.101
+    - Gateway: 172.16.9.1
+    - Name servers: 8.8.8.8, 8.8.4.4
+
+
+```sh
+# ethernet device info
+nmcli d
+
+nmcli d show enp0s3
+
+ip a dev enp0s3
+
+sudo ip link set enp0s3 down
+sudo ip link set enp0s3 up
+```
+
+### Kubernetes Concept
+
+- Service
+  - Service provide stable IP address. Each pod has its own ip address, but are ephemeral.
+  - Load balancing
+  - loose coupling
+  - within & outside cluster
+
+
+- ClusterIP services
+  - default type
+  - microservice app deployed
+
+
 

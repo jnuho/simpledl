@@ -1,29 +1,29 @@
 #!/bin/bash
 
 #echo ""
-#minikube kubectl -- get namespace
+#microk8s kubectl -- get namespace
 
 echo ""
-echo "-------[pod]-------"
-minikube kubectl -- get pod
+echo "-------[Pod]-------"
+microk8s kubectl -- get pod
 
 echo ""
-echo "-------[deployment]-------"
-minikube kubectl -- get deploy
+echo "-------[Deployment]-------"
+microk8s kubectl -- get deploy
 
 echo ""
-echo "-------[service]-------"
-minikube kubectl -- get service
+echo "-------[Service]-------"
+microk8s kubectl -- get service
 
 echo ""
-echo "-------[ingress]-------"
-minikube kubectl -- get ingress
+echo "-------[Ingress]-------"
+microk8s kubectl -- get ingress
 
 echo ""
-echo "-------[configmap]-------"
-minikube kubectl -- get configmap
+echo "-------[Configmap]-------"
+microk8s kubectl -- get configmap
 
 echo ""
-echo "-------[secret]-------"
-minikube kubectl -- get secret
+echo "-------[Secret]-------"
+microk8s kubectl -- get secret
 
