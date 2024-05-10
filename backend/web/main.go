@@ -28,18 +28,20 @@ func main() {
 
 	// Apply the CORS middleware to the router
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8080"}, // or use "*" to allow all origins
+		AllowOrigins:     []string{"http://localhost:8080", "http://localhost"}, // or use "*" to allow all origins
 		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
-	r.GET("/ping", func(c *gin.Context) {
+	//r.GET("/ping", func(c *gin.Context) {
+	r.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 
 	// Handle REST API request
-	r.POST("/web/cat", func(c *gin.Context) {
+	//r.POST("/web/cat", func(c *gin.Context) {
+	r.POST("/", func(c *gin.Context) {
 		catObj := param{}
 		if err := c.BindJSON(&catObj); err != nil {
 			log.Println(err)
@@ -62,7 +64,7 @@ func main() {
 		// Python backend call
 		jsonData := []byte(fmt.Sprintf(`{"cat_url": "%s"}`, catObj.URL))
 
-		resp, err := http.Post("http://be-py:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+		resp, err := http.Post("http://be-py-service:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
 		if err != nil {
 			log.Fatalln(err)
 		}
