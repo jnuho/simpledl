@@ -2,6 +2,7 @@ REM Delete previously created NAT network
 VBoxManage dhcpserver remove --netname k8snetwork
 VBoxManage natnetwork remove --netname k8snetwork
 
+
 for /L %%i in (1, 1, 3) do (
   VBoxManage unregistervm ubuntu-%%i --delete
 )
@@ -9,7 +10,9 @@ for /L %%i in (1, 1, 3) do (
 REM Create NAT network
 VBoxManage natnetwork add --netname k8snetwork --network "10.0.2.0/24" --enable --dhcp on
 
-VBoxManage dhcpserver add --netname k8snetwork --ip "10.0.2.1" --netmask "255.255.255.0" --lowerip "10.0.2.2" --upperip "10.0.2.254" --enable
+VBoxManage dhcpserver add --netname k8snetwork --server-ip "10.0.2.2" --netmask "255.255.255.0" --lower-ip "10.0.2.3" --upper-ip "10.0.2.254" --enable
+
+vboxmanage dhcpserver restart --network=k8snetwork
 
 for /L %%i in (1, 1, 3) do (
   REM Create VM
@@ -36,7 +39,7 @@ for /L %%i in (1, 1, 3) do (
 )
 
 REM Set up port forwarding rules
-VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 1:tcp:[127.0.0.1]:22021:[10.0.2.2]:22"
-VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 2:tcp:[127.0.0.1]:22022:[10.0.2.3]:22"
-VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[127.0.0.1]:22023:[10.0.2.4]:22"
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 1:tcp:[127.0.0.1]:22021:[10.0.2.3]:22"
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 2:tcp:[127.0.0.1]:22022:[10.0.2.4]:22"
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[127.0.0.1]:22023:[10.0.2.5]:22"
 

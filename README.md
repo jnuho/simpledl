@@ -809,6 +809,13 @@ vboxmanage list dhcpservers
 vboxmanage list natnetworks
 vboxmanage list vms
 
+VBoxManage dhcpserver remove --netname k8snetwork
+VBoxManage natnetwork remove --netname k8snetwork
+
+VBoxManage unregistervm ubuntu-1 --delete
+VBoxManage unregistervm ubuntu-2 --delete
+VBoxManage unregistervm ubuntu-3 --delete
+
 ./vb-create.bat > log.txt 2>&1
 ```
 
