@@ -1,21 +1,24 @@
 # Simple Deep learning application
 
-It covers
+## Skills I used
 
-- Kubernetes (using service ip, ingress, DNS(concept))
-- docker-compose
-- frontend and backend services and REST api
+1. Kubernetes : 3 master nodes cluster
+  - to improve docker-compose implementation
+2. Docker (define Dockerfile for each service)
+3. Microservice architecture
+  - Frontend: Nginx, javascript, html/css
+  - Backend: Python, Golang web server
+4. Deep learning principles to recognize cat/non-cat image (50%)
+5. Virtualbox cli to create 3 master node for k8s cluster
+
+<!--6. TODO: Hetzner plus minikube nginx hello world in go Plus tail scale funnel
+ - https://tailscale.com/kb/1223/funnel
+  - tailscale exit node VPN
+  -->
 
 
-Hetzner plus minikube nginx hello world in go
-Plus tail scale funnel
-https://tailscale.com/kb/1223/funnel
+I implemented a web applicaiton with Nginx, Golang, and Python. First, I implemented with docker compose and then improved it with kubernetes **microk8s** to deploy a 3 master nodes cluster in Virtual machine environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
-- tailscale exit node VPN
-
-I implemented a simple web applicaiton with nginx, golang, python. I implemented with docker compose and then with kubernetes **minikube** to deploy a single node cluster in local environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
-
-**[Deep learning](#https://en.wikipedia.org/wiki/Deep_learning)** is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label).
 
 ## Microservices
 
@@ -29,15 +32,6 @@ fastapi + docker + minikube + k8s service + k8s ingress with nginx
 
 ### Communication between services
 
-- REST API
-  - Javascript &rarr; Golang
-- GRPC
-  - Golang &harr; python
-
-I considered various communication method:
-
-There are several ways to enable communication between a Golang web server and a Python backend. Here are a few methods:
-
 1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server
 
 2. **gRPC/Protobuf**: gRPC is a high-performance, open-source universal RPC framework, and Protobuf (short for Protocol Buffers) is a method for serializing structured data. You can use gRPC and Protobuf for communication between your Golang and Python applications. This method is efficient and type-safe, but it might be a bit more complex to set up compared to a REST API.
@@ -49,11 +43,10 @@ There are several ways to enable communication between a Golang web server and a
 5. **Database**: If both applications have access to a shared database, you can use the database as a communication medium. One application writes to the database, and the other one reads from it.
 
 
-### Prerequisite
 
-Due to [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS), I added headers to backend server.
+- [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 
-When a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue
+When a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue. Add headers to backend server accordingly
 
 ```
 For security reasons, browsers restrict cross-origin HTTP requests initiated from scripts.
@@ -63,7 +56,7 @@ This means that a web application using those APIs can only request resources
 from the same origin the application was loaded from unless the response
 from other origins includes the right CORS headers.
 
--> Add appropriate headers in golang server.
+=> Add appropriate headers in golang server.
 ```
 
 
@@ -85,91 +78,8 @@ go mod tidy
   - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
   - Unicorn is a lightning-fast ASGI server implementation
 
-
 - install python (download .exe from python.org)
   - check Add to PATH option (required)
-
-
-- `.tmux.conf`
-
-https://unix.stackexchange.com/a/669231
-https://github.com/tmux-plugins/tmux-yank
-
-```
-# NOTE: to apply the changes:
-# tmux source-file .tmux.conf
-
-unbind C-b
-set -g prefix C-a
-
-# SELECT
-bind -n M-Left select-pane -L
-bind -n M-Right select-pane -R
-bind -n M-Up select-pane -U
-bind -n M-Down select-pane -D
-
-
-# RESIZE by {5}
-bind -n M-S-Left resize-pane -L 3
-bind -n M-S-Right resize-pane -R 3
-bind -n M-S-Up resize-pane -U 3
-bind -n M-S-Down resize-pane -D 3
-
-# SWAP
-bind -n C-S-Up swap-pane -U
-bind -n C-S-Down swap-pane -D
-
-set -g mouse on
-
-set -g default-terminal "screen-256color"
-
-run-shell ~/clone/path/yank.tmux
-```
-
-```sh
-cd ~
-git clone https://github.com/tmux-plugins/tmux-yank ~/clone/path
-
-# type this inside tmux
-tmux source-file ~/.tmux.conf
-```
-
-- `requirements.txt`
-
-```
-numpy==1.26.4
-h5py==3.10.0
-matplotlib==3.8.3
-scipy==1.12.0
-pillow==10.2.0
-imageio==2.34.0
-scikit-image==0.23.1
-
-fastapi==0.110.2
-pydantic==2.7.1
-pydantic_core==2.18.2
-
-uvicorn==0.29.0
-
-keyboard==0.13.5
-mouse==0.7.1
-PyAutoGUI==0.9.54
-PyGetWindow==0.0.9
-pynput==1.7.6
-PyScreeze==0.1.30
-opencv-python==4.9.0.80
-pywinauto==0.6.8
-```
-
-- `.bashrc`
-
-```
-# Use python in .venv install for simpledl workspace
-alias python='winpty /c/Users/user/Repos/simpledl/.venv/Scripts/python.exe'
-alias pip='winpty /c/Users/user/Repos/simpledl/.venv/Scripts/pip.exe'
-alias uvicorn='winpty /c/Users/user/Repos/simpledl/.venv/Scripts/uvicorn.exe'
-alias tmux='tmux -2'
-```
 
 
 - Run the python web server
@@ -179,7 +89,7 @@ uvicorn main:app --port 3002
 ```
 
 
-#### Mathematical operations for deep learning
+#### Mathematical background for deep learning image recognizer
 
 The basic operations for forward and backward propagations in deep learning algorithm are as follows:
 
@@ -252,9 +162,7 @@ npm run dev
   - Edit `main.ts`
 
 
-
 ## Dockerize
-
 
 **NOTE**: It is crucial to optimize Docker images to be as compact as possible.
 One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
@@ -264,50 +172,8 @@ One strategy to achieve this is by utilizing base images that are minimalistic, 
 
 - frontend nginx service
 
-```Dockerfile
-```
 
-
-curl -X POST -H "Content-Type: application/json" -d '{"cat_url":"aa"}' http://backend_python:3002/worker/cat
-
-
-### Docker install (ubuntu 24.04)
-
-
-- https://docs.docker.com/engine/install/ubuntu/
-
-```sh
-for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
-
-
-# Add Docker's official GPG key:
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# Manage Docker as a non-root user
-# https://docs.docker.com/engine/install/linux-postinstall/
-
-sudo groupadd docker
-sudo usermod -aG docker $USER
-
-# Log out and log back in so that your group membership is re-evaluated.
-# You can also run the following command to activate the changes to groups:
-newgrp docker
-```
-
-### Minikube deployement
+### Minikube implementation
 
 To set up your Nginx, Golang, and Python microservices on Minikube, you'll need to create Kubernetes Deployment and Service YAML files for each of your microservices. You'll also need to set up an Ingress controller to expose your services to the public. Here's a high-level overview of the steps:
 
@@ -572,25 +438,6 @@ k get svc
 ```
 
 
-(1) Set up Ingress on Minikube with the NGINX Ingress Controller. https://kubernetes.io/docs/tasks/access-application-cluster/ingress-minikube/.
-(2) Kubernetes Deployment YAML File with Examples. https://spacelift.io/blog/kubernetes-deployment-yaml.
-(3) Kubernetes YAML Generator. https://k8syaml.com/.
-(4) How to create Kubernetes YAML files | HackerNoon. https://hackernoon.com/how-to-create-kubernetes-yaml-files.
-(5) How To Create Kubernetes YAML Manifests Quickly - DevOpsCube. https://devopscube.com/create-kubernetes-yaml/.
-(6) Setting up Ingress on Minikube - Medium. https://medium.com/@Oskarr3/setting-up-ingress-on-minikube-6ae825e98f82.
-(7) How to Setup NGINX Ingress Controller in Kubernetes - LinuxTechi. https://www.linuxtechi.com/setup-nginx-ingress-controller-in-kubernetes/.
-(8) Minikube with ingress example not working - Stack Overflow. https://stackoverflow.com/questions/58561682/minikube-with-ingress-example-not-working.
-(9) How to Setup Ingress on Minikube Kubernetes with example - Geeks Terminal. https://geeksterminal.com/setup-ingress-on-minikube-for-kubernetes/2972/.
-(10) How to Run Nginx on Kubernetes Using Minikube | Cloud Native Daily - Medium. https://medium.com/cloud-native-daily/how-to-run-nginx-on-kubernetes-using-minikube-df3319b80511.
-(11) NGINX Tutorial: How to Deploy and Configure Microservices. https://www.nginx.com/blog/nginx-tutorial-deploy-configure-microservices/.
-(12) Kubernetes for Beginners: Nginx Deployment with Minikube. https://techbeats.blog/kubernetes-for-beginners-nginx-deployment-with-minikube.
-(13) undefined. https://kubernetes.io/docs/tasks/tools/.
-(14) undefined. http://www.sandtable.com/a-single-aws-elastic-load-balancer-for-several-kubernetes-services-using-kubernetes-ingress/.
-(15) undefined. https://gist.github.com/0sc/77d8925cc378c9a6a92890e7c08937ca.
-
-
-
-
 ### Using Minikube for image build and local development
 
 - https://www.youtube.com/watch?v=_1uWY1GdDVY&ab_channel=GoogleOpenSource
@@ -714,13 +561,7 @@ minikube service my-fe-nginx
 
 - create ubuntu vm
 - ip restriction
-
-
 - install google cloud sdk and init
-
-```sh
-```
-
 
 
 ```sh
@@ -778,10 +619,7 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 
 
 
-
-
-
-Sure, here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
+here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
 
 1. **Browser Request**: When you type `http://localhost` into your browser and hit enter, your browser sends a HTTP request to `localhost`, which is resolved to the IP address `127.0.0.1`.
 
@@ -800,9 +638,9 @@ Please note that since you're accessing `localhost` and not `simple-app.com`, th
 
 ### Virtualbox
 
-- download ubuntu iso image
-- run vm instacne using iso image
-- install ubuntu
+- Download ubuntu iso image
+- Run vm instacne using iso image
+- Install ubuntu
 
 ```bat
 vboxmanage list dhcpservers
@@ -832,10 +670,11 @@ sudo ip link set enp0s3 down
 sudo ip link set enp0s3 up
 ```
 
-### Microk8s
+
+### Microk8s implemntation
 
 
-- local registory
+- Local docker registory
   - https://microk8s.io/docs/registry-images
 
 ```sh
@@ -854,14 +693,10 @@ microk8s ctr image ls | grep jnuho
 ```sh
 microk8s kubectl get pods -A | grep ingress
 
-telnet -c localhost 80 2>&1 < /dev/null | grep Connected
-
-telnet -c localhost 80
 
 telnet localhost 8080
 telnet localhost 3001
 ```
-
 
 - Port forwarding
 
