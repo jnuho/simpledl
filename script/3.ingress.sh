@@ -2,8 +2,10 @@
 
 # Enable nginx ingress controller
 # 1. minikube addon
-minikube addons enable ingress
-#minikube addons enable ingress-dns
+# minikube addons enable ingress
+
+microk8s enable ingress
+
 # OR
 # 2.helm
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -12,5 +14,5 @@ minikube addons enable ingress
 sleep 1
 
 # Define ingress routing rule
-microk8s kubectl -- apply -f ingress.yaml
+microk8s kubectl apply -f ingress.yaml
 
