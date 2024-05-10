@@ -43,3 +43,8 @@ VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 1:tcp:[
 VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 2:tcp:[127.0.0.1]:22022:[10.0.2.4]:22"
 VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[127.0.0.1]:22023:[10.0.2.5]:22"
 
+REM application port
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[127.0.0.1]:8080:[10.0.2.3]:80"
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "be-go:tcp:[127.0.0.1]:3001:[10.0.2.3]:3001"
+
+

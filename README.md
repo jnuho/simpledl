@@ -832,6 +832,49 @@ sudo ip link set enp0s3 down
 sudo ip link set enp0s3 up
 ```
 
+### Microk8s
+
+
+- local registory
+  - https://microk8s.io/docs/registry-images
+
+```sh
+docker save jnuho/fe-nginx > fe-nginx.tar
+docker save jnuho/be-go > be-go.tar
+docker save jnuho/be-py > be-py.tar
+
+microk8s ctr image import fe-nginx.tar
+microk8s ctr image import be-go.tar
+microk8s ctr image import be-py.tar
+
+microk8s ctr image ls | grep jnuho
+```
+
+
+```sh
+microk8s kubectl get pods -A | grep ingress
+
+telnet -c localhost 80 2>&1 < /dev/null | grep Connected
+
+telnet -c localhost 80
+
+telnet localhost 8080
+telnet localhost 3001
+```
+
+
+- Port forwarding
+
+```
+host -> virtualbox vm
+```
+
+- ufw setting
+
+```
+open port 3001
+```
+
 ### Kubernetes Concept
 
 - Service
