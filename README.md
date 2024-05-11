@@ -2,14 +2,14 @@
 
 ## Skills I used
 
-1. Kubernetes : 3 master nodes cluster
+1. Kubernetes : 3-master node cluster
   - to improve docker-compose implementation
-2. Docker (define Dockerfile for each service)
-3. Microservice architecture
-  - Frontend: Nginx, javascript, html/css
-  - Backend: Python, Golang web server
-4. Deep learning principles to recognize cat/non-cat image (50%)
-5. Virtualbox cli to create 3 master node for k8s cluster
+2. Docker (build Dockerfile), `docker compose` for testing
+3. Microservices
+  - Frontend: Nginx with html/css, js
+  - Backend: Python, golang web server
+4. Deep learning algorithm (basic numpy) for binary classification (cat/non-cat recognizer) (50%)
+5. Virtualbox (cli) to create 3 master nodes for k8s cluster
 
 <!--6. TODO: Hetzner plus minikube nginx hello world in go Plus tail scale funnel
  - https://tailscale.com/kb/1223/funnel
@@ -17,17 +17,15 @@
   -->
 
 
-I implemented a web applicaiton with Nginx, Golang, and Python. First, I implemented with docker compose and then improved it with kubernetes **microk8s** to deploy a 3 master nodes cluster in Virtual machine environment. My simple application is a basic deep learning image recognizer exercises, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
 
 ## Microservices
 
-https://fastapi.tiangolo.com/tutorial/
-fastapi + docker + minikube + k8s service + k8s ingress with nginx
-
 1. frontend: nginx (nodejs vite in local) + javascript + html + css
 2. backend/web: golang (gin framework)
 3. backend/worker: python (fast api, numpy, scikit-learn)
+  - https://fastapi.tiangolo.com/tutorial/
 
 
 ### Communication between services
