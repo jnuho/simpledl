@@ -671,6 +671,50 @@ sudo ip link set enp0s3 up
 
 ### Microk8s implemntation
 
+- install microk8s (Ubuntu)
+
+```sh
+# 1.27/stable version ERROR -> install --classic
+sudo snap install microk8s --classic
+
+# 일반유저에게 microk8s 커맨드 권한 부여
+# NOTE: root유저로만 microk8s 커맨드 사용시 아래 커맨드 필요 X
+sudo usermod -a -G microk8s $USER
+sudo chown -f -R $USER ~/.kube
+
+microk8s.status --wait-ready
+microk8s kubectl get no
+microk8s kubectl get svc
+
+microk8s start
+
+# Join node (All 3 are master nodes)
+vim /etc/hosts
+
+10.0.2.3 ubuntu-1
+10.0.2.4 ubuntu-2
+10.0.2.5 ubuntu-3
+
+# in first node
+microk8s add-node
+
+# in other 2 nodes
+microk8s join [TOKEN]
+
+# Trouble shoot
+# https://microk8s.io/docs/restore-quorum
+vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
+
+- Address: 172.16.9.201:19001
+  ID: 3297041220608546238
+  Role: 0
+- Address: 172.16.9.202:19001
+  ID: 13629670026737620399
+  Role: 0
+- Address: 172.16.9.203:19001
+  ID: 10602814967080190144
+  Role: 0
+```
 
 - Local docker registory
   - https://microk8s.io/docs/registry-images
