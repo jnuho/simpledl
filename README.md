@@ -2,14 +2,14 @@
 
 ## Skills I used
 
-1. Kubernetes : 3-master node cluster
+- Kubernetes : 3-master node cluster
   - to improve docker-compose implementation
-2. Docker (build Dockerfile), `docker compose` for testing
-3. Microservices
+- Docker (build Dockerfile), `docker compose` for testing
+- Microservices
   - Frontend: Nginx with html/css, js
   - Backend: Python, golang web server
-4. Deep learning algorithm (basic numpy) for binary classification (cat/non-cat recognizer) (50%)
-5. Virtualbox (cli) to create 3 master nodes for k8s cluster
+- Deep learning algorithm (basic numpy) for binary classification (cat/non-cat recognizer) (50%)
+- Virtualbox (cli) to create 3 master nodes for k8s cluster
 
 <!--6. TODO: Hetzner plus minikube nginx hello world in go Plus tail scale funnel
  - https://tailscale.com/kb/1223/funnel
