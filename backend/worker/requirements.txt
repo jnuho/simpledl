@@ -20,3 +20,4 @@ uvicorn==0.29.0
 # pywinauto==0.6.8
 # PyScreeze==0.1.30
 # opencv-python==4.9.0.80
+# pillow==10.3.0
