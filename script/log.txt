@@ -71,10 +71,10 @@ REM Create VM
  VBoxManage modifyvm ubuntu-1 --nic1 natnetwork --nat-network1 k8snetwork 
 ) 
 Virtual machine 'ubuntu-1' is created and registered.
-UUID: 45fe8cd2-6aec-4b31-a51b-28b1bdfaec59
+UUID: 01f28853-4afc-41f6-a46b-fe6506888473
 Settings file: 'C:\Users\user\VirtualBox VMs\ubuntu-1\ubuntu-1.vbox'
 0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
-Medium created. UUID: 92886ecf-9b6d-4c57-81b0-75ebf72044b4
+Medium created. UUID: 575fe037-9848-4a04-ac1b-a9518776db42
 
 C:\Users\user\Repos\simpledl\script>(
 REM Create VM  
@@ -94,10 +94,10 @@ REM Create VM
  VBoxManage modifyvm ubuntu-2 --nic1 natnetwork --nat-network1 k8snetwork 
 ) 
 Virtual machine 'ubuntu-2' is created and registered.
-UUID: d075a2ff-617a-40aa-85b5-3486f7ded39e
+UUID: cf218a7f-7d4b-4e3a-bec3-3d3b7deb9c74
 Settings file: 'C:\Users\user\VirtualBox VMs\ubuntu-2\ubuntu-2.vbox'
 0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
-Medium created. UUID: 9667f8e2-14c5-4053-928b-709028fe4057
+Medium created. UUID: f86f65d2-a505-49a6-8cd3-5c78b33ab10e
 
 C:\Users\user\Repos\simpledl\script>(
 REM Create VM  
@@ -117,15 +117,21 @@ REM Create VM
  VBoxManage modifyvm ubuntu-3 --nic1 natnetwork --nat-network1 k8snetwork 
 ) 
 Virtual machine 'ubuntu-3' is created and registered.
-UUID: 304983e4-4f8d-4767-a4d9-ccac1a7adfb7
+UUID: ed8274cb-5c1b-446c-8fc1-97acbd02501d
 Settings file: 'C:\Users\user\VirtualBox VMs\ubuntu-3\ubuntu-3.vbox'
 0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
-Medium created. UUID: 8feb9471-28bd-41d0-b067-1878cf9e488c
+Medium created. UUID: b7739c3f-e1c8-4ec0-ae02-d5be509514c6
 
 C:\Users\user\Repos\simpledl\script>REM Set up port forwarding rules 
 
-C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 1:tcp:[127.0.0.1]:22021:[10.0.2.2]:22" 
+C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 1:tcp:[127.0.0.1]:22021:[10.0.2.3]:22" 
 
-C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 2:tcp:[127.0.0.1]:22022:[10.0.2.3]:22" 
+C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 2:tcp:[127.0.0.1]:22022:[10.0.2.4]:22" 
 
-C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[127.0.0.1]:22023:[10.0.2.4]:22" 
+C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[127.0.0.1]:22023:[10.0.2.5]:22" 
+
+C:\Users\user\Repos\simpledl\script>REM application port 
+
+C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[127.0.0.1]:8080:[10.0.2.3]:80" 
+
+C:\Users\user\Repos\simpledl\script>VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "be-go:tcp:[127.0.0.1]:3001:[10.0.2.3]:3001" 

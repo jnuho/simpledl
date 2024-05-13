@@ -1,26 +1,67 @@
-# Simple Deep learning application
+# Simple Kubernetes app
 
-**Skills**
 
-- Kubernetes : 3-master node cluster
-  - to improve docker-compose implementation
-- Docker (build Dockerfile), `docker compose` for testing
-- Microservices
-  - Frontend: Nginx with html/css, js
-  - Backend: Python, golang web server
-- Deep learning algorithm (basic numpy) for binary classification (cat/non-cat recognizer) (50%)
-- Virtualbox (cli) to create 3 master nodes for k8s cluster
+### Image recognizer app
+
+I created a web app using basic [deep learning](#https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](#https://kubernetes.io/) for [microservices](#https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
+
+<img src="./images/microk8s-result.png" alt="pods" width="380">
+
+
+My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+
+### Skills I used
+
+- Kubernetes : 3-master node cluster w/ `microk8s`
+  - also `docker-compose` implementation for initial testing
+- Docker (build images using Dockerfiles for each serice)
+- Microservices architecture
+  - Frontend: Nginx (includes static files html,css,js)
+  - Backend: Python, Golang web server
+- TODO: Deep learning algorithm (with basic numpy) for binary classification (cat/non-cat recognizer) **(50% in progress)**
+  - The algorithm includes basic forward and [backward propagation](#https://en.wikipedia.org/wiki/Backpropagation) using numpy to calculate mathematic operations. 
+- Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
 
 <!--6. TODO: Hetzner plus minikube nginx hello world in go Plus tail scale funnel
  - https://tailscale.com/kb/1223/funnel
   - tailscale exit node VPN
   -->
 
+### Virtualbox network architecture
 
-My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+Before doing anything I was planned to do, I had to construct an environment in which my application will be deployed. I considered virtualbox, cloud(GCP, AWS). Here, I implemented local virtualbox environment. In the furture I will try out GCP, AWS implemntation. 🔥
 
 
-## Microservices
+<img src="./images/virtualbox_NAT.drawio.png" alt="pods" width="450">
+
+- Hosts: 10.0.2.3, 10.0.2.4, 10.0.2.5
+- OS: Ubuntu 24.04 server
+
+```bat
+VBoxManage natnetwork add --netname k8snetwork --network "10.0.2.0/24" --enable --dhcp on
+VBoxManage dhcpserver add --netname k8snetwork --server-ip "10.0.2.2" --netmask "255.255.255.0" --lower-ip "10.0.2.3" --upper-ip "10.0.2.254" --enable
+
+vboxmanage dhcpserver restart --network=k8snetwork
+
+for /L %%i in (1, 1, 3) do (
+  REM Create VM
+  VBoxManage createvm --name ubuntu-%%i --register --ostype Ubuntu_64
+  REM ...
+  REM ...
+)
+
+REM Set up port forwarding rules
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 1:tcp:[127.0.0.1]:22021:[10.0.2.3]:22"
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 2:tcp:[127.0.0.1]:22022:[10.0.2.4]:22"
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[127.0.0.1]:22023:[10.0.2.5]:22"
+
+REM application port
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[127.0.0.1]:80:[10.0.2.3]:80"
+```
+
+
+
+### Microservices
 
 1. frontend: nginx (nodejs vite in local) + javascript + html + css
 2. backend/web: golang (gin framework)
@@ -686,14 +727,32 @@ microk8s.status --wait-ready
 microk8s kubectl get no
 microk8s kubectl get svc
 
+cat >> ~/.bashrc <<-EOF
+
+alias k='microk8s.kubectl'
+EOF
+
+source ~/.bashrc
+
+
 microk8s start
 
 # Join node (All 3 are master nodes)
+sudo su -
 vim /etc/hosts
+
+cat >> /etc/hosts <<-EOF
 
 10.0.2.3 ubuntu-1
 10.0.2.4 ubuntu-2
 10.0.2.5 ubuntu-3
+EOF
+
+# On each vms
+ssh foo@10.0.2.3
+ssh foo@10.0.2.4
+ssh foo@10.0.2.5
+
 
 # in first node
 microk8s add-node
@@ -716,10 +775,51 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
   Role: 0
 ```
 
+<img src="./images/microk8s-add-node.png" alt="add-node" width="680">
+
+<img src="./images/microk8s-3-node.png" alt="3-node" width="280">
+
+<img src="./images/microk8s-pods.png" alt="pods" width="650">
+
+
+- Trouble-shooting
+  - diagnosis:
+    - deployed pods with count of 2 replicas, one on node1 and another on node3
+    - calling endpoint seems to have different result for each time of calling.
+  - cause:
+    - microk8s ctr images import was done only one node1.
+    - node3 tries to pull image from public docker hub instead of local repository.
+    - in result, two pods have different images: one from local repository, another from public docker repository.
+
+
+<img src="./images/microk8s-cause.png" alt="pods" width="650">
+
+
+```
+k describe pod fe-nginx-deployment-7b9c5bb8f8-xlrs2
+    Containers:
+      fe-nginx:
+        Image:          jnuho/fe-nginx:latest
+        Image ID:       sha256:2544d68d372793a21b627c360def55e648ad2cfbbf330a65ba567dbced1985f2
+
+k describe pod fe-nginx-deployment-7b9c5bb8f8-q6d6m
+    Containers:
+      fe-nginx:
+        Image:          jnuho/fe-nginx:latest
+        Image ID:       docker.io/jnuho/fe-nginx@sha256:48e8995cc2c86a3759ac1156cd954d8f90a1c054ae1fcd67181a77df2ff5492f
+
+```
+
 - Local docker registory
   - https://microk8s.io/docs/registry-images
 
 ```sh
+git clone https://github.com/jnuho/simpledl.git
+
+cd simpledl/script
+./1.build-image.sh
+./1-1.import-microk8s.sh
+
 docker save jnuho/fe-nginx > fe-nginx.tar
 docker save jnuho/be-go > be-go.tar
 docker save jnuho/be-py > be-py.tar
@@ -727,6 +827,10 @@ docker save jnuho/be-py > be-py.tar
 microk8s ctr image import fe-nginx.tar
 microk8s ctr image import be-go.tar
 microk8s ctr image import be-py.tar
+
+rm fe-nginx.tar
+rm be-go.tar
+rm be-py.tar
 
 microk8s ctr image ls | grep jnuho
 ```
