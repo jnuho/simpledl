@@ -7,6 +7,7 @@ I created a web app using basic [deep learning](#https://en.wikipedia.org/wiki/D
 
 <img src="./images/microk8s-result.png" alt="pods" width="380">
 
+<img src="./images/microk8s-pods.png" alt="pods" width="650">
 
 My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
@@ -779,7 +780,6 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 
 <img src="./images/microk8s-3-node.png" alt="3-node" width="280">
 
-<img src="./images/microk8s-pods.png" alt="pods" width="650">
 
 
 - Trouble-shooting
