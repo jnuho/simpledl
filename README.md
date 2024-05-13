@@ -1,6 +1,6 @@
 # Simple Deep learning application
 
-## Skills I used
+**Skills**
 
 - Kubernetes : 3-master node cluster
   - to improve docker-compose implementation
