@@ -1084,4 +1084,291 @@ kubens my-namespace
 ```
 
 
+- Ingress
+  - Use external service: http://my-node-ip:svcNodePort
+  - Use ingress + internal service: https://my-app.com
+  - Ingress Controller Pod -> Ingress (routing rule) -> Service -> Pod
+  - using ingress, you can configure https connection
+
+
+- External Service (without Ingress)
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-external-service
+spec:
+  selector:
+    app: myapp
+  # LoadBalancer : opening to public
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 35010
+```
+
+- Using Ingress -> internal Service
+  - must be valid domain address
+  - map domain name to Node's IP address, which is the entrypoint
+    - (one of the nodes or could be a host machine outside the cluster)
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  rules:
+  - host: myapp-com
+    http:
+      # incoming requests are forwarded to the internal service
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp-internal-service
+            port: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-internal-service
+spec:
+  selector:
+    app: myapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+```
+
+- Ingress controller
+  - implementation of ingress, which is Ingress Controller
+  - evaluates and processes ingress rules
+  - manages redirections
+  - entrypoint to cluster
+  - many third party implementations
+    - e.g. k8s Nginx Ingress Controller
+  - HAVE TO CONSIDER the environemnt where the k8s cluster is running
+    - Cloud Service Provider (AWS, GCP, AZURE)
+      - Cloud Load balancer -> Ingress Controller Pod -> Ingress -> Service -> Pod
+    - Baremetal
+      - you need to configure some kind of entrypoint (e.g. metallb)
+      - either inside of cluster or outside as separate server
+      - software or hardware solution can be used
+      - must provide entrypoint
+      - e.g. Proxy Server: public ip address and open ports
+        - Proxy server -> Ingress Controller Pod -> Ingress (checks ingress rules) -> Service -> Pod
+        - no server in k8s cluster is publicly accessible from outside
+
+
+- Minikube ingress implementation
+
+```sh
+# nginx implementation of ingress controller
+minikube addons enable ingress
+
+k get pod -n kube-system
+  nginx-ingess-controller-xxx
+
+```
+
+- configure ingress rule for kubernetes dashboard componnent
+  - minikube in default creates dashboard service (minikube specific)
+
+```sh
+k get ns
+  kubernetes-dashboard Active 17d
+
+k get all -n kubernetes-dashboard
+  pod
+  svc
+```
+
+- dashboard-ingress.yaml
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dashboard-ingress
+  namespace: kubernetes-dashboard
+spec:
+  rules:
+  - host: dashboard.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            # forward to service name created in minikube
+            name: kubernetes-dashboard
+            port:
+              number: 80
+```
+
+- create ingress rule for kubernetes-dashboard
+
+```sh
+k apply -f dashboard-ingress.yaml
+
+k get ingress -n kubernetes-dashboard --watch
+  NAME               CLASS   HOSTS             ADDRESS        PORTS   AGE
+  dashboard-ingress  nginx   dashboard.com     192.168.49.2   80      42s
+
+vim /etc/hosts
+  192.168.49.2 dashboard.com
+
+# check in chrome browser:
+# http://dashboard.com
+
+k describe ingress dashboard-ingress -n kubernetes-dashboard
+
+  # whenever there's a request into the cluster, there's no rule for mapping the request to service, then
+  # this backend is default to handle the request. e.g. 404 not found
+  # one can define custom error page
+  # SIMPLY CREATE A SERVICE WITH THE SAME NAME: default-http-backend
+  Default backend: default-http-backend:80
+```
+
+- Define custom `default-http-backend`
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-http-backend
+spec:
+  selector:
+    app: default-response-app
+  ports:
+    - protocol: TCP
+      # this is the port that receives the default backend response
+      port: 80
+      targetPort: 8080
+```
+
+- ingress rules
+
+- multiple paths for the same host
+  - http://myapp.com/analytics
+  - http://myapp.com/shopping
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-fanout-example
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: myapp.com
+    http:
+      paths:
+      - path: /analytics
+        pathType: Prefix
+        backend:
+          service:
+            name: analytics-service
+            port:
+              number: 3000
+      - path: /shopping
+        pathType: Prefix
+        backend:
+          service:
+            name: shopping-service
+            port:
+              number: 8080
+```
+
+
+- multiple hosts
+  - http://analytics.myapp.com
+  - http://shopping.myapp.com
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simple-fanout-example
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: analytics.myapp.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: analytics-service
+            port:
+              number: 3000
+  - host: shopping.myapp.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: shopping-service
+            port:
+              number: 8080
+```
+
+
+- Ingress that includes configuration of TLS certificate
+  - Secret component : define yaml to create one
+    - tls.crt, tls.key : values are actual file contents, NOT file paths/locations
+    - Secret must bein the same namepsace as the Ingress Component
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tls-example-ingresss
+spec:
+  ########## TLS SETTING ##########
+  tls:
+  - hosts:
+    - myapp.com
+    secretName: myapp-secret-tls
+  ########## TLS SETTING ##########
+  rules:
+  - host: myapp.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp-internal-service
+            port:
+              number: 8080
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: myapp-secret-tls
+  namespace:default
+data:
+  tls.crt: base64 encoded cert
+  tls.key: base64 encoded key
+type: kubernetes.io/tls
+```
+
+
+
+- Helm explained
+
+
+
 
