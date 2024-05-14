@@ -47,11 +47,11 @@ spec:
     app: mongo-express
   # assigns service an external IP address so accepts external requests
   # minikube service mongo-express-service to get ip for minikube node and port in browser
-  type: LoadBalancer
+  #type: LoadBalancer
   ports:
     - protocol: TCP
       port: 8081
       targetPort: 8081
       # port for external ip address port you need to put into browser
-      nodePort: 30000
+      #nodePort: 30000
 
