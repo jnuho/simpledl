@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: be-go-deployment
+  labels:
+    app: be-go
 spec:
   replicas: 2
   selector:

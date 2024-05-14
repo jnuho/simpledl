@@ -4,6 +4,10 @@
 #microk8s kubectl get namespace
 
 echo ""
+echo "-------[Node]-------"
+microk8s kubectl get node
+
+echo ""
 echo "-------[Pod]-------"
 microk8s kubectl get pod
 

@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: be-py-deployment
+  labels:
+    app: be-py
 spec:
   replicas: 2
   selector:
