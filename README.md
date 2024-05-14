@@ -1031,14 +1031,56 @@ k get deploy nginx-depl -o yaml
   - Browser -> mongo express external service -> mongoexpress pod -> mongodb internal service -> mongodb pod
 
 
+- Namespace
+  - kube-system: system processes, master and kubectl processes
+  - kube-public: publicly accessible data, configmap, that contains cluster information `k cluster-info`
+  - kube-node-lease: heartbeats of node, determines the availability of a node
+  - default: resources you create
+
+```sh
+kubectl create namespace myNameSpace
+```
+
+- Group applications into namespaces
+  - e.g. database/ logging / monitoring/ nginx-ingress/elastic stack
+  - no need to create namespaces for smaller projects with about 10 users
+  - create namespaces if there are many teams, same application(same name)
+  - staging/development namespace resources use same resource in certain namespaces
+  - blue/green deployment using namespaces (Production green/blue)
+  - access and resource limits on nameaspaces
+
+
+- Each NS must define own ConfigMap/Secret
+  - suppose projectA, projectB namespaces
+  - both namespace must have ConfigMap with exact same content
+
 ```yaml
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: mongo-deployment
-  labels:
-    app: fe-nginx
-spec:
+  name: mysql-configmap
+data:
+  db_url: mysql-service.database
+```
+
+- Components, which can't be created within a namespace
+  - persistent volume
+  - node
+
+```sh
+k api-resources --namespaced=false
+k api-resources --namespaced=true
+```
+
+
+- You can change the active namespace with kubens
+  - without a need to `k get pod -n myNameSpace`
+
+```sh
+brew install kubectx
+kubens
+kubens my-namespace
+  Active namespace is "my-namespace"
 ```
 
 
