@@ -26,3 +26,10 @@ spec:
             name: be-go-service
             port:
               number: 3001
+      - path: /mongo-express
+        pathType: Prefix
+        backend:
+          service:
+            name: mongo-express-service
+            port:
+              number: 8081
