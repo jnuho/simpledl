@@ -1368,7 +1368,366 @@ type: kubernetes.io/tls
 
 
 - Helm explained
+  - package manage (e.g. apt)
 
 
+- Helm for Elastic Search Stack for Logging
+- requirement: yamls for
+  - Stateful Set
+  - ConfigMap
+  - Secret
+  - K8s User with permissions
+  - Services
+- First, helm provide packages for those to be used by anyone
+  - install bundle of yamls
+  - create your own helm charts with helm
+  - push them to helm repository
+  - download and use existing ones
+  - e.g. database apps, monitoring apps(prometheus)
+  - sharing helm charts is available
+  - you can download reuse that configuration
+  - `helm search <keyward>`
+  - public/private helm registries
+- Second, helm as a templating engine
+  - for CI/CD: in your build, you can replace the values on the fly
+  - Define a template with common attributes for many configurations
+    - a common blueprint defined as a template YAML config
+    - dynamic values are replaced by placeholders; `values.yaml`
+      - values injection into template files
+  - Same applications across different environments
+
+
+- Helm chart structure
+
+```
+tree
+
+mychart/        # name of the chart
+  Chart.yaml    # meta info about chart: name,version,dependencies
+  values.yaml   # values for the template files(can be overridden)
+  charts/       # chart dependencies
+  templates/    # template files
+  READEME.md
+  LICENSE
+
+helm install <chartname>
+
+# override values.yaml default values by:
+# values.yaml + my-value.yaml => result
+helm install --values=my-values.yaml <chartname>
+helm install --set version=2.0.0
+
+# BETTER TO HAVE my-values.yaml and values.yaml instead of `set`
+```
+
+- helm release management
+
+- version2 vs. version3
+- version2:
+  - client  (cli)
+  - server (tiller)
+  - helm install(cli) -> tiller execute yaml and deploy the cluster
+  - helm install/upgrade/rollback -> tiller create history with revision
+    - revision 1,2... history is stored
+    - downsides: tiller has too much power inside of k8s cluster
+      - security risk
+- version3: removed tiller for such security risk
+
+
+- Volumes
+  - Persistent Volume
+  - Persistent Volume Claim
+  - Storage class
+
+- need for volumes
+  - k8s no data persistence out of the box!
+  - requires storage that doesn't depend on the pod lifecycle
+  - storage must be available on all nodes
+  - need to survive even if node/cluster crushes; highly available
+    - outside of cluster?
+  - writes/reads to directory
+
+- Persistent volume
+  - cluster resources used to storage data
+  - defined by YAML
+  - `spec`: how much storage
+  - need actual physical sotrage:
+  - persistent volume does not care about your actual storage
+    - `pv` simply provides interface to the actual storage
+    - it's like an external plugin to your cluster
+  - could be hybrid: multiple storage types
+    - one application uses local disk/nfs server/cloud stroages, etc.
+  - in YAML for `pv`, specify in `spec`, which physical storage to use
+
+- Check types of vlumes in k8s document
+
+- gcp cloud storage
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: test-volume
+  failure-domain.beta.kubernetes.io/zone: us-central1-a__us-central1-b
+spec:
+  capacity:
+    storage: 400Gi
+  accessModes:
+  - ReadWriteOnce
+  gcePersistentDisk:
+    pdName: my-data-disk
+    fsType: ext4
+```
+
+- local storage
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks.ssd1
+  modeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - example-node
+```
+
+- Persistent Volumes are NOT namespaced
+  - PV outside of the namesapces
+  - accessible to the whole cluster
+
+- Local vs. Remote volume types
+  - each volume type has it's own use case!
+  - local volume types violoate 2. and 3. requirement for data persistence:
+    - (X) Being tied to 1 specific node
+    - (X) Surviving cluster crashes
+- For DB persistence, almost always use REMOTE STORAGE!!!
+
+
+
+- StatefulSet
+  - What is it and why it is used?
+  - how `StatefulSet` differs from `Deployment`?
+  - specifically for stateful appliations!
+    - e.g. stateful apps: database apps
+    - e.g. stateless apps: don't keep record of state, each request is completely new
+
+
+- Stateful and stateless applications example
+  - nodejs(stateless) + mongodb(stateful)
+  - http request (doesn't depend on previous data to handle)-> nodejs
+    - handle it based on the payload of request
+    - update/query from mongodb app
+  - mongodb update data based on previous state / query data
+    - depends on most up-to-date data/state
+
+- Stateless apps are deployed using `Deployment` component
+- Stateful apps are deployed using `StatefulSet` component
+- Both `Deployment` and `StatefulSet` manage pods based on container specification!
+
+
+
+- K8s Services
+  - ClusterIP
+  - NodePort
+  - LoadBalancer
+  - Headless
+
+- each pod has its own ip address
+- pods are ephermeral - are descroyed frequently!
+- service provides stable ip address.
+- service does load balancing into pods
+- loose coupling 
+- within & outside cluster
+
+
+- ClusterIP Services
+  - default type
+  - e.g. microservices app deployed
+    - in pod : app container(3000)+sidecar container (9000: collects logs)
+    - pod assgiend in node ip range: 10.2.2.5 (started on node2)
+    - where node1: 10.2.1.x
+    - where node2: 10.2.2.x
+    - where node3: 10.2.3.x
+    - `k get pod -o wide` to check pod ip
+    - Ingress -> Service(ClusterIP) -> Pods
+    - Sevice's `spec.selector` : which Pods it forward to
+    - Sevice's `spec.ports.targetPort` : which Ports it forward to
+    - Pods are identified via selectors
+      - key value pairs for selctor
+      - Pod: `spec.template.metadata.labels`
+      - Service: `spec.selector`
+        - service forwards request to matching Pods
+    - Service Endpoint is CREATED with the same name as Service
+    - keeps track of which Pods are the members/endppoints of the Service
+    - each time pods recreated, Endpoints are also updated to track that
+    - Service `spec.ports.port`: can be arbitrary
+    - Service `spec.ports.targetPort`: MUST MATCH deployment's Pod `containerPort`
+    - Multi-port services (two container specified in deployment.yaml)
+      - mongo-db application 27017
+      - mongo-db exporter (Prometheus) 9216
+        - Prometheus scapes data from mododb-exporter via port 9216
+    - service have to handle two requests via two ports 27017, 9216
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-one
+spec:
+  replicas: 2
+  # ...
+  template:
+    metadata:
+      labels:
+        app: microservice-one
+    spec:
+      containers:
+      - name: ms-one
+        image: my-private-repo/ms-one:latest
+        ports:
+        - containerPort: 3000
+      - name: log-collector
+        image: my-private-repo/log-collector:latest
+        ports:
+        - containerPort: 9000
+```
+
+- Multi-port service
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - name: mongodb
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+    - name: mongodb-exporter
+      protocol: TCP
+      port: 9216
+      targetPort: 9216
+```
+
+
+
+- Headless Service
+  - Client wants to communicate with 1 specific Pod directly
+  - Pods want to talk directly with specific Pod
+  - So, not randomly selected (no Load balancing)
+  - Use case: `Stateful` applications
+    - such as databases(mysql,mongodb, elasticsearch)
+    - Pods replicas are not identical
+    - Only Master Pod is allowed to write to DB (write/read)
+    - Worker Pods are for only (read)
+    - Worker Pods must connect to Master Pod to sync their data after Master Pods made changes to the data
+    - When a Worker Pod is created, it must clone the most recent Worker Pod
+  - Client need to figure out IP addresses of each Pod
+    - Option 1: API call to k8s API Server?
+      - list of pods and ip addresses
+      - too tied to k8s api and inefficient
+    - Option 2: DNS lookup
+      - k8s allows client to discover Pod ip addresses
+      - DNS lookup for service - returns single IP address which belongs to a Service (ClusterIP address)
+    - BUT setting `sepc.cluseterIP` to `None` returns Pod IP address instead!!!
+
+- Define headless Service:
+  - NO CLUSTER IP address is assigned!!!
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service-headless
+spec:
+  clusterIP: None
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+```
+
+- Two services exist alongside each other
+  - `mongodb-service`
+  - `mongodb-service-headless`
+
+- Use headles service when client needs to perform write into mongodb Master Pod or for Pods to talk to each other for data synchronization
+
+```sh
+k get svc
+
+NAME                     TYPE       CLUSTER-IP EXTERNAL-IP PORT(S)
+mongodb-service-headless ClusterIP  None       <none>      27017/TCP
+```
+
+- 3 Service `type`
+  - ClusterIP: default, internal service, only accessible within cluster
+    - no external traffic can directly address the ClusterIP service
+  - NodePort: accessible on a static port on each worker node in cluster
+    - External traffic has access to fixed port on each Worker Node
+    - `nodePort` range should be: 30000 - 32767
+    - `http://ip-address-worker-node:nodePort`
+    - When you create NodePort Service, ClusterIP Service is also automatically created because nodePort has to be routed to `port` of Service
+      - `nodePort` -> `port`
+      - e.g.  `port:3200`, `nodePort:30008`
+        - cluster-ip:3200
+        - node-ip:30008
+  - LoadBalancer
+    - LoadBalancer(Cloud providers')
+    - AWS, GCP, AZURE
+    - When Service of type LoadBalancer is created,
+      - NodePort and ClusterIP Service are created automatically!
+      - nodeport is not accessible directly from external browser
+        - instead via LoadBalancer!!!
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-service-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: microservice-one
+  ports:
+    - protocol: TCP
+      port: 3200
+      targetPort: 3000
+      # only via LoadBalancer though!
+      nodePort: 30010
+```
+
+
+- LoadBalancer > NodePort > ClusterIP
+  - LoadBalancer Service is an extension of NodePort Service
+  - NodePort Service is an extension of ClusterIP Service
+
+
+- Wrap-up
+  - NodePort Service NOT for external connection! TEST-ONLY
+  - two common practice:
+    - Ingress -> Service (ClusterIP)
+    - LoadBalanceri -> Service (ClusterIP)
 
 
