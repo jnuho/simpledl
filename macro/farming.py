@@ -50,18 +50,24 @@ class GController:
         time.sleep(1)
         print(datetime.datetime.now())
 
-        windows = gw.getWindowsWithTitle('Gersang')
+        windows = []
+        temp = gw.getWindowsWithTitle('Gersang')
+        for w in temp:
+          if w.title == 'Gersang':
+            windows.append(w)
+        del temp
 
-        for w in windows:
-          if w.title != 'Gersang':
-            continue
-
-          w.minimize()
-          time.sleep(.5)
+        for i, _ in enumerate(windows):
+          # w.minimize()
+          # time.sleep(.5)
+          w = windows[len(windows)-1-i]
+          print(w)
           w.restore()
           time.sleep(.5)
           # w.activate()
           # time.sleep(.5)
+
+          w.moveTo(60 +30*i, 10)
 
           self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
           self.pressAndRelease(Key.enter)
@@ -85,6 +91,7 @@ class GController:
           self.pressAndRelease('j')
 
         time.sleep(25*60)
+
 
 if __name__ == "__main__":
   controller = GController()

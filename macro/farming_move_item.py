@@ -47,19 +47,24 @@ class GController:
     elif event == KeyCode.from_char('a'):
       time.sleep(1)
 
-      windows = gw.getWindowsWithTitle('Gersang')
+      windows = []
+      temp = gw.getWindowsWithTitle('Gersang')
+      for w in temp:
+        if w.title == 'Gersang':
+          windows.append(w)
+      del temp
 
-      for w in windows:
-        if w.title != 'Gersang':
-          continue
-
+      for i, _ in enumerate(windows):
+        # w.minimize()
+        # time.sleep(.5)
+        w = windows[len(windows)-1-i]
         print(w)
-        w.minimize()
-        time.sleep(.5)
         w.restore()
         time.sleep(.5)
         # w.activate()
         # time.sleep(.5)
+
+        w.moveTo(60 +30*i, 10)
 
         # game_window.activate()
         self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))

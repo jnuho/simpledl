@@ -10,7 +10,7 @@ class GController:
   def __init__(self):
     self.kb = Controller()
     self.window = None
-    self.monster = ["dosa", "3c","gotang"][1]
+    self.monster = ["dosa", "3c","gotang"][0]
     self.resv_attack_cnt = {
       "dosa": {
         8: 0,
@@ -174,7 +174,6 @@ class GController:
       self.get_food()
 
 
-
 # https://superfastpython.com/asyncio-coroutines-faster-than-threads/#:~:text=A%20coroutine%20is%20just%20a,This%20should%20not%20be%20surprising.
 # https://velog.io/@haero_kim/Thread-vs-Coroutine-%EB%B9%84%EA%B5%90%ED%95%B4%EB%B3%B4%EA%B8%B0
 # https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
@@ -182,12 +181,6 @@ if __name__ == "__main__":
   controller = GController()
   controller.init()
 
-
-  # starts the listener and waits for it to finish.
-  # program execution will be blocked at this point until the listener is stopped
-  # (e.g., when the user presses Ctrl+C or another exit condition is met).
   with Listener(on_press=controller.on_key_press) as listener:
     listener.join()
-
-
 
