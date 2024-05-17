@@ -58,7 +58,7 @@ class GController:
         del temp
 
         for i, _ in enumerate(windows):
-          # w.minimize()
+          w.minimize()
           # time.sleep(.5)
           w = windows[len(windows)-1-i]
           print(w)
