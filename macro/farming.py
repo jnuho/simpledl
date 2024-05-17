@@ -66,6 +66,7 @@ class GController:
           # w.activate()
           w.moveTo(60 +30*i, 10)
           print(w)
+          time.sleep(.8)
 
           self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
           self.pressAndRelease(Key.enter)
