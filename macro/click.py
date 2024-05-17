@@ -16,36 +16,7 @@ class GController:
     self.kb = KbController()
     self.mouse = MouseController()
     self.window = None
-    self.npc = ["bok", "yim", "seorae", "baekmin", "jakup", "baekjun", "hun"][6]
-    self.quest_idx = 0
-    self.conv_cnt = {
-      "bok": {
-        0: 4, # 10 dogs
-        1: 3, # food 4000
-        2: 3, # enlist 3
-      },
-      "yim": {
-        0: 4, # dunsan
-      },
-      "seorae": {
-        0: 4,
-      },
-      "baekmin": {
-        0: 3, # millim
-        1: 2, # rest of all
-      },
-      "jakup": {
-        0: 2,
-        1: 3, # rest of all
-      },
-      "baekjun": {
-        0: 3,
-        1: 2, # rest of all
-      },
-      "hun": {
-        0: 2, # rest of all
-      },
-    }[self.npc][self.quest_idx]
+    self.conv_cnt = 4
 
 
   def init(self):
@@ -53,11 +24,13 @@ class GController:
     self.window = gw.getActiveWindow()
     print("INIT DONE")
 
+
   def pressAndRelease(self, key):
     self.kb.press(key)
     time.sleep(.03)
     self.kb.release(key)
     time.sleep(.03)
+
 
   def mouse_l_click(self, x, y):
     pag.moveTo(x,y)
@@ -66,16 +39,18 @@ class GController:
     self.mouse.release(Button.left)
     time.sleep(.5)
 
+
   def locateToClick(self, keyword):
-    for _ in range(self.conv_cnt):
-      try:
-        accept = pag.locateCenterOnScreen("macro/images/" + keyword + ".png", confidence=.93, grayscale=True)
-        self.mouse_l_click(accept.x, accept.y)
-        pag.move(100,100)
-        return True
-      except pag.ImageNotFoundException:
-        print("`" + keyword + "`" + "NOT FOUND")
-        return False
+    # for _ in range(self.conv_cnt):
+    try:
+      accept = pag.locateCenterOnScreen("macro/images/" + keyword + ".png", confidence=.93, grayscale=True)
+      self.mouse_l_click(accept.x, accept.y)
+      pag.move(100,100)
+      return True
+    except pag.ImageNotFoundException:
+      print("`" + keyword + "`" + "NOT FOUND")
+      return False
+
 
   def on_key_press(self, event):
     if event == Key.f11:
@@ -88,17 +63,13 @@ class GController:
       self.kb.release(Key.left)
       # file = round(datetime.now().timestamp())
       # pag.screenshot(f'macro/images/s_{file}.png', region=(window.left, window.top, window.width, window.height))
-      # for _ in range(self.conv_cnt):
       for _ in range(self.conv_cnt):
-        if self.locateToClick("list_seorae"):
-          continue
         if self.locateToClick("accept"):
-          continue
+          break
         if self.locateToClick("next"):
           continue
         if self.locateToClick("ok"):
           continue
-
         time.sleep(1)
 
       self.pressAndRelease('q')
