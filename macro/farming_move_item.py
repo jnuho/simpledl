@@ -1,93 +1,109 @@
-import keyboard
-import mouse
+import datetime
 import time
 import pyautogui as pag
 import pygetwindow as gw
 
-from pynput.keyboard import Key, Controller
-kb = Controller()
+from pynput.keyboard import KeyCode, Key, Listener
+from pynput.keyboard import Controller as KbController
+from pynput.mouse import Button
+from pynput.mouse import Controller as MouseController
 
-def init():
-  pag.FAILSAFE = False
 
-def mouse_l_click(x, y):
-  pag.moveTo(x,y)
-  mouse.press(button='left')
-  time.sleep(.3)
-  mouse.release(button='left')
-  time.sleep(.5)
+class GController:
+  def __init__(self):
+    self.kb = KbController()
+    self.mouse = MouseController()
+    self.window = None
 
-def pressAndRelease(key):
-    keyboard.press(key)
+  def init(self):
+    pag.FAILSAFE = True
+
+
+  def mouse_l_click(self, x, y):
+    pag.moveTo(x,y)
+    self.mouse.press(Button.left)
     time.sleep(.3)
-    keyboard.release(key)
+    self.mouse.release(Button.left)
     time.sleep(.5)
 
-# pyautogui의 keyboard press는 막힘
-def on_key_press(event):
-  if event.name == 'a':
-    time.sleep(1)
 
-    windows = gw.getWindowsWithTitle('Gersang')
+  def mouse_r_click(self):
+    self.mouse.press(Button.right)
+    time.sleep(.3)
+    self.mouse.release(Button.right)
+    time.sleep(.5)
 
-    for w in windows:
-      if w.title != 'Gersang':
-        continue
+  def pressAndRelease(self, key):
+    self.kb.press(key)
+    time.sleep(.3)
+    self.kb.release(key)
+    time.sleep(.3)
 
-      print(w)
-      w.minimize()
-      time.sleep(.5)
-      w.restore()
-      time.sleep(.5)
-      # w.activate()
-      # time.sleep(.5)
 
-      # game_window.activate()
-      mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
-      pressAndRelease('enter')
-      pressAndRelease('i')
-      
-      # MOVE ITEMS
-      mouse_l_click(w.left + (w.width*.2029), w.top + (w.height*.5747))
-      mouse_l_click(w.left + (w.width*.5796), w.top + (w.height*.6261))
-      mouse_l_click(w.left + (w.width*.7068), w.top + (w.height*.729))
-      pressAndRelease('enter')
+  def on_key_press(self, event):
+    if event == Key.f11:
+      print("> You pressed F11. Exiting gracefully.")
+      raise KeyboardInterrupt
+    elif event == KeyCode.from_char('a'):
+      time.sleep(1)
 
-      mouse_l_click(w.left + (w.width*.2417), w.top + (w.height*.5747))
-      mouse_l_click(w.left + (w.width*.5796), w.top + (w.height*.6261))
-      mouse_l_click(w.left + (w.width*.7068), w.top + (w.height*.729))
-      pressAndRelease('enter')
-      
-      mouse_l_click(w.left + (w.width*.2845), w.top + (w.height*.5747))
-      mouse_l_click(w.left + (w.width*.5796), w.top + (w.height*.6261))
-      mouse_l_click(w.left + (w.width*.7068), w.top + (w.height*.729))
-      pressAndRelease('enter')
+      windows = gw.getWindowsWithTitle('Gersang')
 
-      # 아이템 삭제
-      pressAndRelease('j')
-      
-      mouse_l_click(w.left + (w.width*.8524), w.top + (w.height*.6826))
-      mouse_l_click(w.left + (w.width*.668), w.top + (w.height*.2472))
-      mouse_l_click(w.left + (w.width*.799), w.top + (w.height*.3476))
-      pressAndRelease('enter')
-      pressAndRelease('enter')
+      for w in windows:
+        if w.title != 'Gersang':
+          continue
 
-      mouse_l_click(w.left + (w.width*.7097), w.top + (w.height*.2472))
-      mouse_l_click(w.left + (w.width*.8417), w.top + (w.height*.3425))
-      pressAndRelease('enter')
-      pressAndRelease('enter')
+        print(w)
+        w.minimize()
+        time.sleep(.5)
+        w.restore()
+        time.sleep(.5)
+        # w.activate()
+        # time.sleep(.5)
 
-      #다시시작
-      pressAndRelease('j')
-      mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
-      pressAndRelease('j')
+        # game_window.activate()
+        self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
+        self.pressAndRelease(Key.enter)
+        self.pressAndRelease('i')
+        
+        # MOVE ITEMS
+        self.mouse_l_click(w.left + (w.width*.2029), w.top + (w.height*.5747))
+        self.mouse_l_click(w.left + (w.width*.5796), w.top + (w.height*.6261))
+        self.mouse_l_click(w.left + (w.width*.7068), w.top + (w.height*.729))
+        self.pressAndRelease(Key.enter)
+
+        self.mouse_l_click(w.left + (w.width*.2417), w.top + (w.height*.5747))
+        self.mouse_l_click(w.left + (w.width*.5796), w.top + (w.height*.6261))
+        self.mouse_l_click(w.left + (w.width*.7068), w.top + (w.height*.729))
+        self.pressAndRelease(Key.enter)
+        
+        self.mouse_l_click(w.left + (w.width*.2845), w.top + (w.height*.5747))
+        self.mouse_l_click(w.left + (w.width*.5796), w.top + (w.height*.6261))
+        self.mouse_l_click(w.left + (w.width*.7068), w.top + (w.height*.729))
+        self.pressAndRelease(Key.enter)
+
+        # 아이템 삭제
+        self.pressAndRelease('j')
+        
+        self.mouse_l_click(w.left + (w.width*.8524), w.top + (w.height*.6826))
+        self.mouse_l_click(w.left + (w.width*.668), w.top + (w.height*.2472))
+        self.mouse_l_click(w.left + (w.width*.799), w.top + (w.height*.3476))
+        self.pressAndRelease(Key.enter)
+        self.pressAndRelease(Key.enter)
+
+        self.mouse_l_click(w.left + (w.width*.7097), w.top + (w.height*.2472))
+        self.mouse_l_click(w.left + (w.width*.8417), w.top + (w.height*.3425))
+        self.pressAndRelease(Key.enter)
+        self.pressAndRelease(Key.enter)
+
+        #다시시작
+        self.pressAndRelease('j')
+        self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
+        self.pressAndRelease('j')
 
 if __name__ == "__main__":
-  init()
+  controller = GController()
+  controller.init()
 
-  keyboard.on_press(on_key_press)
-  # Keep the program running until you press the Esc key
-  # keyboard.add_hotkey('ctrl+c', quit)
-  # keyboard.wait(hotkey=None, suppress=False, trigger_on_release=False)
-  keyboard.wait('ctrl+c')
-
+  with Listener(on_press=controller.on_key_press) as listener:
+    listener.join()

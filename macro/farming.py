@@ -1,14 +1,19 @@
 import datetime
-import mouse
 import time
+
 import pyautogui as pag
 import pygetwindow as gw
 
-from pynput.keyboard import KeyCode, Key, Controller, Listener
+from pynput.keyboard import KeyCode, Key, Listener
+from pynput.keyboard import Controller as KbController
+from pynput.mouse import Button
+from pynput.mouse import Controller as MouseController
+
 
 class GController:
   def __init__(self):
-    self.kb = Controller()
+    self.kb = KbController()
+    self.mouse = MouseController()
     self.window = None
 
   def init(self):
@@ -17,16 +22,16 @@ class GController:
 
   def mouse_l_click(self, x, y):
     pag.moveTo(x,y)
-    mouse.press(button='left')
+    self.mouse.press(Button.left)
     time.sleep(.3)
-    mouse.release(button='left')
+    self.mouse.release(Button.left)
     time.sleep(.5)
 
 
   def mouse_r_click(self):
-    mouse.press(button='right')
+    self.mouse.press(Button.right)
     time.sleep(.3)
-    mouse.release(button='right')
+    self.mouse.release(Button.right)
     time.sleep(.5)
 
   def pressAndRelease(self, key):
@@ -59,8 +64,8 @@ class GController:
           # time.sleep(.5)
 
           self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
-          self.pressAndRelease('enter')
-          self.pressAndRelease('esc')
+          self.pressAndRelease(Key.enter)
+          self.pressAndRelease(Key.esc)
           self.pressAndRelease('i')
 
           # Food
@@ -85,9 +90,5 @@ if __name__ == "__main__":
   controller = GController()
   controller.init()
 
-
-  # starts the listener and waits for it to finish.
-  # program execution will be blocked at this point until the listener is stopped
-  # (e.g., when the user presses Ctrl+C or another exit condition is met).
   with Listener(on_press=controller.on_key_press) as listener:
     listener.join()
