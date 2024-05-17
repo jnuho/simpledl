@@ -910,13 +910,13 @@ What if pod dies => Use multi-node and pod replicas(deployment as abstraction fo
 - Worker node has multiple pods on it.
 - 3 processes must be installed on every Node
   - Container runtime
-  - Kublet: schedules pods and containers
+  - kublet: schedules pods and containers
     - interacts with both the container and node
     - starts the pod with a container inside
-  - Kube proxy:
+  - kube proxy:
     - forwards requests to services to pods
-    - intelligent and performant forwarding logic that distributes request to pods so that there is a small network overhead
-      - (forward pod request for a service into the replica pod in the same node instead of forwarding to pods in other nodes)
+    - intelligent and performant forwarding logic that distributes request to pods with low network overhead
+      - it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.
 
 - Master node, master processes
   - schedule pod
