@@ -58,16 +58,14 @@ class GController:
         del temp
 
         for i, _ in enumerate(windows):
-          # time.sleep(.5)
           w = windows[len(windows)-1-i]
+
+          time.sleep(.5)
           w.minimize()
           w.restore()
-          print(w)
-          time.sleep(.5)
           # w.activate()
-          # time.sleep(.5)
-
           w.moveTo(60 +30*i, 10)
+          print(w)
 
           self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
           self.pressAndRelease(Key.enter)
