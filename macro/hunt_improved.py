@@ -13,7 +13,7 @@ class GController:
   def __init__(self):
     self.kb = Controller()
     self.window = None
-    self.monster = ["dosa", "3c","gotang"][1]
+    self.monster = ["dosa", "3c","gotang"][0]
     self.resv_attack_cnt = {
       "dosa": {
         8: 0,
@@ -106,7 +106,7 @@ class GController:
     # c: \
     # x: '
     if event == Key.f11:
-      print("---You pressed F11. Exiting gracefully---")
+      print("> You pressed F11. Exiting gracefully.\n")
       raise KeyboardInterrupt
     # if event.name == 'a':
     elif event == KeyCode.from_char(','):
