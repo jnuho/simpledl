@@ -16,7 +16,7 @@ class GController:
     self.kb = KbController()
     self.mouse = MouseController()
     self.window = None
-    self.conv_cnt = 4
+    self.conv_cnt = 7
 
 
   def init(self):
@@ -51,6 +51,12 @@ class GController:
       print("`" + keyword + "`" + "NOT FOUND")
       return False
 
+  def check_quest(self):
+    self.pressAndRelease('q')
+    time.sleep(1)
+    self.locateToClick("check_quest")
+    time.sleep(.5)
+    self.pressAndRelease('q')
 
   def on_key_press(self, event):
     if event == Key.f11:
@@ -72,14 +78,8 @@ class GController:
           continue
         time.sleep(1)
 
-      self.pressAndRelease('q')
-      time.sleep(1)
-      self.locateToClick("check_quest")
-      time.sleep(.5)
-      self.pressAndRelease('q')
-      os.kill(os.getpid(), signal.SIGINT)
-
-
+      # self.check_quest()
+      # os.kill(os.getpid(), signal.SIGINT)
 
 if __name__ == "__main__":
   controller = GController()

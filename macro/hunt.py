@@ -24,7 +24,6 @@ class GController:
         2: 0,
         1: 0,
         4: 0,
-        6: 0,
       },
       "gotang": {
         8: 0,
@@ -38,9 +37,7 @@ class GController:
 
   def get_food(self):
     try:
-      pos_found = pag.locateCenterOnScreen("macro/images/food" + str(
-        1
-        ) + ".png", confidence=.93, grayscale=True)
+      pos_found = pag.locateCenterOnScreen("macro/images/food" + str(1) + ".png", confidence=.93, grayscale=True)
       # 150 바 = 687-537
       # 248: 100%    # -310 일때 길이: 225
       x_diff = pos_found.x - self.window.left
