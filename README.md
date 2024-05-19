@@ -5,7 +5,9 @@
 
 I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
-| ![microk8s result](./images/microk8s-result.gif) |
+
+<!-- | ![microk8s result](./images/microk8s-result.gif) | -->
+| <img src="./images/microk8s-result.gif" alt="pods" width="600"> |
 |:--:| 
 | *Kubernetes resources* |
 
