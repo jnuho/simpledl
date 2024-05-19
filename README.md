@@ -3,7 +3,7 @@
 
 ### Image recognizer app
 
-I created a web app using basic [deep learning](#https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](#https://kubernetes.io/) for [microservices](#https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
+I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
 <img src="./images/microk8s-result.gif" alt="pods" width="600">
 
@@ -21,7 +21,7 @@ My simple application is a basic deep learning image recognizers, one of which w
   - Frontend: Nginx (includes static files html,css,js)
   - Backend: Python, Golang web server
 - TODO: Deep learning algorithm (with basic numpy) for binary classification (cat/non-cat recognizer) **(50% in progress)**
-  - The algorithm includes basic forward and [backward propagation](#https://en.wikipedia.org/wiki/Backpropagation) using numpy to calculate mathematic operations. 
+  - The algorithm includes basic forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation) using numpy to calculate mathematic operations. 
 - Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
 
 <!--6. TODO: Hetzner plus minikube nginx hello world in go Plus tail scale funnel
@@ -85,7 +85,7 @@ VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[12
 
 
 
-- [CORS issue](#https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [CORS issue](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 
 When a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue. Add headers to backend server accordingly
 
@@ -327,7 +327,7 @@ minikube addons enable ingress
 
 6-2. Nginx ingress controller
 
-- [setting up an NGINX ingress controller](#https://medium.com/@amirhosseineidy/how-to-set-up-nginx-ingress-controller-in-local-server-6cc4bd7d6a6b) in a bare metal or local server:
+- [setting up an NGINX ingress controller](https://medium.com/@amirhosseineidy/how-to-set-up-nginx-ingress-controller-in-local-server-6cc4bd7d6a6b) in a bare metal or local server:
 
 
 Ingress is an API in Kubernetes that routes traffic to different services, making applications accessible to clients from the Kubernetes cluster. Among multiple choices like HAProxy or Envoy for setting up an ingress controller, NGINX is the most popular one. It is powered by the NGINX web server and is a fast and secure controller that delivers your applications to the clients easily.

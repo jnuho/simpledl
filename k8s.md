@@ -226,7 +226,7 @@ curl 172.16.6.100:8081
 
 ### Kubernetes Concept
 
-- [Techworld with Nana](#https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
+- [Techworld with Nana](https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
 
 - Kubernetes Component
   - Control plane
@@ -1114,4 +1114,13 @@ spec:
   - two common practice:
     - Ingress -> Service (ClusterIP)
     - LoadBalanceri -> Service (ClusterIP)
+
+
+
+### Kubernetes Networking
+
+- [Medium Post](https://medium.com/google-cloud/understanding-kubernetes-networking-pods-7117dd28727)
+  - [Networking terminology](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
+  - [Networking - IP, Subnets, CIDR](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
+
 
