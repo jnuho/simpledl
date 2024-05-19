@@ -1,16 +1,20 @@
-import mouse
 import time
 import pyautogui as pag
 import pygetwindow as gw
 
-from pynput.keyboard import KeyCode, Key, Controller, Listener
+from pynput.keyboard import KeyCode, Key, Listener
+from pynput.keyboard import Controller as KbController
+from pynput.mouse import Button
+from pynput.mouse import Controller as MouseController
 
 
 class GController:
   def __init__(self):
-    self.kb = Controller()
+    self.kb = KbController()
+    self.mouse = MouseController()
     self.window = None
-    self.monster = ["dosa", "3c","gotang"][0]
+
+    self.monster = ["dosa", "3c","gotang"][1]
     self.resv_attack_cnt = {
       "dosa": {
         8: 0,
@@ -34,6 +38,14 @@ class GController:
       },
     }
 
+    pag.FAILSAFE = True
+    windows = gw.getWindowsWithTitle('Gersang')
+    for w in windows:
+      if w.title != 'Gersang':
+        continue
+      # w.activate()
+      self.window = w
+
 
   def get_food(self):
     try:
@@ -52,16 +64,6 @@ class GController:
         self.kb.release(Key.alt)
     except pag.ImageNotFoundException:
       print("NOT FOUND")
-
-
-  def init(self):
-    pag.FAILSAFE = True
-    windows = gw.getWindowsWithTitle('Gersang')
-    for w in windows:
-      if w.title != 'Gersang':
-        continue
-      # w.activate()
-      self.window = w
 
 
   def pressAndRelease(self, key):
@@ -128,9 +130,9 @@ class GController:
       # pressAndRelease('h')
 
       self.pressAndRelease('2')
-      mouse.press(button='right')
+      self.mouse.press(Button.right)
       time.sleep(.015)
-      mouse.release(button='right')
+      self.mouse.release(Button.right)
       time.sleep(.01)
       # q 디버프
       self.pressAndRelease('q')
@@ -138,9 +140,9 @@ class GController:
       self.debuf()
 
       self.pressAndRelease('`')
-      mouse.press(button='right')
+      self.mouse.press(Button.right)
       time.sleep(.015)
-      mouse.release(button='right')
+      self.mouse.release(Button.right)
       time.sleep(.01)
       self.pressAndRelease('=')
 
@@ -176,7 +178,6 @@ class GController:
 # https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
 if __name__ == "__main__":
   controller = GController()
-  controller.init()
 
   with Listener(on_press=controller.on_key_press) as listener:
     listener.join()

@@ -1,27 +1,30 @@
-import mouse
 import time
 import pyautogui as pag
 import pygetwindow as gw
 
-from pynput.keyboard import KeyCode, Key, Controller, Listener
+from pynput.keyboard import KeyCode, Key, Listener
+from pynput.keyboard import Controller as KbController
+from pynput.mouse import Button
+from pynput.mouse import Controller as MouseController
 
 
 class GController:
   def __init__(self):
-    self.kb = Controller()
+    self.kb = KbController()
+    self.mouse = MouseController()
     self.window = None
+
     self.monster = ["default"][0]
     self.resv_attack_cnt = {
       "default": {
+        8: 0,
         2: 1,
-        1: 1,
+        1: 0,
         5: 1,
-        4: 1,
+        4: 0,
       },
     }
 
-
-  def init(self):
     pag.FAILSAFE = True
     windows = gw.getWindowsWithTitle('Gersang')
     for w in windows:
@@ -29,7 +32,6 @@ class GController:
         continue
       # w.activate()
       self.window = w
-
 
   def pressAndRelease(self, key):
     self.kb.press(key)
@@ -95,9 +97,9 @@ class GController:
       # pressAndRelease('h')
 
       self.pressAndRelease('2')
-      mouse.press(button='right')
+      self.mouse.press(Button.right)
       time.sleep(.015)
-      mouse.release(button='right')
+      self.mouse.release(Button.right)
       time.sleep(.01)
       # q 디버프
       self.pressAndRelease('q')
@@ -105,9 +107,9 @@ class GController:
       self.debuf()
 
       self.pressAndRelease('`')
-      mouse.press(button='right')
+      self.mouse.press(Button.right)
       time.sleep(.015)
-      mouse.release(button='right')
+      self.mouse.release(Button.right)
       time.sleep(.01)
       self.pressAndRelease('=')
 
@@ -135,9 +137,11 @@ class GController:
       self.retreat()
 
 
+# https://superfastpython.com/asyncio-coroutines-faster-than-threads/#:~:text=A%20coroutine%20is%20just%20a,This%20should%20not%20be%20surprising.
+# https://velog.io/@haero_kim/Thread-vs-Coroutine-%EB%B9%84%EA%B5%90%ED%95%B4%EB%B3%B4%EA%B8%B0
+# https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
 if __name__ == "__main__":
   controller = GController()
-  controller.init()
 
   with Listener(on_press=controller.on_key_press) as listener:
     listener.join()

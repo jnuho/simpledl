@@ -15,7 +15,6 @@ class GController:
     self.mouse = MouseController()
     self.window = None
 
-  def init(self):
     pag.FAILSAFE = True
 
 
@@ -124,7 +123,6 @@ class GController:
 
 if __name__ == "__main__":
   controller = GController()
-  controller.init()
 
   with Listener(on_press=controller.on_key_press) as listener:
     listener.join()

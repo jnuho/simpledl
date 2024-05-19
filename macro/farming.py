@@ -16,7 +16,6 @@ class GController:
     self.mouse = MouseController()
     self.window = None
 
-  def init(self):
     pag.FAILSAFE = True
 
 
@@ -67,6 +66,7 @@ class GController:
           w.moveTo(60 +30*i, 10)
           print(w)
           time.sleep(.8)
+          continue
 
           self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
           self.pressAndRelease(Key.enter)
@@ -94,7 +94,6 @@ class GController:
 
 if __name__ == "__main__":
   controller = GController()
-  controller.init()
 
   with Listener(on_press=controller.on_key_press) as listener:
     listener.join()
