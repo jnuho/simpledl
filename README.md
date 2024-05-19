@@ -6,12 +6,13 @@
 I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
 
-<!-- | ![microk8s result](./images/microk8s-result.gif) | -->
 | <img src="./images/microk8s-result.gif" alt="pods" width="600"> |
 |:--:| 
-| *Kubernetes resources* |
+| *web application* |
 
-<img src="./images/microk8s-pods.png" alt="pods" width="650">
+|<img src="./images/microk8s-pods.png" alt="pods" width="650"> |
+|:--:| 
+| *Kubernetes resources* |
 
 My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
@@ -37,7 +38,9 @@ My simple application is a basic deep learning image recognizers, one of which w
 Before doing anything I was planned to do, I had to construct an environment in which my application will be deployed. I considered virtualbox, cloud(GCP, AWS). Here, I implemented local virtualbox environment. In the furture I will try out GCP, AWS implemntation. 🔥
 
 
-<img src="./images/virtualbox_NAT.drawio.png" alt="pods" width="450">
+|<img src="./images/virtualbox_NAT.drawio.png" alt="pods" width="450">|
+|:--:| 
+| *NAT network* |
 
 - Hosts: 10.0.2.3, 10.0.2.4, 10.0.2.5
 - OS: Ubuntu 24.04 server
@@ -780,10 +783,13 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
   Role: 0
 ```
 
-<img src="./images/microk8s-add-node.png" alt="add-node" width="680">
+|<img src="./images/microk8s-add-node.png" alt="add-node" width="680">|
+|:--:| 
+| *Add node to form 3-master-node microk8s cluster* |
 
-<img src="./images/microk8s-3-node.png" alt="3-node" width="280">
-
+|<img src="./images/microk8s-3-node.png" alt="3-node" width="280">|
+|:--:| 
+| *result of a cluster* |
 
 
 - Trouble-shooting
@@ -796,7 +802,9 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
     - in result, two pods have different images: one from local repository, another from public docker repository.
 
 
-<img src="./images/microk8s-cause.png" alt="pods" width="650">
+|<img src="./images/microk8s-cause.png" alt="pods" width="650">|
+|:--:| 
+| *pod resources* |
 
 
 ```
