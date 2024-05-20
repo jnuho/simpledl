@@ -986,7 +986,7 @@ spec:
 
 ```
 - Deployment > ReplicaSet > Pod > Container
-	- use kubectl command to manage deployment
+  - use kubectl command to manage deployment
 
 ```sh
 k get pod
@@ -1000,9 +1000,9 @@ k get replicaset
 
 k edit deployement nginx-depl
 k get pod
-	NAME                          READY   STATUS    RESTARTS   AGE
-	nginx-depl-8475696677-c4p24   1/1     Running   0          3m33s
-	mongo-depl-5ccf565747-xtp89   1/1     Running   0          2m10s
+  NAME                          READY   STATUS    RESTARTS   AGE
+  nginx-depl-8475696677-c4p24   1/1     Running   0          3m33s
+  mongo-depl-5ccf565747-xtp89   1/1     Running   0          2m10s
 
 k logs nginx-depl-56cb8b6d7-6z9w6
 
@@ -1040,7 +1040,7 @@ source .bashrc
   - 참고 문서
     - https://kubernetes.github.io/ingress-nginx/deploy/baremetal/
     - https://benbrougher.tech/posts/microk8s-ingress/
-		- https://betterprogramming.pub/how-to-expose-your-services-with-kubernetes-ingress-7f34eb6c9b5a
+    - https://betterprogramming.pub/how-to-expose-your-services-with-kubernetes-ingress-7f34eb6c9b5a
 
 - Ingress는 쿠버네티스가 외부로 부터 트래픽을 받아서 내부 서비스로 route할 수 있도록 해줌
   - 호스트를 정의하고, 호스트내에서 sub-route를 통해
