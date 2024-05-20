@@ -2,6 +2,9 @@ body {
   background-color: #f9f9fa
 }
 
+.links{
+  font-size: .9rem;
+}
 .flex {
 
   -webkit-box-flex: 1;

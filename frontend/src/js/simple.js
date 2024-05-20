@@ -88,6 +88,13 @@ window.onload = function(){
 	var noncat_btn2 = document.querySelector('#noncat_btn2')
 	var noncat_btn3 = document.querySelector('#noncat_btn3')
 
+	var cat_url1 = document.querySelector('#cat_url1')
+	var cat_url2 = document.querySelector('#cat_url2')
+	var cat_url3 = document.querySelector('#cat_url3')
+	var noncat_url1 = document.querySelector('#noncat_url1')
+	var noncat_url2 = document.querySelector('#noncat_url2')
+	var noncat_url3 = document.querySelector('#noncat_url3')
+
 	cat_btn1.addEventListener("click", function(event) {
 		copyToClipboard("cat_url1");
 	});
@@ -106,6 +113,27 @@ window.onload = function(){
 	noncat_btn3.addEventListener("click", function(event) {
 		copyToClipboard("noncat_url3");
 	});
+
+
+	cat_url1.addEventListener("click", function(event) {
+		copyToClipboard("cat_url1");
+	});
+	cat_url2.addEventListener("click", function(event) {
+		copyToClipboard("cat_url2");
+	});
+	cat_url3.addEventListener("click", function(event) {
+		copyToClipboard("cat_url3");
+	});
+	noncat_url1.addEventListener("click", function(event) {
+		copyToClipboard("noncat_url1");
+	});
+	noncat_url2.addEventListener("click", function(event) {
+		copyToClipboard("noncat_url2");
+	});
+	noncat_url3.addEventListener("click", function(event) {
+		copyToClipboard("noncat_url3");
+	});
+
 
 	function copyToClipboard(id) {
 		var textToCopy = document.getElementById(id).innerText.trim();
