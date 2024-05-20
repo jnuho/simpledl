@@ -97,7 +97,7 @@ class GController:
     while self.running:
 
       time.sleep(24*60*60)
-# 
+
       windows = []
       temp = gw.getWindowsWithTitle('Gersang')
       for w in temp:

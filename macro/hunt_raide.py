@@ -28,10 +28,9 @@ class GController:
     pag.FAILSAFE = True
     windows = gw.getWindowsWithTitle('Gersang')
     for w in windows:
-      if w.title != 'Gersang':
-        continue
-      # w.activate()
-      self.window = w
+      if w.title == 'Gersang':
+        self.window = w
+        break
 
   def pressAndRelease(self, key):
     self.kb.press(key)
