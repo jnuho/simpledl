@@ -45,5 +45,9 @@ VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Rule 3:tcp:[
 
 REM application port
 VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[127.0.0.1]:80:[10.0.2.3]:80"
+REM use Nodeport for using service.yaml
+REM spec.type=LoadBalancer and nodePort=30510
+REM http://localhost:30510
+VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[127.0.0.1]:30510:[10.0.2.3]:30510"
 
 

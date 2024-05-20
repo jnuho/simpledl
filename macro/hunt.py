@@ -15,6 +15,7 @@ class GController:
     self.window = None
 
     self.monster = ["dosa", "3c","gotang"][0]
+
     self.resv_attack_cnt = {
       "dosa": {
         8: 0,

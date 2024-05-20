@@ -9,7 +9,7 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 80
-      #nodePort: 35010
-  #type: LoadBalancer
+      #nodePort: 30510
   type: ClusterIP
+  #type: LoadBalancer
   #type: NodePort

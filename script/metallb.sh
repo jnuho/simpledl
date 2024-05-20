@@ -40,3 +40,4 @@ EOF
 microk8s kubectl apply -f configmap.yaml
 
 microk8s kubectl rollout restart deployment controller -n metallb-system
+

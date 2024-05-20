@@ -35,7 +35,7 @@ My simple application is a basic deep learning image recognizers, one of which w
 
 ### Virtualbox network architecture
 
-Before doing anything I was planned to do, I had to construct an environment in which my application will be deployed. I considered virtualbox, cloud(GCP, AWS). Here, I implemented local virtualbox environment. In the furture I will try out GCP, AWS implemntation. 🔥
+I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
 
 
 |<img src="./images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
