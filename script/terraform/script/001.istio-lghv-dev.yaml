@@ -1,0 +1,170 @@
+kind: IstioOperator
+metadata:
+    namespace: istio-system
+    name: istiocontrolplane
+spec:
+  profile: default
+  components:
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: istio
+                  operator: In
+                  values:
+                  - ingressgateway
+              topologyKey: topology.kubernetes.io/hostname
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:
+            - name: status-port
+              protocol: TCP
+              port: 15021
+              targetPort: 15021
+              nodePort: 30000
+            - name: http2
+              protocol: TCP
+              port: 80
+              targetPort: 8080
+              nodePort: 80
+            - name: https
+              protocol: TCP
+              port: 443
+              targetPort: 8443
+              nodePort: 443
+    - name: istio-ingressgateway-cwmp
+      enabled: true
+      label:
+        istio: ingressgateway-cwmp
+      k8s:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: istio
+                  operator: In
+                  values:
+                  - ingressgateway-cwmp
+              topologyKey: topology.kubernetes.io/hostname
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:
+            - name: status-port
+              protocol: TCP
+              port: 15021
+              targetPort: 15021
+              nodePort: 30006
+            - name: http3
+              protocol: TCP
+              port: 80
+              targetPort: 8080
+              nodePort: 30007
+            - name: https4
+              protocol: TCP
+              port: 443
+              targetPort: 8443
+              nodePort: 30008
+            - name: https5
+              protocol: TCP
+              port: 7548
+              targetPort: 7548
+              nodePort: 7548
+    - name: istio-ingressgateway-tcp
+      enabled: true
+      label:
+        istio: ingressgateway-tcp
+      k8s:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: istio
+                  operator: In
+                  values:
+                  - ingressgateway-tcp
+              topologyKey: topology.kubernetes.io/hostname
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:
+            - name: status-port
+              nodePort: 30009
+              port: 15021
+              protocol: TCP
+              targetPort: 15021
+            - name: df-xmpp-5222
+              protocol: TCP
+              port: 5222
+              targetPort: 5222
+              nodePort: 30004
+            - name: df-xmpp-5223
+              protocol: TCP
+              port: 5223
+              targetPort: 5223
+              nodePort: 5223
+            - name: df-mqtt-1883
+              protocol: TCP
+              port: 1883
+              targetPort: 1883
+              nodePort: 1883
+    - name: istio-ingressgateway-candy
+      enabled: true
+      label:
+        istio: ingressgateway-candy
+      k8s:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: istio
+                  operator: In
+                  values:
+                  - ingressgateway-candy
+              topologyKey: topology.kubernetes.io/hostname
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:
+            - name: status-port
+              protocol: TCP
+              port: 15021
+              targetPort: 15021
+              nodePort: 30011
+            - name: http2-candy
+              protocol: TCP
+              port: 8170
+              targetPort: 8080
+              nodePort: 8170
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      holdApplicationUntilProxyStarts: true
+    accessLogFile: /dev/stdout
+    outboundTrafficPolicy:
+      #mode: REGISTRY_ONLY
+      mode: ALLOW_ANY

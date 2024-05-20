@@ -14,12 +14,11 @@ class GController:
     self.mouse = MouseController()
     self.window = None
 
-    self.monster = ["dosa", "3c","gotang"][0]
-
+    self.monster = ["dosa", "3c","boss", "gotang"][0]
     self.resv_attack_cnt = {
       "dosa": {
         8: 0,
-        2: 2,
+        2: 1,
         1: 0,
         4: 1,
         5: 1,
@@ -29,6 +28,14 @@ class GController:
         2: 0,
         1: 0,
         4: 0,
+      },
+      "boss": {
+        8: 1,
+        2: 1,
+        1: 1,
+        4: 1,
+        5: 1,
+        # 6: 0,
       },
       "gotang": {
         8: 0,
@@ -161,7 +168,6 @@ class GController:
       for k, v in self.resv_attack_cnt[self.monster].items():
         self.pressAndRelease(f"{k}")
         self.pressAndRelease('r')
-        # print(f"r pressed")
         for _ in range(v):
           self.pressAndRelease('e')
         time.sleep(0.01)
