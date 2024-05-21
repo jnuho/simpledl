@@ -1,4 +1,3 @@
-import time
 import pyautogui as pag
 import pygetwindow as gw
 
@@ -6,6 +5,9 @@ from pynput.keyboard import KeyCode, Key, Listener
 from pynput.keyboard import Controller as KbController
 from pynput.mouse import Button
 from pynput.mouse import Controller as MouseController
+
+import time
+import base64
 
 
 class GController:
@@ -47,9 +49,11 @@ class GController:
     }
 
     pag.FAILSAFE = True
-    windows = gw.getWindowsWithTitle('Gersang')
+
+    title = base64.b64decode("R2Vyc2FuZw==").decode("utf-8")
+    windows = gw.getWindowsWithTitle(title)
     for w in windows:
-      if w.title == 'Gersang':
+      if w.title == title:
         self.window = w
         break
 

@@ -1,6 +1,3 @@
-import datetime
-import time
-
 import pyautogui as pag
 import pygetwindow as gw
 
@@ -9,6 +6,9 @@ from pynput.keyboard import Controller as KbController
 from pynput.mouse import Button
 from pynput.mouse import Controller as MouseController
 
+import datetime
+import time
+import base64
 import threading
 
 class GController:
@@ -52,9 +52,10 @@ class GController:
       print(datetime.datetime.now())
 
       windows = []
-      temp = gw.getWindowsWithTitle('Gersang')
+      title = base64.b64decode("R2Vyc2FuZw==").decode("utf-8")
+      temp = gw.getWindowsWithTitle(title)
       for w in temp:
-        if w.title == 'Gersang':
+        if w.title == title:
           windows.append(w)
       del temp
 
@@ -99,9 +100,10 @@ class GController:
       time.sleep(24*60*60)
 
       windows = []
-      temp = gw.getWindowsWithTitle('Gersang')
+      title = base64.b64decode("R2Vyc2FuZw==").decode("utf-8")
+      temp = gw.getWindowsWithTitle(title)
       for w in temp:
-        if w.title == 'Gersang':
+        if w.title == title:
           windows.append(w)
       del temp
 
