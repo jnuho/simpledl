@@ -1,4 +1,4 @@
-package main
+package web
 
 import (
 	"bytes"
@@ -8,8 +8,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-
-	// 	"github.com/jnuho/simpledl/backend/web/"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -24,8 +22,8 @@ type responseParam struct {
 	STATUS string `json:"status"`
 }
 
-func handleGetRequest(c *gin.Context) {
-	// handle GET request from client
+// handle GET request from client
+func getMethodHandler(c *gin.Context) {
 	c.String(http.StatusOK, "pong")
 }
 
@@ -44,6 +42,7 @@ func validateRequest(c *gin.Context) (*requestParam, error) {
 	return &catObj, nil
 }
 
+// Send POST Request to another backend python server
 func callPythonBackend(catURL string) (*responseParam, error) {
 	jsonData, _ := json.Marshal(map[string]string{
 		"cat_url": catURL,
@@ -68,8 +67,8 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 	return &result, nil
 }
 
-func handlePostRequest(c *gin.Context) {
-	// handle POST request from client
+// handle POST request from client
+func postMethodHandler(c *gin.Context) {
 	catObj, err := validateRequest(c)
 	if err != nil {
 		log.Println(err)
@@ -100,25 +99,25 @@ func handlePostRequest(c *gin.Context) {
 
 }
 
-func main() {
+func StartServer(host string) error {
 	// Router
-	r := gin.Default()
+	router := gin.Default()
 
 	// Apply the CORS middleware to the router
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:8080", "http://localhost"}, // or use "*" to allow all origins
+	config := cors.Config{
+		AllowOrigins:     []string{"http://localhost"}, // or use "*" to allow all origins
 		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
-	}))
-	//r.GET("/ping", func(c *gin.Context) {
-	r.GET("/", handleGetRequest)
+	}
+	router.Use(cors.New(config))
 
-	//r.POST("/web/cat", func(c *gin.Context) {
-	r.POST("/", handlePostRequest)
+	router.GET("/", getMethodHandler)
+	router.POST("/", postMethodHandler)
 
 	// NOTE: r.Run("localhost:3001") means your server will only be accessible
 	// via the same machine on which it is running. So, another docker container cannot access it.
-	r.Run(":3001")
+	err := router.Run(host)
+	return err
 }
