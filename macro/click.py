@@ -11,7 +11,7 @@ import signal
 import os
 
 
-class GController:
+class GController(object):
   def __init__(self):
     self.kb = KbController()
     self.mouse = MouseController()
