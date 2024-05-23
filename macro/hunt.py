@@ -111,6 +111,11 @@ class GController(object):
         if event == Key.f11:
             print("> You pressed F11. Exiting gracefully.")
             raise KeyboardInterrupt
+        elif event == Key.f10:
+            self.mouse.press(Button.left)
+            time.sleep(.02)
+            self.mouse.release(Button.left)
+            time.sleep(.02)
         # if event.name == 'a':
         elif event == KeyCode.from_char(','):
             self.kb.press(Key.left)

@@ -162,6 +162,12 @@ The basic operations for forward and backward propagations in deep learning algo
 
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
+### Image Classification
+
+- cat vs.non-cat image classification and hand-written digits recognition
+- https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
+- https://detexify.kirelabs.org/classify.html
+
 
 ### Frontend - local setup
 
