@@ -12,12 +12,15 @@ pydantic_core==2.18.2
 
 uvicorn==0.29.0
 
-# keyboard==0.13.5
-# mouse==0.7.1
-# PyAutoGUI==0.9.54
-# PyGetWindow==0.0.9
-# pynput==1.7.6
-# pywinauto==0.6.8
-# PyScreeze==0.1.30
-# opencv-python==4.9.0.80
-# pillow==10.3.0
+keyboard==0.13.5
+mouse==0.7.1
+PyAutoGUI==0.9.54
+PyGetWindow==0.0.9
+pynput==1.7.6
+pywinauto==0.6.8
+PyScreeze==0.1.30
+opencv-python==4.9.0.80
+pillow==10.3.0
+tqdm==4.66.4
+torchvision==0.18.0
+scikit-learn==1.5.0

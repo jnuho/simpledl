@@ -25,3 +25,6 @@ dist-ssr
 
 # sensitive data
 .env
+
+# pytorch image data
+backend/worker/pytorch/data

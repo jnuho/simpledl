@@ -1,12 +1,10 @@
-# https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
-
+# EP1: Finding data
 from urllib.request import Request, urlopen
 from os.path import exists, join
 from os import mkdir
 from tqdm import tqdm
 
 import argparse
-import concurrent.futures
 
 
 URL = "https://raw.githubusercontent.com/asharov/cute-animal-detector/master/data/kitty-urls.txt"
