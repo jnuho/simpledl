@@ -31,7 +31,8 @@ class Sichuan:
         
         ret, img_th = cv2.threshold(img_blur, 70,255, cv2.THRESH_BINARY_INV)
         
-        image, contours, hierachy= cv2.findContours(img_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # image, contours, hierachy= cv2.findContours(img_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierachy= cv2.findContours(img_th.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         rects = [cv2.boundingRect(each) for each in contours]
         rects = [(x,y,w,h) for (x,y,w,h) in rects if ((w*h>500)and(w*h<600))]
         rects.sort()
@@ -61,6 +62,9 @@ class Sichuan:
         for j in range(nodeColum ):
             for i in range(nodeRaw ):
                 Matrix[i+1][j+1] = chr(img_arr[j*nodeRaw+i].num+65)
+
+        for subimg_i in Matrix:
+            print(subimg_i)
         return Matrix
 
 
@@ -214,17 +218,17 @@ class Sichuan:
 # In[10]:
 
 
-s = Sichun()
-img = cv2.imread("./images/03.png")
-img = img[241:578, 288:737]  
+# s = Sichuan()
+# img = cv2.imread("./macro/images/img_sichuan/03.png")
+# img = img[241:578, 288:737]  
 
-Array = s.getSichuanArray(img)
-Array
-
-
-# In[11]:
+# Array = s.getSichuanArray(img)
+# Array
 
 
-order = s.getSichuanOrder(Array)
-order
+# # In[11]:
+
+
+# order = s.getSichuanOrder(Array)
+# order
 

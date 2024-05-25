@@ -24,3 +24,4 @@ pillow==10.3.0
 tqdm==4.66.4
 torchvision==0.18.0
 scikit-learn==1.5.0
+matplotlib==3.9.0

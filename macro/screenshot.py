@@ -1,37 +1,38 @@
-import keyboard
-import time
-import mouse
-from datetime import datetime
 import pyautogui as pag
 import pygetwindow as gw
-from pynput.keyboard import Key, Controller
-kb = Controller()
 
-window = None
+from pynput.keyboard import KeyCode, Key, Listener
+from pynput.keyboard import Controller as KbController
+from pynput.mouse import Button
+from pynput.mouse import Controller as MouseController
 
-def init():
-    pag.FAILSAFE = False
-    global window
-    
-    w = gw.getActiveWindow()
-    window = w
-    print("INIT DONE")
+from datetime import datetime
 
-def on_key_press(event):
-    global window
-    global npc
-    global conv_cnt
 
-    # elif event.name == 'c':
-    if event.name == '\\':
-        file = round(datetime.now().timestamp())
-        pag.screenshot(f'macro/images/s_{file}.png', region=(window.left, window.top, window.width, window.height))
+class GController(object):
+    def __init__(self):
+        self.kb = KbController()
+        self.mouse = MouseController()
+        self.window = None
+
+        pag.FAILSAFE = True
+
+    def on_key_press(self, event):
+        if event == Key.f11:
+            print("> You pressed F11. Exiting gracefully.")
+            raise KeyboardInterrupt
+        elif event == KeyCode.from_char('\\'):
+            w = gw.getActiveWindow()
+
+            file = round(datetime.now().timestamp())
+            path = 'macro/images/s_{}.png'.format(file)
+
+            region = (w.left, w.top, w.width, w.height)
+            pag.screenshot(f'{path}', region=region)
 
 
 if __name__ == "__main__":
-    time.sleep(3)
-    init()
+    controller = GController()
 
-    keyboard.on_press(on_key_press)
-    keyboard.wait('ctrl+c')
-
+    with Listener(on_press=controller.on_key_press) as listener:
+        listener.join()
