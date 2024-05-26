@@ -15,8 +15,13 @@ from PIL import Image
 from torchvision import transforms
 
 transform = transforms.Compose([
+    # resize to 200,200
     transforms.Resize((200,200)),
+    # transform into Tensor data type
     transforms.ToTensor(),
+    # normalize https://pytorch.org/vision/main/generated/torchvision.transforms.Normalize.html
+    # transforms.Normalize([.5, .5, .5], [.5, .5, .5])
+    # Mean of .5 and Standard Deviation of .5 for 3 RGB channels
     transforms.Normalize([.5] * 3, [.5] * 3)
 ])
 
@@ -51,12 +56,15 @@ class ImageLoader(Dataset):
     # 2. Make the image square shaped -> (3,200,200)
     def getResizedImage(self, item):
         image = Image.open(self.dataset[item][0])
+        # get bounding box of the image
         _, _, width, height = image.getbbox()
         factor = (0, 0, width, width) if width > height else (0, 0, height, height)
         return image.crop(factor)
-    # 3. Converts image matrix -> tensor: (torch,Size([3, 200, 200]), 0)
+
+    # 3. Converts image -> Tensor: (torch,Size([3, 200, 200]), 0)
     #    ; 3 channels with width and height of 200 and label=0
 
+    # returns PIL image object and label
     def __getitem__(self, item):
         image = self.getResizedImage(item)
         if transform is not None:
@@ -70,14 +78,16 @@ class ImageLoader(Dataset):
 
 
 imageLoader = ImageLoader(trainData, transform)
-# print(imageLoader[0][0].size())
+# print(imageLoader[0][0])
+# print(imageLoader[0][0].size()) # torch.Size([3, 200, 200])
 
+# load data
 dataLoader = DataLoader(imageLoader, batch_size=10, shuffle=True)
 
 data = iter(dataLoader)
 
-d = next(data)
-
-# size of weight
-print(d[0])
-print(d[0].size())
+# d = next(data)
+# # size of weight
+# print(d[0])
+# # batch size = 10
+# print(d[0].size()) # torch.Size([10, 3, 200, 200])
