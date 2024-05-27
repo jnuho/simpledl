@@ -1,4 +1,4 @@
-package expkg
+package pkg
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package expkg
+package pkg
 
 func BinarySearch(needle int, haystack []int) bool {
 	low := 0
