@@ -109,25 +109,21 @@ from other origins includes the right CORS headers.
 
 ### Backend - Golang web server
 
+- `go.mod`, `go.sum` must be in github repo root directory
 
 ```sh
-cd simpledl/pkg
-
-go mod init github.com/jnuho/simpledl/pkg
-
-go mod tidy
-
-
 cd simpledl
-
 go mod init github.com/jnuho/simpledl
-
 go mod tidy
+
+
+cd simpledl/pkg
+go mod init github.com/jnuho/simpledl/pkg
+go mod tidy
+
 
 cd simpledl/cmd/backend-web-server
-
 go mod init github.com/jnuho/simpledl/cmd/backend-web-server
-
 go mod tidy
 ```
 
