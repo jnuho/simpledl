@@ -4,7 +4,7 @@ go 1.22.3
 
 require (
 	github.com/jnuho/simpledl/pkg v0.0.0-20240527075643-16dfba7e7dad
-	github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081248-0f990b95486e
+	github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081333-f4a4ee5920c5
 )
 
 require (

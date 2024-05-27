@@ -58,6 +58,8 @@ github.com/jnuho/simpledl/pkg v0.0.0-20240527075643-16dfba7e7dad h1:NET9V0Ok73D2
 github.com/jnuho/simpledl/pkg v0.0.0-20240527075643-16dfba7e7dad/go.mod h1:UcWXbO2GOJI69nQWiuxg+O0jSjEkruIsAHQixKOsKJ8=
 github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081248-0f990b95486e h1:0Q2Yxr9PZAEai/UUXqK2aUGTolbFHOYJoWrDKMxx4Qc=
 github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081248-0f990b95486e/go.mod h1:zblt0t5FxUzH5KOzsZ2BAXlzNmhyYPJcb/s+qWm17/M=
+github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081333-f4a4ee5920c5 h1:JUW8rrNVYMIE9f3ipEtru974PEZ1i1eWfCvS4kuw/4Q=
+github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081333-f4a4ee5920c5/go.mod h1:zblt0t5FxUzH5KOzsZ2BAXlzNmhyYPJcb/s+qWm17/M=
 github.com/kennygrant/sanitize v1.2.4 h1:gN25/otpP5vAsO2djbMhF/LQX6R7+O1TB4yv8NzpJ3o=
 github.com/kennygrant/sanitize v1.2.4/go.mod h1:LGsjYYtgxbetdg5owWB2mpgUL6e2nfw2eObZ0u0qvak=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
