@@ -1,4 +1,4 @@
-package pkg
+package main
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func Crawl() {
 	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
 	//var result string
 
-	url := "https://leetcode.com/problems/two-sum/"
+	url := "https://leetcode.com/problems/two-sum/description"
 	//https://leetcode.com/problems
 	//div role = "row"
 	//  div role="cell"[1]
