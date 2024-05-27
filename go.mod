@@ -2,7 +2,7 @@ module github.com/jnuho/simpledl
 
 go 1.22.3
 
-require github.com/jnuho/simpledl/pkg v0.0.0-20240527065503-4a8834bd3b4b
+require github.com/jnuho/simpledl/pkg v0.0.0-20240527072351-9647c2afd400
 
 require (
 	github.com/PuerkitoBio/goquery v1.9.2 // indirect
