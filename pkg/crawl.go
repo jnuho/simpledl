@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 )
 
 func Crawl() {
+	fmt.Println("LALALAL")
 	//if len(os.Args) < 2 {
 	//fmt.Println("[ERROR] Missing problem number parameter.")
 	//return
