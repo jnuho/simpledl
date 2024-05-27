@@ -219,7 +219,7 @@ class Sichuan:
 
 
 # s = Sichuan()
-# img = cv2.imread("./utils/images/img_sichuan/03.png")
+# img = cv2.imread("./util/images/img_sichuan/03.png")
 # img = img[241:578, 288:737]  
 
 # Array = s.getSichuanArray(img)

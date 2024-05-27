@@ -59,7 +59,7 @@ class GController(object):
 
     def get_food(self):
         try:
-            pos_found = pag.locateCenterOnScreen("utils/images/food" + str(1) + ".png", confidence=.93, grayscale=True)
+            pos_found = pag.locateCenterOnScreen("util/images/food" + str(1) + ".png", confidence=.93, grayscale=True)
             # 150 바 = 687-537
             # 248: 100%        # -310 일때 길이: 225
             x_diff = pos_found.x - self.window.left

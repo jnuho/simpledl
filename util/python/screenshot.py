@@ -25,7 +25,7 @@ class GController(object):
             w = gw.getActiveWindow()
 
             file = round(datetime.now().timestamp())
-            path = 'utils/images/s_{}.png'.format(file)
+            path = 'util/images/s_{}.png'.format(file)
 
             region = (w.left, w.top, w.width, w.height)
             pag.screenshot(f'{path}', region=region)
