@@ -32,7 +32,7 @@ class GController(object):
 
             # Save as an image
             file = round(datetime.now().timestamp())
-            path = 'macro/images/s_{}.png'.format(file)
+            path = 'utils/images/s_{}.png'.format(file)
             """
             #region = (w.left + round(w.width*291/1030), w.top + round(w.height*243/797),
             #           round(w.width*448/1030), round(w.height*335/797))
@@ -75,7 +75,7 @@ class GController(object):
         plt.figure(figsize=(7,7))
         plt.imshow(img)
 
-        output_path = 'macro/images/test.png'
+        output_path = 'utils/images/test.png'
         cv2.imwrite(output_path, img_th)
 
         return img_th

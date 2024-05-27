@@ -43,7 +43,7 @@ class GController(object):
     def locateToClick(self, keyword):
         # for _ in range(self.conv_cnt):
         try:
-            accept = pag.locateCenterOnScreen("macro/images/" + keyword + ".png", confidence=.93, grayscale=True)
+            accept = pag.locateCenterOnScreen("utils/images/" + keyword + ".png", confidence=.93, grayscale=True)
             self.mouse_l_click(accept.x, accept.y)
             pag.move(100,100)
             return True
@@ -68,7 +68,7 @@ class GController(object):
             time.sleep(.55)
             self.kb.release(Key.left)
             # file = round(datetime.now().timestamp())
-            # pag.screenshot(f'macro/images/s_{file}.png', region=(window.left, window.top, window.width, window.height))
+            # pag.screenshot(f'utils/images/s_{file}.png', region=(window.left, window.top, window.width, window.height))
             for _ in range(self.conv_cnt):
                 if self.locateToClick("accept"):
                     break

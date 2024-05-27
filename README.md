@@ -873,3 +873,37 @@ host -> virtualbox vm
 ```
 open port 3001
 ```
+
+
+### Pytorch
+
+https://youtu.be/EMXfZB8FVUA?si=XL8SckGQi9xQDgtc
+https://pytorch.org/get-started/locally/
+
+- CPU (Without Nvidia CUDA) only
+
+```sh
+pip3 install torch torchvision torchaudio
+
+# requirements.txt
+torch==2.3.0
+torchaudio==2.3.0
+torchvision==0.18.0
+
+# install using requirements.txt
+python install -r requirements.txt
+```
+
+```python
+import torch
+
+x = torch.rand(3)
+# tensor([.5907, .0781, .3094])
+print(x)
+
+print(torch.cuda.is_available())
+```
+
+
+
+

@@ -46,7 +46,7 @@ func downloadImage(ctx context.Context, url string, animal string, idx int, wg *
 
 		fileName := fmt.Sprintf("%s_%d.jpg", animal, idx)
 		// fileName := strings.Split(url, "/")[len(strings.Split(url, "/"))-1]
-		file, err := os.Create("./pytorch/data/" + animal + "s/" + fileName)
+		file, err := os.Create("./data/" + animal + "s/" + fileName)
 		if err != nil {
 			err = fmt.Errorf("failed to create file: %s, error: %v", fileName, err)
 			fmt.Println(err)
@@ -68,7 +68,7 @@ func downloadImage(ctx context.Context, url string, animal string, idx int, wg *
 		// _, err = io.Copy(file, reader)
 		if err != nil {
 			err = fmt.Errorf("failed to save file: %s, error: %v", fileName, err)
-			os.Remove("./pytorch/data/" + animal + "s/" + fileName)
+			os.Remove("./data/" + animal + "s/" + fileName)
 			return err
 		}
 
@@ -134,7 +134,7 @@ func main() {
 	fmt.Println(len(urls))
 
 	// Create the directory if it does not exist
-	dir := fmt.Sprintf("./pytorch/data/%s/", animal+"s")
+	dir := fmt.Sprintf("./data/%s/", animal+"s")
 	err = createDirIfNotExist(dir)
 	if err != nil {
 		fmt.Println("Failed to create directory:", dir, "Error:", err)

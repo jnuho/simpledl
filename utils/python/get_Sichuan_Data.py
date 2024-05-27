@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-img = cv2.imread("./macro/images/img_sichuan/02.png")
+img = cv2.imread("./utils/images/img_sichuan/02.png")
 plt.figure(figsize=(7,7))
 plt.imshow(img);
 
