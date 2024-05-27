@@ -31,7 +31,7 @@ func Crawl() {
 	//url += problem
 
 	// c.OnHTML("div.main__2_tD", func(e *colly.HTMLElement) {
-	c.OnHTML("div.description_content", func(e *colly.HTMLElement) {
+	c.OnHTML("div.elfjS", func(e *colly.HTMLElement) {
 
 		fmt.Println(e)
 		fmt.Println(e.Text)
