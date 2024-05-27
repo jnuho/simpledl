@@ -1,4 +1,4 @@
-package crawl
+package pkg
 
 import (
 	"fmt"
