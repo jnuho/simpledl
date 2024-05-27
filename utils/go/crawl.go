@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-func main() {
+func Crawl() {
 	//if len(os.Args) < 2 {
 	//fmt.Println("[ERROR] Missing problem number parameter.")
 	//return
@@ -51,12 +51,12 @@ func main() {
 	c.Wait()
 
 	// Write(Append) to file
-	//defer writeToFile(problem, result)
+	//defer WriteToFile(problem, result)
 }
 
 // problem: 문제번호
 // desc: 문제설명
-func writeToFile(problem, desc string) {
+func WriteToFile(problem, desc string) {
 	// If the
 	fname := "problems/" + problem + ".go"
 	f, err := os.OpenFile(fname, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)

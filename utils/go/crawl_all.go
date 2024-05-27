@@ -1,9 +1,7 @@
-package main
+package utils
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
@@ -11,7 +9,7 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-func main() {
+func Crawl_all() {
 
 	c := colly.NewCollector(
 		colly.MaxDepth(2),
@@ -67,23 +65,5 @@ func main() {
 		fmt.Printf("%d %s\n", i, problems[i])
 	}
 	// Write(Append) to file
-	//defer writeToFile(problem, result)
-}
-
-// problem: 문제번호
-// desc: 문제설명
-func writeToFile(problem, desc string) {
-	// If the
-	fname := "problems/" + problem + ".go"
-	f, err := os.OpenFile(fname, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if _, err := f.Write([]byte(desc)); err != nil {
-		f.Close() // ignore error; Write error takes precedence
-		log.Fatal(err)
-	}
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
-	}
+	//defer WriteToFile(problem, result)
 }

@@ -1,28 +1,30 @@
-# Use an official Node.js runtime as the base image
+# Use an golang alpine as the base image
 FROM golang:1.22.3-alpine as build
 
-# Set the working directory in the container to /app
-WORKDIR /golang
+# Set the temporary working directory in the container in the first stage
+WORKDIR /
 
 # Copy package.json and package-lock.json into the working directory
-COPY ./backend/web/go.mod ./
-COPY ./backend/web/go.sum ./
+COPY ./go.mod ./
+COPY ./go.sum ./
+COPY ./backend/web/main.go ./
 
 # Install the app dependencies inside the docker image
 RUN go mod download && go mod verify
 
 
 # Define the command to run your app using CMD which defines your runtime
-COPY ./backend/web/main.go .
-RUN go build -v -o /usr/local/bin/go-app && \
+RUN go build -v -o /go-app && \
     rm -rf /var/cache/apk/* /tmp/*
 
 # Use a smaller base image for the final image
 FROM alpine:latest
 
 # Copy the binary from the build stage
-COPY --from=build /usr/local/bin/go-app /usr/local/bin/go-app
+COPY --from=build /go-app /usr/local/bin/go-app
 
 EXPOSE 3001
 
+# When you specify CMD ["go-app"], Docker looks for an executable named go-app in the system’s $PATH.
+# The $PATH includes common directories where executables are stored, such as /usr/local/bin, /usr/bin, and others.
 CMD ["go-app"]
