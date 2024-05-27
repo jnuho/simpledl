@@ -9,7 +9,7 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
-func Crawl_all() {
+func main() {
 
 	c := colly.NewCollector(
 		colly.MaxDepth(2),

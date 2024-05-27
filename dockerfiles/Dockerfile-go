@@ -5,8 +5,8 @@ FROM golang:1.22.3-alpine as build
 WORKDIR /
 
 # Copy package.json and package-lock.json into the working directory
-COPY ./go.mod ./
-COPY ./go.sum ./
+COPY ./backend/web/go.mod ./
+COPY ./backend/web/go.sum ./
 COPY ./backend/web/main.go ./
 
 # Install the app dependencies inside the docker image
