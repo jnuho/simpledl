@@ -9,7 +9,6 @@ import (
 )
 
 func Crawl() {
-	fmt.Println("LALALAL")
 	//if len(os.Args) < 2 {
 	//fmt.Println("[ERROR] Missing problem number parameter.")
 	//return
@@ -31,7 +30,8 @@ func Crawl() {
 	//  /problems/two-sum
 	//url += problem
 
-	c.OnHTML("div.main__2_tD", func(e *colly.HTMLElement) {
+	// c.OnHTML("div.main__2_tD", func(e *colly.HTMLElement) {
+	c.OnHTML("div.description_content", func(e *colly.HTMLElement) {
 
 		fmt.Println(e)
 		fmt.Println(e.Text)
