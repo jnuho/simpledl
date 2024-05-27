@@ -1,4 +1,4 @@
-package main
+package expkg
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-module github.com/jnuho/simpledl/util
+module github.com/jnuho/simpledl/util/expkg
 
 go 1.22.3
 
