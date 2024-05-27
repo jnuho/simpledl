@@ -111,11 +111,23 @@ from other origins includes the right CORS headers.
 
 
 ```sh
-cd simpledl/backend/web
+cd simpledl/pkg
 
-go mod init github.com/jnuho/simpledl/backend/web
+go mod init github.com/jnuho/simpledl/pkg
 
-# download library dependencies specified in main.go
+go mod tidy
+
+
+cd simpledl
+
+go mod init github.com/jnuho/simpledl
+
+go mod tidy
+
+cd simpledl/cmd/backend-web-server
+
+go mod init github.com/jnuho/simpledl/cmd/backend-web-server
+
 go mod tidy
 ```
 
