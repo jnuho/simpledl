@@ -914,4 +914,9 @@ print(torch.cuda.is_available())
 
 
 
+### golang `testing`
 
+```sh
+cd leetcode
+go test ./...
+```

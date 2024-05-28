@@ -16,7 +16,7 @@ class GController(object):
         self.mouse = MouseController()
         self.window = None
 
-        self.monster = ["dosa", "3c","boss", "gotang"][0]
+        self.monster = ["dosa", "3c","boss", "gotang"][1]
         self.resv_attack_cnt = {
             "dosa": {
                 8: 0,
