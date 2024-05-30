@@ -93,9 +93,6 @@ class GController(object):
         self.kb.release(Key.esc)
 
 
-    def debuf(self):
-        self.pressAndRelease('w')
-        time.sleep(.01)
 
 
     # pag.keyboard not working
@@ -148,11 +145,12 @@ class GController(object):
             self.mouse.press(Button.right)
             time.sleep(.015)
             self.mouse.release(Button.right)
-            time.sleep(.01)
+            time.sleep(.015)
             # q 디버프
             self.pressAndRelease('q')
             time.sleep(.05)
-            self.debuf()
+            self.pressAndRelease('w')
+            time.sleep(.015)
 
             self.pressAndRelease('`')
             self.mouse.press(Button.right)

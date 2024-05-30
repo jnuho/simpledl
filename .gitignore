@@ -25,6 +25,4 @@ dist-ssr
 
 # sensitive data
 .env
-
-# pytorch image data
-backend/worker/pytorch/EP_tutorial/data
+.venv

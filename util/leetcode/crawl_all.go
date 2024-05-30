@@ -2,77 +2,46 @@ package main
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/gocolly/colly/v2"
 )
 
 func main() {
+	// Create a new collector
+	c := colly.NewCollector(
+		colly.Async(true), // Enable asynchronous scraping
+	)
 
-	// 새로운 Collector 생성
-	c := colly.NewCollector()
-	// c := colly.NewCollector(
-	// 	colly.MaxDepth(2),
-	// 	colly.Async(),
-	// )
-	// c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
-	//var result string
+	// Set up event listeners
 
-	url := "https://leetcode.com/problems"
-	// url := "https://leetcode.com/problemset/all?page=2"
-	//https://leetcode.com/problems
-	//div role = "row"
-	//	div role="cell"[1]
-	// 5번쨰 child a.href
-	//	/problems/two-sum
-	//url += problem
-
-	problems := make(map[int]string)
-
-	// a 태그의 href 속성을 찾아 모든 링크 방문
-	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-		link := e.Attr("href")
-		fmt.Printf("Link found: %q -> %s\n", e.Text, link)
-		c.Visit(e.Request.AbsoluteURL(link))
-
-		// pos := strings.Index(e.Text, ".")
-		// idx, _ := strconv.Atoi(e.Text[:pos])
-
-		// problems[idx] = "https://leetcode.com" + e.Attr("href")
-
-		//problems[idx] = "https://leetcode.com" + e.Attr("href")
-		//result = "/**\n" + url + "\n\n" + result + "\n*/\n"
-
-		//result += "package main\n\n"
-		//result += "import (\n"
-		//result += "	\"fmt\"\n"
-		//result += ")\n\n"
-		//result += "func main() {\n"
-		//result += "	\n"
-		//result += "}"
-	})
-
-	// Request 이벤트 핸들러
+	// Step 1: OnRequest - Called before a request is made
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
+		// Add headers to mimic a browser request
+		r.Headers.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
+		// You can add more headers if needed
+		fmt.Println("Visiting", r.URL.String())
 	})
 
-	// Start scraping
+	// Step 2: OnError - Called if an error occurs during the request
+	c.OnError(func(r *colly.Response, err error) {
+		fmt.Println("Request URL:", r.Request.URL, "failed with response:", string(r.Body), "\nError:", err)
+	})
+
+	// Set up event listeners
+	c.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
+		description := e.Attr("content")
+		fmt.Println("Problem description:", description)
+	})
+	// Step 3: OnHTML - Called right after OnResponse if the received content is HTML
+	c.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
+		description := e.Attr("content")
+		fmt.Println("Problem description:", description)
+	})
+
+	// Define the URL to crawl
+	url := "https://leetcode.com/problems/two-sum/description/"
 	c.Visit(url)
 
-	// Wait until threads are finished
+	// Wait until all threads are finished
 	c.Wait()
-	keys := make([]int, 0)
-	for k := range problems {
-		keys = append(keys, k)
-	}
-	sort.Ints(keys)
-
-	for _, i := range keys {
-		//fmt.Println(i, problems[i])
-		//fmt.Printf("%d-%s\n", i, problems[i])
-		fmt.Printf("%d %s\n", i, problems[i])
-	}
-	// Write(Append) to file
-	//defer WriteToFile(problem, result)
 }

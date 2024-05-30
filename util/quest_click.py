@@ -27,17 +27,17 @@ class GController(object):
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(.03)
+        time.sleep(.01)
         self.kb.release(key)
-        time.sleep(.03)
+        time.sleep(.01)
 
 
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        time.sleep(.3)
+        time.sleep(.1)
         self.mouse.release(Button.left)
-        time.sleep(.5)
+        time.sleep(.3)
 
 
     def locateToClick(self, keyword):
@@ -63,10 +63,10 @@ class GController(object):
             print("> You pressed F11. Exiting gracefully.")
             raise KeyboardInterrupt
         elif event == KeyCode.from_char('\\'):
-            self.kb.press(Key.left)
-            # time.sleep(.72)
-            time.sleep(.55)
-            self.kb.release(Key.left)
+            # self.kb.press(Key.left)
+            # # time.sleep(.72)
+            # time.sleep(.55)
+            # self.kb.release(Key.left)
             # file = round(datetime.now().timestamp())
             # pag.screenshot(f'util/images/s_{file}.png', region=(window.left, window.top, window.width, window.height))
             for _ in range(self.conv_cnt):

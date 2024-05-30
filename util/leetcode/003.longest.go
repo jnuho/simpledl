@@ -1,36 +1,21 @@
 package main
 
-import "fmt"
-
 // Longest Substring Without Repeating Characters
 // Given a string s, find the length of the longest substring without repeating characters.
-/**
-Example 1:
-
-Input: s = "abcabcbb"
-Output: 3
-Explanation: The answer is "abc", with the length of 3.
-Example 2:
-
-Input: s = "bbbbb"
-Output: 1
-Explanation: The answer is "b", with the length of 1.
-Example 3:
-
-Input: s = "pwwkew"
-Output: 3
-Explanation: The answer is "wke", with the length of 3.
-Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
-*/
 func lengthOfLongestSubstring(s string) int {
-	return 0
-}
+	charMap := make(map[rune]int)
+	maxlen := 0
+	start := 0
 
-func main() {
-	s := "abcabcbb"
-	// for i := range len(s) {
-	for _, c := range s {
-		fmt.Print(string(c))
+	for i, char := range s {
+		if lastIdx, found := charMap[char]; found && lastIdx >= start {
+			start = lastIdx + 1
+		}
+		charMap[char] = i
+		len := i - start + 1
+		if len > maxlen {
+			maxlen = len
+		}
 	}
-
+	return maxlen
 }
