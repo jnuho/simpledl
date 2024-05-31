@@ -78,9 +78,9 @@ class GController(object):
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(.0183)
+        time.sleep(.0184)
         self.kb.release(key)
-        time.sleep(.0183)
+        time.sleep(.0184)
 
 
     def retreat(self):
@@ -162,8 +162,6 @@ class GController(object):
         # 보호
         # elif event.name == 'e':
         elif event == KeyCode.from_char(']'):
-            self.pressAndRelease('8')
-            self.pressAndRelease('r')
             self.pressAndRelease('9')
             self.pressAndRelease('r')
 

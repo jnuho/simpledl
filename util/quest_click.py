@@ -18,11 +18,9 @@ class GController(object):
         self.window = None
         self.conv_cnt = 7
 
-
-    def init(self):
         pag.FAILSAFE = False
-        self.window = gw.getActiveWindow()
-        print("INIT DONE")
+
+
 
 
     def pressAndRelease(self, key):
@@ -35,9 +33,9 @@ class GController(object):
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        time.sleep(.1)
+        time.sleep(.08)
         self.mouse.release(Button.left)
-        time.sleep(.3)
+        time.sleep(.1)
 
 
     def locateToClick(self, keyword):
@@ -63,6 +61,8 @@ class GController(object):
             print("> You pressed F11. Exiting gracefully.")
             raise KeyboardInterrupt
         elif event == KeyCode.from_char('\\'):
+
+            self.window = gw.getActiveWindow()
             # self.kb.press(Key.left)
             # # time.sleep(.72)
             # time.sleep(.55)
@@ -75,7 +75,9 @@ class GController(object):
                 if self.locateToClick("next"):
                     continue
                 if self.locateToClick("ok"):
-                    continue
+                    break
+                if self.locateToClick("close"):
+                    break
                 time.sleep(1)
 
             # self.check_quest()
@@ -83,7 +85,6 @@ class GController(object):
 
 if __name__ == "__main__":
     controller = GController()
-    controller.init()
 
     with Listener(on_press=controller.on_key_press) as listener:
         listener.join()
