@@ -1,14 +1,13 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
-	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly/v2"
 )
 
@@ -71,36 +70,58 @@ func main() {
 		// description := e.Attr("content")
 		// fmt.Println("Problem description:", description)
 	})
+	dates := make(chan string)
+	titles := make(chan string)
 	// Step 3: OnHTML - Called right after OnResponse if the received content is HTML
-	c.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
-		description := e.Attr("content")
-		fmt.Println("Problem description:", description)
+	// c.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
+	// c.OnHTML("a.d-block", func(e *colly.HTMLElement) {
+	c.OnHTML("div.fight-date", func(e *colly.HTMLElement) {
+		// description := e.Attr("content")
+		// fmt.Println("Problem description:", description)
+		// fmt.Println(len(e))
+		dates <- e.Text
+		// fmt.Println(e.Text)
+	})
+	c.OnHTML("div.fight-title", func(e *colly.HTMLElement) {
+		// description := e.Attr("content")
+		// fmt.Println("Problem description:", description)
+		// fmt.Println(len(e))
+		titles <- strings.Trim(e.Text, " ")
+		// fmt.Println(title)
 	})
 	// Wait until all threads are finished
 	c.Wait()
 
 	// Define the URL to crawl
-	url := "https://leetcode.com/problems/two-sum/description/"
+	// url := "https://leetcode.com/problems/two-sum/description/"
+	url := "https://www.boxingscene.com/schedule"
 
+	go func() {
+		for title := range titles {
+			fmt.Println(title)
+		}
+		for date := range dates {
+			fmt.Println(date)
+		}
+	}()
 	// Start scraping
 	c.Visit(url)
-
 	// Now let's use chromedp to get the rendered HTML
-	ctx, cancel := chromedp.NewContext(context.Background())
-	defer cancel()
+	// ctx, cancel := chromedp.NewContext(context.Background())
+	// defer cancel()
 
-	var htmlContent string
-	err := chromedp.Run(ctx,
-		// chromedp.Navigate(startURL),
-		chromedp.OuterHTML("html", &htmlContent),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// var htmlContent string
+	// err := chromedp.Run(ctx,
+	// 	// chromedp.Navigate(startURL),
+	// 	chromedp.OuterHTML("html", &htmlContent),
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	// Now you can process the rendered HTML using Colly
 	// (e.g., extract data from <div> elements, etc.)
-	fmt.Println("Rendered HTML content:", htmlContent)
+	// fmt.Println("Rendered HTML content:", htmlContent)
 
 	// Wait for a few seconds to allow Colly to finish its work
 	time.Sleep(5 * time.Second)

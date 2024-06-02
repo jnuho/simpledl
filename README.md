@@ -618,26 +618,6 @@ minikube service my-fe-nginx
 
 
 
-### GCP test
-
-- create ubuntu vm
-- ip restriction
-- install google cloud sdk and init
-
-
-```sh
-gcloud compute security-policies create my-security-policy
-gcloud compute security-policies rules create 1000 \
-  --security-policy my-security-policy \
-  --action allow \
-  --src-ip-ranges <your-home-ip>
-gcloud compute security-policies rules create 2000 
-  --security-policy my-security-policy \
-  --action deny \
-  --src-ip-ranges 0.0.0.0/0
-gcloud compute backend-services update <your-backend-service> \
-  --security-policy my-security-policy
-```
 
 - dashboard
 
@@ -667,20 +647,7 @@ minikube tunnel
 # Hit the hello-world.info ( or whatever host you configured in the yaml file) in a browser and it should work
 ```
 
-
-- GCP console setup
-  - vm instacne : create with machine type(E2- memory 4GB)
-  - VPC network : firewalls > add filewall rule (your ip)
-
-- gcp ssh connect
-
-```sh
-gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
-```
-
-
-
-here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
+Here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
 
 1. **Browser Request**: When you type `http://localhost` into your browser and hit enter, your browser sends a HTTP request to `localhost`, which is resolved to the IP address `127.0.0.1`.
 
@@ -920,3 +887,44 @@ print(torch.cuda.is_available())
 cd leetcode
 go test ./...
 ```
+
+
+
+### GCP
+
+- Create google account to get free credit for gcloud
+
+- create ubuntu vm
+- ip restriction
+- install google cloud sdk and init
+
+```sh
+gcloud compute security-policies create my-security-policy
+gcloud compute security-policies rules create 1000 \
+  --security-policy my-security-policy \
+  --action allow \
+  --src-ip-ranges <your-home-ip>
+gcloud compute security-policies rules create 2000 
+  --security-policy my-security-policy \
+  --action deny \
+  --src-ip-ranges 0.0.0.0/0
+gcloud compute backend-services update <your-backend-service> \
+  --security-policy my-security-policy
+```
+
+- GCP console setup
+  - vm instacne : create with machine type(E2- memory 4GB)
+  - VPC network : firewalls > add filewall rule (your ip)
+
+- gcp ssh connect
+
+```sh
+gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
+```
+
+
+- Google Cloud SDK
+
+1. Create Service account
+  - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
+  - Create key and download and rename `gcp-sa-key.json`

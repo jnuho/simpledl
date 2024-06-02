@@ -3,8 +3,11 @@ module github.com/jnuho/simpledl
 go 1.22.3
 
 require (
+	github.com/chromedp/chromedp v0.9.5
+	github.com/gocolly/colly/v2 v2.1.0
 	github.com/jnuho/simpledl/pkg v0.0.0-20240527075643-16dfba7e7dad
 	github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081333-f4a4ee5920c5
+	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.3.0
 )
 
@@ -15,14 +18,12 @@ require (
 	github.com/antchfx/xmlquery v1.4.0 // indirect
 	github.com/antchfx/xpath v1.3.0 // indirect
 	github.com/chromedp/cdproto v0.0.0-20240529195259-de715aab5f80 // indirect
-	github.com/chromedp/chromedp v0.9.5 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
-	github.com/gocolly/colly/v2 v2.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
