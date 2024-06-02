@@ -24,7 +24,7 @@ class GController(object):
                 1: 0,
                 4: 1,
                 5: 1,
-                # 6: 0,
+                6: 0,
             },
             "3c": {
                 2: 0,
@@ -78,7 +78,7 @@ class GController(object):
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(.0184)
+        time.sleep(.0183)
         self.kb.release(key)
         time.sleep(.0184)
 

@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/chromedp/chromedp"
 	"github.com/gocolly/colly/v2"
 )
 
@@ -27,11 +30,16 @@ func WriteToFile(problem, desc string) {
 	}
 }
 
+// Go Colly (version 2) is a powerful scraping library for Golang,
+// but it operates at the HTTP level and can parse static HTML documents.
+// Unfortunately, it does not execute JavaScript.
+// As a result, it cannot handle Client-Side Rendered (CSR/JS) websites directly.
+// When dealing with JavaScript-enabled websites, combine go Colly with a Headless Browser
 // https://leetcode.com/api/problems/algorithms/
 func main() {
 	// Create a new collector
 	c := colly.NewCollector(
-		colly.MaxDepth(2),
+		// colly.MaxDepth(2),
 		colly.Async(true), // Enable asynchronous scraping
 	)
 	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
@@ -53,20 +61,23 @@ func main() {
 
 	// Step 2: OnError - Called if an error occurs during the request
 	c.OnError(func(r *colly.Response, err error) {
-		fmt.Println("Request URL:", r.Request.URL, "failed with response:", string(r.Body), "\nError:", err)
+		fmt.Println("Request URL:", r.Request.URL, "[status code:", r.StatusCode, "]. failed with response:", string(r.Body), "\nError:", err)
 	})
 
 	// Set up event listeners
 	// c.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
-	c.OnHTML("div.elfjS", func(e *colly.HTMLElement) {
-		description := e.Attr("content")
-		fmt.Println("Problem description:", description)
+	c.OnHTML("div#qd-content", func(e *colly.HTMLElement) {
+		fmt.Println(e)
+		// description := e.Attr("content")
+		// fmt.Println("Problem description:", description)
 	})
 	// Step 3: OnHTML - Called right after OnResponse if the received content is HTML
 	c.OnHTML("meta[name=description]", func(e *colly.HTMLElement) {
 		description := e.Attr("content")
 		fmt.Println("Problem description:", description)
 	})
+	// Wait until all threads are finished
+	c.Wait()
 
 	// Define the URL to crawl
 	url := "https://leetcode.com/problems/two-sum/description/"
@@ -74,9 +85,25 @@ func main() {
 	// Start scraping
 	c.Visit(url)
 
-	// Wait until all threads are finished
-	c.Wait()
+	// Now let's use chromedp to get the rendered HTML
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
 
+	var htmlContent string
+	err := chromedp.Run(ctx,
+		// chromedp.Navigate(startURL),
+		chromedp.OuterHTML("html", &htmlContent),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Now you can process the rendered HTML using Colly
+	// (e.g., extract data from <div> elements, etc.)
+	fmt.Println("Rendered HTML content:", htmlContent)
+
+	// Wait for a few seconds to allow Colly to finish its work
+	time.Sleep(5 * time.Second)
 	// Write(Append) to file
 	//defer WriteToFile(problem, result)
 }

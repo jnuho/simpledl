@@ -40,7 +40,7 @@ class GController(object):
         self.kb.press(key)
         time.sleep(.0183)
         self.kb.release(key)
-        time.sleep(.0183)
+        time.sleep(.0184)
 
 
     def retreat(self):
