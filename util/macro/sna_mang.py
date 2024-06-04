@@ -20,35 +20,12 @@ class GController(object):
         self.mouse = MouseController()
         self.window = None
 
-        self.monster = ["dosa", "3c","boss", "gotang"][monster_type]
+        self.monster = ["default"][monster_type]
         self.resv_attack_cnt = {
-            "dosa": {
-                8: 0,
-                2: 1,
-                1: 0,
-                4: 1,
-                5: 1,
-                6: 0,
-            },
-            "3c": {
+            "default": {
                 2: 0,
                 1: 0,
                 4: 0,
-            },
-            "boss": {
-                8: 1,
-                2: 1,
-                1: 1,
-                4: 1,
-                5: 1,
-                # 6: 0,
-            },
-            "gotang": {
-                8: 0,
-                2: 1,
-                1: 0,
-                4: 0,
-                # 6: 0,
             },
         }
 
@@ -61,23 +38,6 @@ class GController(object):
                 self.window = w
                 break
 
-    def get_food(self):
-        try:
-            pos_found = pag.locateCenterOnScreen("util/images/food" + str(1) + ".png", confidence=.93, grayscale=True)
-            # 150 바 = 687-537
-            # 248: 100%        # -310 일때 길이: 225
-            x_diff = pos_found.x - self.window.left
-            if x_diff < 224:
-                self.kb.press(Key.alt)
-                time.sleep(random.gauss(mu=.05, sigma=.0005))
-                for i in range(2):
-                    self.kb.press('2')
-                    time.sleep(random.gauss(mu=.2, sigma=.0005))
-                    self.kb.release('2')
-                    time.sleep(random.gauss(mu=.2, sigma=.0005))
-                self.kb.release(Key.alt)
-        except pag.ImageNotFoundException:
-            print("NOT FOUND")
 
 
     def pressAndRelease(self, key):
@@ -174,9 +134,6 @@ class GController(object):
         # elif event.name == 'x':
         elif event == KeyCode.from_char('\''):
             self.retreat()
-
-            time.sleep(1.65)
-            self.get_food()
 
 
 # https://superfastpython.com/asyncio-coroutines-faster-than-threads/#:~:text=A%20coroutine%20is%20just%20a,This%20should%20not%20be%20surprising.

@@ -280,16 +280,43 @@ kubens my-namespace
 
 
 - Ingress
-  - Use External Service: http://my-node-ip:svcNodePort
-    - service.spec.type=LoadBalancer, nodePort=30510
-    - http://localhost:30510/
+  - [ingress by traefik.io](https://traefik.io/glossary/kubernetes-ingress-and-ingress-controller-101/#:~:text=A%20Kubernetes%20ingress%20controller%20follows,state%20requested%20by%20the%20user)
+  - [gke ingress](https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io)
+  - [load balancer and ingress duo](https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab)
+  - [load balancer vs. ingress](https://medium.com/@thekubeguy/load-balancer-vs-ingress-why-do-we-need-both-for-same-work-3ae2b9afdd5a)
+
+Let's walk through the flow of traffic in a Kubernetes environment with Ingress, an Ingress Controller, and an external Load Balancer (such as an Application Load Balancer, ALB):
+
+1. **Ingress Creation**:
+   - You start by creating an Ingress resource in your Kubernetes cluster.
+   - The Ingress defines routing rules based on HTTP hostnames and URL paths.
+
+2. **External Load Balancer (ELB) Creation**:
+   - When you create an Ingress, the cloud environment (e.g., AWS) automatically provisions an external Load Balancer (e.g., ALB).
+   - The ELB acts as the entry point for external traffic.
+
+3. **Traffic Flow**:
+   - Here's how the traffic flows:
+     - **External Client**: Sends a request to the ALB (Load Balancer).
+     - **ALB**: Receives the request and forwards it to the Ingress Controller.
+     - **Ingress Controller**: Based on the Ingress rules, the controller routes the request to the appropriate Kubernetes Service.
+     - **Service**: The Service forwards the request to the corresponding Pod(s).
+
+So, the complete flow is: **ALB → Ingress Controller → Ingress → Service → Pod**.
+
+Ingress allows fine-grained routing, and the Ingress Controller ensures that the load balancer routes requests correctly. If you need more complex routing based on HTTP criteria, Ingress is a powerful tool! 🚀
+
+
+1. Use External Service: http://my-node-ip:svcNodePort -> Pod
+  - service.spec.type=LoadBalancer, nodePort=30510
+  - http://localhost:30510/
     - in VirtualBox port-forward 30510
-  - Use Ingress + Internal service: https://my-app.com
+2. Use `Ingress` + Internal service: https://my-app.com
   - Ingress Controller Pod -> Ingress (routing rule) -> Service -> Pod
   - using ingress, you can configure https connection
 
 
-- External Service (without Ingress)
+1. External Service (without Ingress)
 
 ```yaml
 apiVersion: v1
@@ -308,7 +335,8 @@ spec:
       nodePort: 30510
 ```
 
-- Using Ingress -> internal Service
+2. Using Ingress -> internal Service (e.g. `myapp-internal-service`)
+  - internal service has no `nodePort` and the type should be `type: ClusterIP`
   - must be valid domain address
   - map domain name to Node's IP address, which is the entrypoint
     - (one of the nodes or could be a host machine outside the cluster)
@@ -346,7 +374,7 @@ spec:
 ```
 
 - Ingress controller
-  - implementation of ingress, which is Ingress Controller
+  - implementation of ingress, which is Ingress Controller (Pod)
   - evaluates and processes ingress rules
   - manages redirections
   - entrypoint to cluster
@@ -354,7 +382,13 @@ spec:
     - e.g. k8s Nginx Ingress Controller
   - HAVE TO CONSIDER the environemnt where the k8s cluster is running
     - Cloud Service Provider (AWS, GCP, AZURE)
-      - Cloud Load balancer -> Ingress Controller Pod -> Ingress -> Service -> Pod
+      - External reqeust from the browser ->
+        - Cloud Load balancer ->
+        - Ingress Controller Pod ->
+        - Ingress ->
+        - Service ->
+        - Pod
+      - using cloud lb, you do not have to implement load balancer yourself
     - Baremetal
       - you need to configure some kind of entrypoint (e.g. metallb)
       - either inside of cluster or outside as separate server
