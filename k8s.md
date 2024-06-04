@@ -2,24 +2,35 @@
 ### Kubernetes Concept
 
 - [Techworld with Nana](https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
+- [Kubernetes — Objects](https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018)
 
 - Kubernetes Component
-  - Control plane
+  - Control plane: manages overall state of the cluster
     - kube-apiserver
+      - entrypoint  for interacting with the k8s control plane
+      - handles api requests, authentication, and authorization
     - kube-scheduler
+      - distribute workloads across worker nodes
     - kube-controller-manager
+      - ensures the cluster remains in the desired state
     - cloud-controller-manager
     - etcd
+      - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
   - Worker Nodes
     - kubelet
+      - agent running on each node
+      - watches for changes in pod spec and takes action
     - kube-proxy
+      - a daemon on each node that allows network rules such as load balancing and routing
+      - enables communication between pods and external clients
     - Container runtime
+      - responsible for pulling images, creating containers
 
 - Pod
   - abstraction over container
   - usually 1 application(container) per pod
   - each pod gets its own ip address
-  - ephermeral; new ip for each re-creation
+  - ephermeral; new (unique) ip for each re-creation
 
 - Service
   - permanent ip address

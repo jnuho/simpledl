@@ -8,6 +8,7 @@ from pynput.mouse import Controller as MouseController
 
 import time
 import base64
+import random
 
 
 class GController(object):
@@ -77,10 +78,13 @@ class GController(object):
 
 
     def pressAndRelease(self, key):
+        # mu : mean
+        # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
+        # Generate a random Gaussian number
         self.kb.press(key)
-        time.sleep(.0183)
+        time.sleep(random.gauss(mu=.01835, sigma=.0001/6))
         self.kb.release(key)
-        time.sleep(.0184)
+        time.sleep(random.gauss(mu=.01835, sigma=.0001/6))
 
 
     def retreat(self):
@@ -91,8 +95,6 @@ class GController(object):
         self.kb.press(Key.esc)
         time.sleep(.1)
         self.kb.release(Key.esc)
-
-
 
 
     # pag.keyboard not working
@@ -134,29 +136,25 @@ class GController(object):
             self.kb.press(Key.down)
             time.sleep(.55)
             self.kb.release(Key.down)
-
         # debuf & move
         # elif event.name == 'q':
         elif event == KeyCode.from_char('['):
-            # pressAndRelease('9')
-            # pressAndRelease('h')
-
             self.pressAndRelease('2')
             self.mouse.press(Button.right)
-            time.sleep(.015)
+            time.sleep(random.gauss(mu=.015, sigma=.0001))
             self.mouse.release(Button.right)
-            time.sleep(.015)
+            time.sleep(random.gauss(mu=.015, sigma=.0001))
             # q 디버프
             self.pressAndRelease('q')
-            time.sleep(.05)
+            # time.sleep(.05)
             self.pressAndRelease('w')
-            time.sleep(.015)
+            # time.sleep(.015)
 
             self.pressAndRelease('`')
             self.mouse.press(Button.right)
-            time.sleep(.015)
+            time.sleep(random.gauss(mu=.015, sigma=.0001))
             self.mouse.release(Button.right)
-            time.sleep(.01)
+            time.sleep(random.gauss(mu=.015, sigma=.0001))
             self.pressAndRelease('=')
 
         # 보호
@@ -165,7 +163,6 @@ class GController(object):
             self.pressAndRelease('9')
             self.pressAndRelease('r')
 
-        # TODO: 연속 on+ 1re 2re e
         # elif event.name == 'c':
         elif event == KeyCode.from_char('\\'):
             for k, v in self.resv_attack_cnt[self.monster].items():
@@ -189,6 +186,10 @@ class GController(object):
 if __name__ == "__main__":
     controller = GController()
 
+    # The with statement is used to create a context in which the Listener object is active.
+    # it ensures proper setup and cleanup of the Listener object
+    # it is concurrent programming, but do not achieve true parallelism because it is a blocking operation 
     with Listener(on_press=controller.on_key_press) as listener:
+        # make the main thread waits for Listener thread to __exit__()
         listener.join()
 
