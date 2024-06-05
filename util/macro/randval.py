@@ -15,4 +15,4 @@ def getNumpyRandNorm():
 
 if __name__ == "__main__":
     for i in range(10):
-        print(random.gauss(mu=.2, sigma=.0005))
+        print(random.gauss(mu=.3, sigma=.001))

@@ -1,7 +1,7 @@
 import pyautogui as pag
 import pygetwindow as gw
 
-from pynput.keyboard import KeyCode, Key, Listener
+from pynput.keyboard import Key
 from pynput.keyboard import Controller as KbController
 from pynput.mouse import Button
 from pynput.mouse import Controller as MouseController
@@ -10,6 +10,7 @@ import datetime
 import time
 import base64
 import threading
+import random
 
 class GController(object):
     def __init__(self):
@@ -23,22 +24,22 @@ class GController(object):
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        time.sleep(.3)
+        time.sleep(random.gauss(mu=.3, sigma=.001))
         self.mouse.release(Button.left)
-        time.sleep(.5)
+        time.sleep(random.gauss(mu=.5, sigma=.001))
 
 
     def mouse_r_click(self):
         self.mouse.press(Button.right)
-        time.sleep(.3)
+        time.sleep(random.gauss(mu=.3, sigma=.001))
         self.mouse.release(Button.right)
-        time.sleep(.5)
+        time.sleep(random.gauss(mu=.5, sigma=.001))
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(.3)
+        time.sleep(random.gauss(mu=.3, sigma=.001))
         self.kb.release(key)
-        time.sleep(.3)
+        time.sleep(random.gauss(mu=.3, sigma=.001))
 
     def stop(self):
         self.running = False
@@ -62,13 +63,13 @@ class GController(object):
             for i, _ in enumerate(windows):
                 w = windows[len(windows)-1-i]
 
-                time.sleep(.5)
+                time.sleep(random.gauss(mu=.5, sigma=.001))
                 w.minimize()
                 w.restore()
                 # w.activate()
                 w.moveTo(60 +30*i, 10)
                 print(w)
-                time.sleep(.8)
+                time.sleep(random.gauss(mu=.8, sigma=.001))
 
                 self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
                 self.pressAndRelease(Key.enter)
@@ -77,18 +78,18 @@ class GController(object):
 
                 # Food
                 pag.moveTo(w.left + (w.width*.5835), w.top + (w.height*.2484))
-                time.sleep(.3)
+                time.sleep(random.gauss(mu=.3, sigma=.001))
 
                 self.mouse_r_click()
                 self.mouse_r_click()
                 self.mouse_r_click()
                 self.mouse_r_click()
 
-                time.sleep(.3)
+                time.sleep(random.gauss(mu=.3, sigma=.001))
                 self.pressAndRelease('j')
-                time.sleep(.3)
+                time.sleep(random.gauss(mu=.3, sigma=.001))
                 self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
-                time.sleep(.3)
+                time.sleep(random.gauss(mu=.3, sigma=.001))
                 self.pressAndRelease('j')
 
             time.sleep(25*60)
@@ -110,13 +111,13 @@ class GController(object):
             for i, _ in enumerate(windows):
                 w = windows[len(windows)-1-i]
 
-                time.sleep(.5)
+                time.sleep(random.gauss(mu=.5, sigma=.001))
                 w.minimize()
                 w.restore()
                 # w.activate()
                 w.moveTo(60 +30*i, 10)
                 print(w)
-                time.sleep(.8)
+                time.sleep(random.gauss(mu=.8, sigma=.001))
 
                 # game_window.activate()
                 self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
