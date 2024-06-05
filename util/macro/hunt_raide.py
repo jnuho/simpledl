@@ -1,3 +1,4 @@
+import pyautogui as pag
 
 from pynput.keyboard import KeyCode, Key, Listener
 from pynput.keyboard import Controller as KbController
@@ -5,31 +6,39 @@ from pynput.mouse import Button
 from pynput.mouse import Controller as MouseController
 
 import time
+import base64
 import random
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class GController(object):
-    def __init__(self, monster_type=0):
+    def __init__(self, failsafe=False, monster_type=0):
         self.kb = KbController()
         self.mouse = MouseController()
 
-        self.monster = ["def"][monster_type]
+        self.monster = ["default"][monster_type]
         self.resv_attack_cnt = {
-            "def": {
+            "default": {
                 8: 0,
                 2: 1,
                 1: 0,
                 4: 0,
-                5: 1,
+                5: 0,
             },
-        }
+        }[self.monster]
+
+        pag.FAILSAFE = failsafe
+
 
     def pressAndRelease(self, key):
         # mu : mean
         # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
         self.kb.press(key)
-        time.sleep(random.gauss(mu=.01835, sigma=.0001/6))
+        time.sleep(random.gauss(mu=.018, sigma=.0001/6))
         self.kb.release(key)
-        time.sleep(random.gauss(mu=.01835, sigma=.0001/6))
+        time.sleep(random.gauss(mu=.018, sigma=.0001/6))
 
 
     def retreat(self):
@@ -83,20 +92,23 @@ class GController(object):
         # debuf & move
         # elif event.name == 'q':
         elif event == KeyCode.from_char('['):
+            # q 디버프
+            self.pressAndRelease('q')
+            time.sleep(random.gauss(mu=.05, sigma=.0001))
+            self.pressAndRelease('w')
+            time.sleep(random.gauss(mu=.1, sigma=.0001))
+
             self.pressAndRelease('2')
             self.mouse.press(Button.right)
             time.sleep(random.gauss(mu=.015, sigma=.0001))
             self.mouse.release(Button.right)
             time.sleep(random.gauss(mu=.015, sigma=.0001))
-            # q 디버프
-            self.pressAndRelease('q')
-            self.pressAndRelease('w')
 
             self.pressAndRelease('`')
             self.mouse.press(Button.right)
-            time.sleep(random.gauss(mu=.015, sigma=.0001))
+            time.sleep(random.gauss(mu=.02, sigma=.0001))
             self.mouse.release(Button.right)
-            time.sleep(random.gauss(mu=.015, sigma=.0001))
+            time.sleep(random.gauss(mu=.01, sigma=.0001))
             self.pressAndRelease('=')
 
         # 보호
@@ -107,7 +119,7 @@ class GController(object):
 
         # elif event.name == 'c':
         elif event == KeyCode.from_char('\\'):
-            for k, v in self.resv_attack_cnt[self.monster].items():
+            for k, v in self.resv_attack_cnt.items():
                 self.pressAndRelease(f"{k}")
                 self.pressAndRelease('r')
                 for _ in range(v):
@@ -120,8 +132,13 @@ class GController(object):
 
 
 if __name__ == "__main__":
-    controller = GController()
+    # ["dsa", "3c","bos", "gota"][monster_type]
+    controller = GController(failsafe=False, monster_type=0)
 
+    # The with statement is used to create a context in which the Listener object is active.
+    # it ensures proper setup and cleanup of the Listener object
+    # it is concurrent programming, but do not achieve true parallelism because it is a blocking operation 
     with Listener(on_press=controller.on_key_press) as listener:
+        # make the main thread waits for Listener thread to __exit__()
         listener.join()
 
