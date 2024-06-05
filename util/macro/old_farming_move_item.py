@@ -18,7 +18,7 @@ class GController(object):
         self.window = None
         self.running = True
 
-        pag.FAILSAFE = True
+        pag.FAILSAFE = False
 
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)

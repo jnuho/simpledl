@@ -29,7 +29,7 @@ class GController(object):
             },
         }
 
-        pag.FAILSAFE = True
+        pag.FAILSAFE = False
 
         title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
         windows = gw.getWindowsWithTitle(title)

@@ -20,9 +20,9 @@ class GController(object):
         self.mouse = MouseController()
         self.window = None
 
-        self.monster = ["dosa", "3c","boss", "gotang"][monster_type]
+        self.monster = ["dsa", "3c","bos", "gota"][monster_type]
         self.resv_attack_cnt = {
-            "dosa": {
+            "dsa": {
                 8: 0,
                 2: 1,
                 1: 0,
@@ -35,15 +35,15 @@ class GController(object):
                 1: 0,
                 4: 0,
             },
-            "boss": {
+            "bos": {
                 8: 1,
                 2: 1,
                 1: 1,
                 4: 1,
                 5: 1,
-                # 6: 0,
+                6: 0,
             },
-            "gotang": {
+            "gota": {
                 8: 0,
                 2: 1,
                 1: 0,
@@ -52,7 +52,7 @@ class GController(object):
             },
         }
 
-        pag.FAILSAFE = True
+        pag.FAILSAFE = False
 
         title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
         windows = gw.getWindowsWithTitle(title)

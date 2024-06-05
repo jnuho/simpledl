@@ -20,7 +20,7 @@ class GController(object):
         self.mouse = MouseController()
         self.window = None
 
-        pag.FAILSAFE = True
+        pag.FAILSAFE = False
 
     def on_key_press(self, event):
         if event == Key.f11:

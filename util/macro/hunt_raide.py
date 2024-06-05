@@ -1,4 +1,3 @@
-import pyautogui as pag
 
 from pynput.keyboard import KeyCode, Key, Listener
 from pynput.keyboard import Controller as KbController
@@ -13,9 +12,9 @@ class GController(object):
         self.kb = KbController()
         self.mouse = MouseController()
 
-        self.monster = ["default"][monster_type]
+        self.monster = ["def"][monster_type]
         self.resv_attack_cnt = {
-            "default": {
+            "def": {
                 8: 0,
                 2: 1,
                 1: 0,
@@ -23,7 +22,6 @@ class GController(object):
                 5: 1,
             },
         }
-        pag.FAILSAFE = True
 
     def pressAndRelease(self, key):
         # mu : mean
