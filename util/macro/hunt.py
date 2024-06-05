@@ -51,7 +51,6 @@ class GController(object):
                 # 6: 0,
             },
         }
-        print(monster_type)
 
         pag.FAILSAFE = failsafe
 
@@ -78,7 +77,7 @@ class GController(object):
                     time.sleep(random.gauss(mu=.2, sigma=.0005))
                 self.kb.release(Key.alt)
         except pag.ImageNotFoundException:
-            print("NOT FOUND")
+            print("not found")
 
 
     def pressAndRelease(self, key):
