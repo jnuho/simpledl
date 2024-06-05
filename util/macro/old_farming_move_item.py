@@ -54,7 +54,7 @@ class GController(object):
     def cleanup(self):
         # while self.running:
         if self.running:
-            # time.sleep(24*60*60)
+            # time.sleep(random.gauss(mu=24*60*60, sigma=.5))
 
             windows = []
             title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")

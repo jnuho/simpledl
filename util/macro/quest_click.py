@@ -7,8 +7,7 @@ from pynput.keyboard import Controller as KbController
 from pynput.mouse import Button
 from pynput.mouse import Controller as MouseController
 
-import signal
-import os
+import random
 
 
 class GController(object):
@@ -25,17 +24,17 @@ class GController(object):
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(.01)
+        time.sleep(random.gauss(mu=.01, sigma=.001))
         self.kb.release(key)
-        time.sleep(.01)
+        time.sleep(random.gauss(mu=.01, sigma=.001))
 
 
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        time.sleep(.08)
+        time.sleep(random.gauss(mu=.08, sigma=.001))
         self.mouse.release(Button.left)
-        time.sleep(.1)
+        time.sleep(random.gauss(mu=.1, sigma=.001))
 
 
     def locateToClick(self, keyword):
@@ -51,9 +50,9 @@ class GController(object):
 
     def check_quest(self):
         self.pressAndRelease('q')
-        time.sleep(1)
+        time.sleep(random.gauss(mu=1, sigma=.001))
         self.locateToClick("check_quest")
-        time.sleep(.5)
+        time.sleep(random.gauss(mu=.5, sigma=.001))
         self.pressAndRelease('q')
 
     def on_key_press(self, event):
@@ -64,8 +63,6 @@ class GController(object):
 
             self.window = gw.getActiveWindow()
             # self.kb.press(Key.left)
-            # # time.sleep(.72)
-            # time.sleep(.55)
             # self.kb.release(Key.left)
             # file = round(datetime.now().timestamp())
             # pag.screenshot(f'util/images/s_{file}.png', region=(window.left, window.top, window.width, window.height))
@@ -78,7 +75,7 @@ class GController(object):
                     break
                 if self.locateToClick("close"):
                     break
-                time.sleep(1)
+                time.sleep(random.gauss(mu=1, sigma=.001))
 
             # self.check_quest()
             # os.kill(os.getpid(), signal.SIGINT)

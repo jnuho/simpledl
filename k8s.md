@@ -8,29 +8,43 @@ So I tried to understand each concept of component and why kubernetes is constru
 - [Techworld with Nana](https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
 - [Kubernetes — Objects](https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018)
 
+
 - Kubernetes Component
-  - Control plane: manages overall state of the cluster
+  - Master Node runs the Control Plane Components and will manages overall state of the cluster.
     - kube-apiserver
+      - exposes the Kubernetes API and provides the front end to the Control Plane.
       - entrypoint  for interacting with the k8s control plane
       - handles api requests, authentication, and authorization
     - kube-scheduler
+      - scans for newly created pods and assigns them nodes based on a variety of factors
+        - including resource requirements, hardware/software constraints and data locality.
       - distribute workloads across worker nodes
     - kube-controller-manager
       - ensures the cluster remains in the desired state
+      - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
+      - these controllers are as follows:
+        - Node controller — Checks and ensures nodes are up and running
+        - Job Controller — Manages one-off tasks
+        - Endpoints Controller — Populates endpoints and joins services and pods.
+        - Service Account and Token Controller — Creation of accounts and API Access tokens.
     - cloud-controller-manager
     - etcd
       - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
-  - Worker Nodes
+  - Worker Nodes host the Pods which are the components of the application workload.
     - kubelet
       - agent running on each node
       - watches for changes in pod spec and takes action
+      - ensures the pods running on the node are running and are healthy.
     - kube-proxy
       - a daemon on each node that allows network rules such as load balancing and routing
       - enables communication between pods and external clients
+      - Proxy network running on the node that manage the network rules
+      - and communication across pods from networks inside or outside of the cluster.
     - Container runtime
       - responsible for pulling images, creating containers
 
 - Pod
+  - "Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."
   - abstraction over container
   - usually 1 application(container) per pod
   - each pod gets its own ip address

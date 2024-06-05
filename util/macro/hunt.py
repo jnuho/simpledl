@@ -51,6 +51,7 @@ class GController(object):
                 # 6: 0,
             },
         }
+        print(monster_type)
 
         pag.FAILSAFE = failsafe
 
@@ -169,14 +170,15 @@ class GController(object):
                 self.pressAndRelease('r')
                 for _ in range(v):
                     self.pressAndRelease('e')
-                time.sleep(0.01)
+                time.sleep(random.gauss(mu=.01, sigma=.0001))
 
         # elif event.name == 'x':
         elif event == KeyCode.from_char('\''):
             self.retreat()
 
-            time.sleep(1.65)
-            self.get_food()
+            time.sleep(random.gauss(mu=1.65, sigma=.001))
+            if self.monster != '3c':
+                self.get_food()
 
 
 # https://superfastpython.com/asyncio-coroutines-faster-than-threads/#:~:text=A%20coroutine%20is%20just%20a,This%20should%20not%20be%20surprising.
@@ -184,7 +186,7 @@ class GController(object):
 # https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
 if __name__ == "__main__":
     # monster_type
-    controller = GController(failsafe=False, monster_type=0)
+    controller = GController(failsafe=False, monster_type=1)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object

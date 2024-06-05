@@ -112,23 +112,16 @@ class GController(object):
                 self.pressAndRelease('r')
                 for _ in range(v):
                     self.pressAndRelease('e')
-                time.sleep(0.01)
+                time.sleep(random.gauss(mu=.01, sigma=.0001))
 
         # elif event.name == 'x':
         elif event == KeyCode.from_char('\''):
             self.retreat()
 
 
-# https://superfastpython.com/asyncio-coroutines-faster-than-threads/#:~:text=A%20coroutine%20is%20just%20a,This%20should%20not%20be%20surprising.
-# https://velog.io/@haero_kim/Thread-vs-Coroutine-%EB%B9%84%EA%B5%90%ED%95%B4%EB%B3%B4%EA%B8%B0
-# https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
 if __name__ == "__main__":
     controller = GController()
 
-    # The with statement is used to create a context in which the Listener object is active.
-    # it ensures proper setup and cleanup of the Listener object
-    # it is concurrent programming, but do not achieve true parallelism because it is a blocking operation 
     with Listener(on_press=controller.on_key_press) as listener:
-        # make the main thread waits for Listener thread to __exit__()
         listener.join()
 

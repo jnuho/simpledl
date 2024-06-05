@@ -53,7 +53,7 @@ class GController(object):
 
     def get_food(self):
         while self.running:
-            time.sleep(1)
+            time.sleep(random.gauss(mu=1, sigma=.001))
             print(datetime.datetime.now())
 
             windows = []
@@ -96,13 +96,13 @@ class GController(object):
                 time.sleep(random.gauss(mu=.3, sigma=.001))
                 self.pressAndRelease('j')
 
-            time.sleep(25*60)
+            time.sleep(random.gauss(mu=25*60, sigma=.5))
 
 
     def cleanup(self):
         while self.running:
 
-            time.sleep(24*60*60)
+            time.sleep(random.gauss(mu=24*60*60, sigma=.5))
 
             windows = []
             title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
