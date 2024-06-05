@@ -924,27 +924,45 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 
 
 - Google Cloud SDK
+  - Create Service account
+    - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
+    - Create key and download and rename `gcp-sa-key.json`
 
-1. Create Service account
-  - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
-  - Create key and download and rename `gcp-sa-key.json`
 
 - Google Kubernetes Engine
+  - <a href="https://youtu.be/hxpGC19PzwI?si=4JFimrpUju5r3Ida" target="_blank">Create GKE cluster</a>
   - <a href="https://youtu.be/jW_-KZCjsm0?si=u8-842mszl7O9Kr3" target="_blank">GKE tutorial</a>
-  - create new project
-  - `Enable` Google Kuberentes Engine api
-  - Create Kubernetes cluster (console/cli)
-    - 3 nodes, 6CPUs 12 GB
-  - connect to the cluster from gcloud shell
+
+0. Create new project and enable Google Kuberentes Engine api
+
+1. Create Kubernetes cluster (console/cli)
+  - in console create a cluster
+  - 3 nodes, 6CPUs 12 GB
 
 ```sh
-gcloud container clusters create
+gcloud container clusters create my-cluster --zone=asia-northeast3-a --num-nodes=3 --machine-type=n1-standard-2
+
+gcloud container clusters list
 ```
 
-- Connect to cluster
+2. Download and install Google Cloud SDK (gcloud)
 
 ```sh
-# Login to Cloud shell
+gcloud version
+gcloud components install kubectl
+```
+
+3. Authenticate with gcloud
+  - authenticate using your google cloud credentials
+
+```sh
+gcloud auth login
+```
+
+4. Configure kubectl to Use Your GKE Cluster
+
+```sh
+# set the default project for all gcloud commands
 gcloud config set project poised-cortex-422112-g5
 
 # Connect to cluster
