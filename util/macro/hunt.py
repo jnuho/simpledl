@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GController(object):
-    def __init__(self, monster_type=0):
+    def __init__(self, failsafe=False, monster_type=0):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
@@ -52,7 +52,7 @@ class GController(object):
             },
         }
 
-        pag.FAILSAFE = False
+        pag.FAILSAFE = failsafe
 
         title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
         windows = gw.getWindowsWithTitle(title)

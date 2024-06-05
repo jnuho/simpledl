@@ -11,15 +11,19 @@ import time
 import base64
 import threading
 import random
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class GController(object):
-    def __init__(self):
+    def __init__(self, failsafe=False):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
         self.running = True
 
-        pag.FAILSAFE = False
+        pag.FAILSAFE = failsafe
 
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)
@@ -53,7 +57,7 @@ class GController(object):
             print(datetime.datetime.now())
 
             windows = []
-            title = base64.b64decode("R2Vyc2FuZw==").decode("utf-8")
+            title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
             temp = gw.getWindowsWithTitle(title)
             for w in temp:
                 if w.title == title:
@@ -101,7 +105,7 @@ class GController(object):
             time.sleep(24*60*60)
 
             windows = []
-            title = base64.b64decode("R2Vyc2FuZw==").decode("utf-8")
+            title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
             temp = gw.getWindowsWithTitle(title)
             for w in temp:
                 if w.title == title:

@@ -12,13 +12,13 @@ import os
 
 
 class GController(object):
-    def __init__(self):
+    def __init__(self, failsafe=False):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
         self.conv_cnt = 7
 
-        pag.FAILSAFE = False
+        pag.FAILSAFE = failsafe
 
 
 

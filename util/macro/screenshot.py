@@ -10,12 +10,12 @@ from datetime import datetime
 
 
 class GController(object):
-    def __init__(self):
+    def __init__(self, failsafe=False):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
 
-        pag.FAILSAFE = False
+        pag.FAILSAFE = failsafe
 
     def on_key_press(self, event):
         if event == Key.f11:
