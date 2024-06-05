@@ -42,7 +42,7 @@ class GController(object):
         try:
             accept = pag.locateCenterOnScreen("util/images/" + keyword + ".png", confidence=.93, grayscale=True)
             self.mouse_l_click(accept.x, accept.y)
-            pag.move(100,100)
+            pag.moveTo(self.window.left+self.window.width/2, self.window.top +self.window.height/2)
             return True
         except pag.ImageNotFoundException:
             print("`" + keyword + "`" + "NOT FOUND")
@@ -62,6 +62,7 @@ class GController(object):
         elif event == KeyCode.from_char('\\'):
 
             self.window = gw.getActiveWindow()
+
             # self.kb.press(Key.left)
             # self.kb.release(Key.left)
             # file = round(datetime.now().timestamp())
