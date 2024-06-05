@@ -183,7 +183,8 @@ class GController(object):
 # https://velog.io/@haero_kim/Thread-vs-Coroutine-%EB%B9%84%EA%B5%90%ED%95%B4%EB%B3%B4%EA%B8%B0
 # https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
 if __name__ == "__main__":
-    controller = GController()
+    # monster_type
+    controller = GController(failsafe=False, monster_type=0)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object

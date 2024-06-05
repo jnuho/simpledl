@@ -2,8 +2,8 @@
 ### Kubernetes Concept
 
 I've been using `kubectl` commands to manage objects in a cluster; creating ingress, service, pod components, etc.
-But I've been lacking knowledge of what they are, how they are interconnected and how the client could access the cluster via endpoints.
-So I tried to understand each concept of component and why kubernetes is constructed that way.
+But I've been lacking knowledge of what are those objects and how they are interconnected and how the client could access the cluster via endpoints.
+So I tried to understand each concept and why kubernetes is constructed that way.
 
 - [Techworld with Nana](https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
 - [Kubernetes — Objects](https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018)
