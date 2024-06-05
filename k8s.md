@@ -5,9 +5,14 @@ I've been using `kubectl` commands to manage objects in a cluster; creating ingr
 But I've been lacking knowledge of what they are, how they are interconnected and how the client could access the cluster via endpoints.
 So I tried to understand each concept of component and why kubernetes is constructed that way.
 
-- [Techworld with Nana](https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
-- [Kubernetes — Objects](https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018)
+- <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
+- <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Techworld with Nana</a>
+- <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
+
+|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="820">|
+|:--:| 
+| *components-of-kubernetes* |
 
 - Kubernetes Component
   - Master Node runs the Control Plane Components and will manages overall state of the cluster.

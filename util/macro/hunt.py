@@ -15,10 +15,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GController(object):
-    def __init__(self, failsafe=False, monster_type=0):
+    def __init__(self, failsafe=False, monster_type=0, req_food=True):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
+        self.req_food = req_food
 
         self.monster = ["dsa", "3c","bos", "gota"][monster_type]
         self.resv_attack_cnt = {
@@ -175,17 +176,14 @@ class GController(object):
         elif event == KeyCode.from_char('\''):
             self.retreat()
 
-            time.sleep(random.gauss(mu=1.65, sigma=.001))
-            if self.monster != '3c':
+            if self.req_food:
+                time.sleep(random.gauss(mu=1.65, sigma=.001))
                 self.get_food()
 
 
-# https://superfastpython.com/asyncio-coroutines-faster-than-threads/#:~:text=A%20coroutine%20is%20just%20a,This%20should%20not%20be%20surprising.
-# https://velog.io/@haero_kim/Thread-vs-Coroutine-%EB%B9%84%EA%B5%90%ED%95%B4%EB%B3%B4%EA%B8%B0
-# https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread
 if __name__ == "__main__":
-    # monster_type
-    controller = GController(failsafe=False, monster_type=1)
+    # ["dsa", "3c","bos", "gota"][monster_type]
+    controller = GController(failsafe=False, monster_type=1, req_food=True)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object

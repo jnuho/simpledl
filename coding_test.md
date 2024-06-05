@@ -13,7 +13,7 @@
 - Static Array
   - fixed size/static (not dynamically increasing/decreasing)
   - O(1) read/write i^th element
-  - O(1) insert/remove at the end
+  - O(1) insert/remove *at the end*
     - stored address is not neccessarily right after the previous array element
   - O(n) insert in the middle in worst case
     - 5, 6 (inserting 4 requres shifting in arrays)
