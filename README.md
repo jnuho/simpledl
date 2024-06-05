@@ -928,3 +928,44 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 1. Create Service account
   - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
   - Create key and download and rename `gcp-sa-key.json`
+
+- Google Kubernetes Engine
+  - <a href="https://youtu.be/jW_-KZCjsm0?si=u8-842mszl7O9Kr3" target="_blank">GKE tutorial</a>
+  - create new project
+  - `Enable` Google Kuberentes Engine api
+  - Create Kubernetes cluster (console/cli)
+    - 3 nodes, 6CPUs 12 GB
+  - connect to the cluster from gcloud shell
+
+```sh
+gcloud container clusters create
+```
+
+- Connect to cluster
+
+```sh
+# Login to Cloud shell
+gcloud config set project poised-cortex-422112-g5
+
+# Connect to cluster
+# `in console 3 dots > Connect` gives a command:
+gcloud container clusters get-credentials my-cluster --zone asia-northeast3-a --project poised-cortex-422112-g5
+#   > kubeconfig entry generated for my-cluster
+
+# Deploy microservices by creating deployment and service
+kubectl create deployment hello-world-rest-api --image=jnuho/fe-nginx:latest
+
+kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+
+kubectl get service
+  TYPE         CLUSTER-IP     EXTERNAL-IP
+  LoadBalancer 10.80.13.230   <pending>
+
+k get svc --watch
+  TYPE         CLUSTER-IP     EXTERNAL-IP
+  LoadBalancer 10.80.13.230   35.184.204.214
+
+curl 35.184.204.214:8080/hello-world
+```
+
+
