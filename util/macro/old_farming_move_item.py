@@ -71,7 +71,7 @@ class GController(object):
                 w.minimize()
                 w.restore()
                 # w.activate()
-                w.moveTo(60 +30*i, 10)
+                w.moveTo(60 +30*i, 3)
                 print(w)
                 time.sleep(random.gauss(mu=.8, sigma=.001))
 
