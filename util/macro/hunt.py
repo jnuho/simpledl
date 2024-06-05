@@ -15,13 +15,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GController(object):
-    def __init__(self, failsafe=False, monster_type=0, req_food=True):
+    def __init__(self, failsafe=False, monster="dsa", req_food=True):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
         self.req_food = req_food
 
-        self.monster = ["dsa", "3c","bos", "gota"][monster_type]
+        self.monster = monster
         self.resv_attack_cnt = {
             "dsa": {
                 8: 0,
@@ -36,20 +36,12 @@ class GController(object):
                 1: 0,
                 4: 0,
             },
-            "bos": {
-                8: 1,
-                2: 1,
-                1: 1,
-                4: 1,
-                5: 1,
-                6: 0,
-            },
-            "gota": {
+            "raide": {
                 8: 0,
                 2: 1,
                 1: 0,
                 4: 0,
-                # 6: 0,
+                5: 0,
             },
         }[self.monster]
 
@@ -151,7 +143,7 @@ class GController(object):
             self.mouse.press(Button.right)
             time.sleep(random.gauss(mu=.015, sigma=.0001))
             self.mouse.release(Button.right)
-            time.sleep(random.gauss(mu=.015, sigma=.0001))
+            time.sleep(random.gauss(mu=.05, sigma=.0001))
 
             self.pressAndRelease('`')
             self.mouse.press(Button.right)
@@ -163,7 +155,7 @@ class GController(object):
         # 보호
         # elif event.name == 'e':
         elif event == KeyCode.from_char(']'):
-            self.pressAndRelease('9')
+            self.pressAndRelease('-')
             self.pressAndRelease('r')
 
         # elif event.name == 'c':
@@ -185,13 +177,12 @@ class GController(object):
 
 
 if __name__ == "__main__":
-    # ["dsa", "3c","bos", "gota"][monster_type]
-    controller = GController(failsafe=False, monster_type=0, req_food=True)
+    # ["dsa", "3c", "raide"]
+    controller = GController(failsafe=False, monster="dsa", req_food=True)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object
     # it is concurrent programming, but do not achieve true parallelism because it is a blocking operation 
+    # make the main thread waits for Listener thread to __exit__()
     with Listener(on_press=controller.on_key_press) as listener:
-        # make the main thread waits for Listener thread to __exit__()
         listener.join()
-
