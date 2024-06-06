@@ -1,6 +1,8 @@
 
 # Coding test
 
+- https://neetcode.io
+
 - RAM: random access memory(O(1) to access)
   - store variables in byte(=8 bits) 
   - value, address stored in RAM

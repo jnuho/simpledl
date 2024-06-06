@@ -1,12 +1,13 @@
 
 ### Kubernetes Concept
 
-I've been using `kubectl` commands to manage objects in a cluster; creating ingress, service, pod components, etc.
-But I've been lacking knowledge of what they are, how they are interconnected and how the client could access the cluster via endpoints.
-So I tried to understand each concept of component and why kubernetes is constructed that way.
+While I've been using `kubectl` commands to manage services in a cluster; creating ingress, service, pod components, etc,
+I've been lacking deeper knowledge of what they are, how they are interconnected and how clients access the cluster via endpoints.
+So I tried to understand the concept of each component.
 
 - <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
-- <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Techworld with Nana</a>
+- <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
+- <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
 - <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
 
@@ -14,39 +15,75 @@ So I tried to understand each concept of component and why kubernetes is constru
 |:--:| 
 | *components-of-kubernetes* |
 
-- Kubernetes Component
-  - Master Node runs the Control Plane Components and will manages overall state of the cluster.
-    - kube-apiserver
-      - exposes the Kubernetes API and provides the front end to the Control Plane.
-      - entrypoint  for interacting with the k8s control plane
-      - handles api requests, authentication, and authorization
-    - kube-scheduler
-      - scans for newly created pods and assigns them nodes based on a variety of factors
-        - including resource requirements, hardware/software constraints and data locality.
-      - distribute workloads across worker nodes
-    - kube-controller-manager
-      - ensures the cluster remains in the desired state
-      - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
-      - these controllers are as follows:
-        - Node controller — Checks and ensures nodes are up and running
-        - Job Controller — Manages one-off tasks
-        - Endpoints Controller — Populates endpoints and joins services and pods.
-        - Service Account and Token Controller — Creation of accounts and API Access tokens.
-    - cloud-controller-manager
-    - etcd
-      - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
-  - Worker Nodes host the Pods which are the components of the application workload.
-    - kubelet
-      - agent running on each node
-      - watches for changes in pod spec and takes action
-      - ensures the pods running on the node are running and are healthy.
-    - kube-proxy
-      - a daemon on each node that allows network rules such as load balancing and routing
-      - enables communication between pods and external clients
-      - Proxy network running on the node that manage the network rules
-      - and communication across pods from networks inside or outside of the cluster.
-    - Container runtime
-      - responsible for pulling images, creating containers
+- Master node
+  - runs the control plane components and manage overall state of the cluster
+  - schedule, re-schedule, re-start pod
+  - monitor resources
+  - join a new node
+  - 4 process run on every master node:
+  - `kube-apiserver`
+    - exposes the Kubernetes API and provides the front end to the Control Plane.
+    - entrypoint  for interacting with the k8s control plane
+    - handles api requests, authentication, and authorization
+    - cluster gateway
+    - acts as a gatekeeper for authentication
+      - request -> api server -> validates request -> other processes -> pod creation
+      - 1 entrypoint in to the cluster
+  - `kube-scheduler`
+    - scans for newly created pods and assigns them nodes based on a variety of factors
+      - including resource requirements, hardware/software constraints and data locality.
+    - distribute workloads across worker nodes
+    - schedule new pod -> api server -> scheduler
+    - -> where to put the pod(intelligently decide based on resource percentage of nodes being used)
+  - `kube-controller-manager`
+    - ensures the cluster remains in the desired state
+    - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
+    - these controllers are as follows:
+      - Node controller — Checks and ensures nodes are up and running
+      - Job Controller — Manages one-off tasks
+      - Endpoints Controller — Populates endpoints and joins services and pods.
+      - Service Account and Token Controller — Creation of accounts and API Access tokens.
+    - detect cluster state changes(pods state)
+    - Controller Manager(detect pod state) -> Scheduler -> Kublet(on worker node)
+  - `cloud-controller-manager`
+  - `etcd`
+    - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
+    - cluster brain!
+    - key-value data store of cluster state
+    - cluster changes get stored in the key value store!
+    - Is the cluster healthy? What resources are available? Did the cluster state change?
+    - NO application data is stored in etcd!
+    - can be replicated
+    - Multiple master nodes for secure storage
+      - api server is load balanced
+      - distributed storage across all the master nodes
+- Worker node
+  - host multiple pods which are the components of the application workload
+  - the following 3 processes must be installed on every node:
+  - `kubelet`
+    - schedules pods and containers
+    - interacts with both the container and node
+    - starts the pod with a container inside
+    - agent running on each node
+    - watches for changes in pod spec and takes action
+    - ensures the pods running on the node are running and are healthy.
+  - `kube-proxy`
+    - forwards requests to services to pods
+    - intelligent and performant forwarding logic that distributes request to pods with low network overhead
+      - it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.
+    - a daemon on each node that allows network rules such as load balancing and routing
+    - enables communication between pods and external clients
+    - Proxy network running on the node that manage the network rules
+    - and communication across pods from networks inside or outside of the cluster.
+  - `Container runtime`
+    - responsible for pulling images, creating containers
+    - e.g. containerd
+
+- Example of Cluster Set-up
+  - 2 Master nodes, 3 Worker nodes
+  - Master node : less resources
+  - Worker node : more resources for running applications
+  - can add more Master or Worker nodes
 
 - Pod
   - "Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."
@@ -97,49 +134,6 @@ What if pod dies => Use multi-node and pod replicas(deployment as abstraction fo
   - NOTE DB are often hosted outside of k8s cluster
 
 
-- Worker node has multiple pods on it and 3 processes must be installed on every Node
-  - Container runtime (e.g. containerd)
-  - kublet: schedules pods and containers
-    - interacts with both the container and node
-    - starts the pod with a container inside
-  - kube proxy:
-    - forwards requests to services to pods
-    - intelligent and performant forwarding logic that distributes request to pods with low network overhead
-      - it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.
-
-- Master node, master processes
-  - schedule pod
-  - monitor resources
-  - re-schedule/re-start pod
-  - join a new Node
-  - 4 process run on every Master node
-    - Api server
-      - cluster gateway
-      - acts as a gatekeeper for authentication
-        - request -> api server -> validates request -> other processes -> pod creation
-        - 1 entrypoint in to the cluster
-    - Scheduler
-      - schedule new pod -> api server -> scheduler
-      - -> where to put the pod(intelligently decide based on resource percentage of nodes being used)
-    - Controller manager
-      - detect cluster state changes(pods state)
-      - Controller Manager(detect pod state) -> Scheduler -> Kublet(on worker node)
-    - etcd
-      - cluster brain!
-      - key-value data store of cluster state
-      - cluster changes get stored in the key value store!
-      - Is the cluster healthy? What resources are available? Did the cluster state change?
-      - NO application data is stored in etcd!
-      - can be replicated
-      - Multiple master nodes for secure storage
-        - api server is load balanced
-        - distributed storage across all the master nodes
-
-- Example of Cluster Set-up
-  - 2 Master nodes, 3 Worker nodes
-  - Master node : less resources
-  - Worker node : more resources for running applications
-  - can add more Master or Worker nodes
 
 
 - Minikube
