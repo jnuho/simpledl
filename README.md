@@ -930,8 +930,22 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 
 
 - Google Kubernetes Engine
-  - <a href="https://youtu.be/hxpGC19PzwI?si=4JFimrpUju5r3Ida" target="_blank">Create GKE cluster</a>
+  - <a href="https://www.youtube.com/watch?v=P1x1Rk_TzV4" target="_blank">Ingress in 5 Minutes</a>
+  - <a href="https://youtu.be/8RQvtagsrg0?si=IwP0qNMz0kutUOVo" target="_blank">GKE Load Balancing</a>
   - <a href="https://youtu.be/jW_-KZCjsm0?si=u8-842mszl7O9Kr3" target="_blank">GKE tutorial</a>
+  - https://www.youtube.com/watch?v=QvVmQtO-ftU&ab_channel=GoogleCloudTech
+
+- GKE provides a variety of Kubernetes-native constructs to manage L4 and L7 load balancers on Google Cloud.
+  - Service, Ingress, Gateway, Network endpoint groups
+  - GKE load balancers work by routing traffic to pods based on a set of rules
+  - Exposing services outside of the cluster
+    - NodePort Service
+      - uses GKE Node IP, exposes a service on the "same" port on every Node
+    - Load Balancer Service
+      - L4 routing (TCP/UDP), allocates a routable IP+port to a Cloud Load Balancer and uses a Node Port to forward traffic to backend pods
+    - Ingress/Gateway
+      - L7 routing (HTTP/S), allocates a routable IP + HTTP/S ports to a Cloud Load Balancer and uses Pods' IP address to forward traffic directly
+
 
 0. Create new project and enable Google Kuberentes Engine api
 
@@ -987,3 +1001,14 @@ curl 35.184.204.214:8080/hello-world
 ```
 
 
+### docker image tag
+
+- in Kubernetes
+  - fe-nginx-k8s
+  - be-go-k8s
+  - be-py
+
+- in docker-compose
+  - fe-nginx-docker
+  - be-go-docker
+  - be-py

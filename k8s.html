@@ -25,12 +25,13 @@
       <div class="crossnote markdown-preview  ">
       
 <h3 id="kubernetes-concept">Kubernetes Concept </h3>
-<p>I've been using <code>kubectl</code> commands to manage objects in a cluster; creating ingress, service, pod components, etc.<br>
-But I've been lacking knowledge of what they are, how they are interconnected and how the client could access the cluster via endpoints.<br>
-So I tried to understand each concept of component and why kubernetes is constructed that way.</p>
+<p>While I've been using <code>kubectl</code> commands to manage services in a cluster; creating ingress, service, pod components, etc,<br>
+I've been lacking deeper knowledge of what they are, how they are interconnected and how clients access the cluster via endpoints.<br>
+So I tried to understand the concept of each component.</p>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a></li>
-<li><a href="https://www.youtube.com/watch?v=X48VuDVv0do&amp;t=1594s&amp;ab_channel=TechWorldwithNana" target="_blank">Techworld with Nana</a></li>
+<li><a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&amp;t=104">Kubernetes by Nana-1hr</a></li>
+<li><a href="https://www.youtube.com/watch?v=X48VuDVv0do&amp;t=1594s&amp;ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a></li>
 <li><a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a></li>
 </ul>
 <table>
@@ -47,19 +48,30 @@ So I tried to understand each concept of component and why kubernetes is constru
 </table>
 <ul>
 <li>
-<p>Kubernetes Component</p>
+<p>Master node</p>
 <ul>
-<li>Master Node runs the Control Plane Components and will manages overall state of the cluster.
-<ul>
-<li>kube-apiserver
+<li>runs the control plane components and manage overall state of the cluster</li>
+<li>schedule, re-schedule, re-start pod</li>
+<li>monitor resources</li>
+<li>join a new node</li>
+<li>4 process run on every master node:</li>
+<li><code>kube-apiserver</code>
 <ul>
 <li>exposes the Kubernetes API and provides the front end to the Control Plane.</li>
-<li>entrypoint  for interacting with the k8s control plane</li>
+<li>a single entrypoint (cluster gateway) for interacting with the k8s control plane</li>
 <li>handles api requests, authentication, and authorization</li>
+<li>acts as a gatekeeper for authentication
+<ul>
+<li>request -&gt; api server -&gt; validates request -&gt; other processes -&gt; pod creation</li>
 </ul>
 </li>
-<li>kube-scheduler
+<li>UI (dashboard), API(script,sdk), CLI (kubectl)</li>
+</ul>
+</li>
+<li><code>kube-scheduler</code>
 <ul>
+<li>schedule new pod -&gt; api server -&gt; scheduler</li>
+<li>-&gt; which node to put the new Pod (intelligently decide based on resource percentage of nodes being used)</li>
 <li>scans for newly created pods and assigns them nodes based on a variety of factors
 <ul>
 <li>including resource requirements, hardware/software constraints and data locality.</li>
@@ -68,7 +80,7 @@ So I tried to understand each concept of component and why kubernetes is constru
 <li>distribute workloads across worker nodes</li>
 </ul>
 </li>
-<li>kube-controller-manager
+<li><code>kube-controller-manager</code>
 <ul>
 <li>ensures the cluster remains in the desired state</li>
 <li>run controllers which run loops to ensure the configuration matches actual state of the running cluster.</li>
@@ -80,171 +92,14 @@ So I tried to understand each concept of component and why kubernetes is constru
 <li>Service Account and Token Controller — Creation of accounts and API Access tokens.</li>
 </ul>
 </li>
-</ul>
-</li>
-<li>cloud-controller-manager</li>
-<li>etcd
-<ul>
-<li>consistent and highly-available key-value store that maintains cluster state and ensures data consistency</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Worker Nodes host the Pods which are the components of the application workload.
-<ul>
-<li>kubelet
-<ul>
-<li>agent running on each node</li>
-<li>watches for changes in pod spec and takes action</li>
-<li>ensures the pods running on the node are running and are healthy.</li>
-</ul>
-</li>
-<li>kube-proxy
-<ul>
-<li>a daemon on each node that allows network rules such as load balancing and routing</li>
-<li>enables communication between pods and external clients</li>
-<li>Proxy network running on the node that manage the network rules</li>
-<li>and communication across pods from networks inside or outside of the cluster.</li>
-</ul>
-</li>
-<li>Container runtime
-<ul>
-<li>responsible for pulling images, creating containers</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Pod</p>
-<ul>
-<li>"Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."</li>
-<li>abstraction over container</li>
-<li>usually 1 application(container) per pod</li>
-<li>each pod gets its own ip address</li>
-<li>ephermeral; new (unique) ip for each re-creation</li>
-</ul>
-</li>
-<li>
-<p>Service</p>
-<ul>
-<li>permanent ip address</li>
-<li>Service provide stable IP address. Each pod has its own ip address, but are ephemeral.</li>
-<li>Load balancing</li>
-<li>loose coupling</li>
-<li>within &amp; outside cluster</li>
-<li>pods communite with each other using services</li>
-</ul>
-</li>
-<li>
-<p>ClusterIP services</p>
-<ul>
-<li>default type</li>
-<li>microservice app deployed</li>
-</ul>
-</li>
-<li>
-<p>Ingress</p>
-<ul>
-<li><a href="https://my-app.com">https://my-app.com</a> -&gt; forward to service</li>
-</ul>
-</li>
-<li>
-<p>ConfigMap</p>
-<ul>
-<li>external configuration of your application</li>
-<li><code>DB_URL = monngo-db</code></li>
-</ul>
-</li>
-<li>
-<p>Secret</p>
-<ul>
-<li><code>DB_USER = mongo-user</code></li>
-<li><code>DB_PW = mongo-pw</code></li>
-</ul>
-</li>
-<li>
-<p>Volume (external hdd)</p>
-<ul>
-<li>on Local</li>
-<li>on Remote, outside of the cluster</li>
-<li>k8s does not manage data persistence</li>
-</ul>
-</li>
-</ul>
-<p>What if pod dies =&gt; Use multi-node and pod replicas(deployment as abstraction for pods)<br>
-, use service as a load balancer.</p>
-<ul>
-<li>
-<p>Deployemnt for stateless apps</p>
-</li>
-<li>
-<p>StatefulSet for stateFul apps or databases</p>
-<ul>
-<li>DB can't be replicated via deployment.</li>
-<li>Avoid data inconsistencies</li>
-<li>=&gt; StatefulSet for STATEFUL apps. e.g. mysql, mongodb, elastic search</li>
-<li>But deploying StatefulSet is not easy</li>
-<li>NOTE DB are often hosted outside of k8s cluster</li>
-</ul>
-</li>
-<li>
-<p>Worker node has multiple pods on it and 3 processes must be installed on every Node</p>
-<ul>
-<li>Container runtime (e.g. containerd)</li>
-<li>kublet: schedules pods and containers
-<ul>
-<li>interacts with both the container and node</li>
-<li>starts the pod with a container inside</li>
-</ul>
-</li>
-<li>kube proxy:
-<ul>
-<li>forwards requests to services to pods</li>
-<li>intelligent and performant forwarding logic that distributes request to pods with low network overhead
-<ul>
-<li>it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>
-<p>Master node, master processes</p>
-<ul>
-<li>schedule pod</li>
-<li>monitor resources</li>
-<li>re-schedule/re-start pod</li>
-<li>join a new Node</li>
-<li>4 process run on every Master node
-<ul>
-<li>Api server
-<ul>
-<li>cluster gateway</li>
-<li>acts as a gatekeeper for authentication
-<ul>
-<li>request -&gt; api server -&gt; validates request -&gt; other processes -&gt; pod creation</li>
-<li>1 entrypoint in to the cluster</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Scheduler
-<ul>
-<li>schedule new pod -&gt; api server -&gt; scheduler</li>
-<li>-&gt; where to put the pod(intelligently decide based on resource percentage of nodes being used)</li>
-</ul>
-</li>
-<li>Controller manager
-<ul>
 <li>detect cluster state changes(pods state)</li>
 <li>Controller Manager(detect pod state) -&gt; Scheduler -&gt; Kublet(on worker node)</li>
 </ul>
 </li>
-<li>etcd
+<li><code>cloud-controller-manager</code></li>
+<li><code>etcd</code>
 <ul>
+<li>consistent and highly-available key-value store that maintains cluster state and ensures data consistency</li>
 <li>cluster brain!</li>
 <li>key-value data store of cluster state</li>
 <li>cluster changes get stored in the key value store!</li>
@@ -261,6 +116,41 @@ So I tried to understand each concept of component and why kubernetes is constru
 </li>
 </ul>
 </li>
+<li>
+<p>Worker node</p>
+<ul>
+<li>host multiple pods which are the components of the application workload</li>
+<li>the following 3 processes must be installed on every node:</li>
+<li><code>kubelet</code>
+<ul>
+<li>schedules pods and containers</li>
+<li>interacts with both the container and node</li>
+<li>starts the pod with a container inside</li>
+<li>agent running on each node</li>
+<li>watches for changes in pod spec and takes action</li>
+<li>ensures the pods running on the node are running and are healthy.</li>
+</ul>
+</li>
+<li><code>kube-proxy</code>
+<ul>
+<li>forwards requests to services to pods</li>
+<li>intelligent and performant forwarding logic that distributes request to pods with low network overhead
+<ul>
+<li>it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.</li>
+</ul>
+</li>
+<li>a daemon on each node that allows network rules such as load balancing and routing</li>
+<li>enables communication between pods and external clients</li>
+<li>Proxy network running on the node that manage the network rules</li>
+<li>and communication across pods from networks inside or outside of the cluster.</li>
+</ul>
+</li>
+<li><code>Container runtime</code>
+<ul>
+<li>responsible for pulling images, creating containers</li>
+<li>e.g. containerd</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>
@@ -273,202 +163,67 @@ So I tried to understand each concept of component and why kubernetes is constru
 </ul>
 </li>
 <li>
-<p>Minikube</p>
+<p>Pod</p>
 <ul>
-<li>master and worker process run on a single node</li>
-<li>usually via virtual box or other hypervisor</li>
-<li>for testing purposes</li>
+<li>"Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."</li>
+<li>abstraction over container</li>
+<li>usually 1 application(container) per pod</li>
+<li>each pod gets its own ip address</li>
+<li>ephermeral; new (unique) ip for each re-creation</li>
 </ul>
 </li>
 <li>
-<p>deployment</p>
+<p>Service</p>
 <ul>
-<li>blueprint for creating pods</li>
-<li>most basic configuration for deployemnt (name and image to use)</li>
-<li>rest defaults</li>
+<li><a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&amp;t=739" target="_blank">Service &amp; Ingress</a></li>
+<li>Service provide stable(permanent) IP address. Each pod has its own ip address, but are ephemeral.</li>
+<li>Load balancing</li>
+<li>loose coupling</li>
+<li>within &amp; outside cluster</li>
+<li>pods communite with each other using services</li>
+<li>external service
+<ul>
+<li><a href="http://node-ip">http://node-ip</a>:port</li>
 </ul>
 </li>
-<li>
-<p>replicaset</p>
+<li>internal service
 <ul>
-<li>another abstraction of layer</li>
-<li>manages the replicas of a pod</li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>k create deployment nginx-depl <span class="token parameter variable">--image</span><span class="token operator">=</span>nginx:alpine
-k get replicaset
-</code></pre><ul>
-<li>Layers of Abstraction
-<ul>
-<li>Deployment : manages a replicaset</li>
-<li>ReplicaSet : manages replicas of pods</li>
-<li>Pod : is an abstraction of containers</li>
-<li>Container</li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code><span class="token comment"># edit deployement, but not pod directly</span>
-k edit deployment nginx-depl
-</code></pre><ul>
-<li>
-<p>YAML configuration file</p>
-<ul>
-<li>Attributes of <code>spec</code> are specific to the <code>kind</code></li>
-<li>each configuration file has 3 parts
-<ul>
-<li>metadata</li>
-<li>specification</li>
-<li>status: automatically generated by k8s (desired ==? actual) self-healing feature
-<ul>
-<li>k8s gets this status from <code>etcd</code>!</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>Store the YAML config file with your code (git repository)</li>
-<li><code>template</code> also has its own <code>metadata</code> and <code>spec</code>: applies to Pod
-<ul>
-<li>blueprint for a Pod</li>
+<li><a href="http://db-service-ip">http://db-service-ip</a>:port</li>
 </ul>
 </li>
 </ul>
 </li>
 <li>
-<p>Connecting the component</p>
+<p>ClusterIP services</p>
 <ul>
-<li>labels &amp; selectors</li>
-<li><code>metadata</code> contains labels, <code>spec</code> contains selectors
-<ul>
-<li>metadata define key-value pair for label which is matched by the spec selector for pod</li>
-<li>pod gets the label through the spec.template blueprint</li>
-<li>pod belongs to deployment by label</li>
-<li>deployment labels are connected to service's spec.selector</li>
-<li>service's spec.selector uses deployment's metadata labels to make connection to deployement(pods)</li>
-</ul>
-</li>
-<li>service expose port (accessible) -&gt; forward to service targetPort -&gt; deployment's containerPort</li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
-<span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
-<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
-  <span class="token key atrule">name</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx<span class="token punctuation">-</span>deployment
-  <span class="token comment"># NOTE label for deployment which is used by service to make connection to deployement(pods)</span>
-  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
-    <span class="token key atrule">app</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
-<span class="token key atrule">spec</span><span class="token punctuation">:</span>
-  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">2</span>
-  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
-    <span class="token comment"># NOTE allows `Deployment` to find and manage Pods with this matching label</span>
-    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
-      <span class="token key atrule">app</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
-  <span class="token key atrule">template</span><span class="token punctuation">:</span>
-    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
-      <span class="token comment"># NOTE sets the labels for the `Pods` created by the Deployment.</span>
-      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
-        <span class="token key atrule">app</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
-    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
-      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
-      <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
-        <span class="token key atrule">image</span><span class="token punctuation">:</span> jnuho/fe<span class="token punctuation">-</span>nginx<span class="token punctuation">:</span>latest
-        <span class="token key atrule">imagePullPolicy</span><span class="token punctuation">:</span> IfNotPresent
-        <span class="token key atrule">ports</span><span class="token punctuation">:</span>
-        <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">80</span>
-      <span class="token comment">#imagePullSecrets:</span>
-      <span class="token comment">#- name: regcred</span>
-</code></pre><pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>k describe svc serivceName
-  Endpoints: podip:targetPort
-  <span class="token builtin class-name">:</span> this Endpoint <span class="token function">ip</span> matches pod <span class="token function">ip</span>
-
-k get pod podName <span class="token parameter variable">-o</span> wide
-k get deploy nginx-depl <span class="token parameter variable">-o</span> yaml
-  check the status is automatically generated by k8s
-  retrieve result of status from etcd
-</code></pre><ul>
-<li>
-<p>Complete Application setup with Kubernetes components</p>
-<ul>
-<li>mongodb(internal service; no external requests), mongo-express(Web-app)</li>
-<li>mongo express get url,id, pw from configmap and secret to connect to mongodb</li>
-<li>mongo express accessible from browser: NodeIp:PortOfExternalService</li>
-<li>2 Deployment / Pod</li>
-<li>2 Service</li>
-<li>1 ConfigMap</li>
-<li>1 Secret</li>
-<li>Browser -&gt; mongo express external service -&gt; mongoexpress pod -&gt; mongodb internal service -&gt; mongodb pod</li>
+<li>default type</li>
+<li>microservice app deployed</li>
 </ul>
 </li>
 <li>
-<p>Namespace</p>
+<p>Ingress</p>
 <ul>
-<li>kube-system: system processes, master and kubectl processes</li>
-<li>kube-public: publicly accessible data, configmap, that contains cluster information <code>k cluster-info</code></li>
-<li>kube-node-lease: heartbeats of node, determines the availability of a node</li>
-<li>default: resources you create</li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>kubectl create namespace myNameSpace
-</code></pre><ul>
-<li>
-<p>Group applications into namespaces</p>
-<ul>
-<li>e.g. database/ logging / monitoring/ nginx-ingress/elastic stack</li>
-<li>no need to create namespaces for smaller projects with about 10 users</li>
-<li>create namespaces if there are many teams, same application(same name)</li>
-<li>staging/development namespace resources use same resource in certain namespaces</li>
-<li>blue/green deployment using namespaces (Production green/blue)</li>
-<li>access and resource limits on nameaspaces</li>
-</ul>
-</li>
-<li>
-<p>Each NS must define own ConfigMap/Secret</p>
-<ul>
-<li>suppose projectA, projectB namespaces</li>
-<li>both namespace must have ConfigMap with exact same content</li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
-<span class="token key atrule">kind</span><span class="token punctuation">:</span> ConfigMap
-<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
-  <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql<span class="token punctuation">-</span>configmap
-<span class="token key atrule">data</span><span class="token punctuation">:</span>
-  <span class="token key atrule">db_url</span><span class="token punctuation">:</span> mysql<span class="token punctuation">-</span>service.database
-</code></pre><ul>
-<li>Components, which can't be created within a namespace
-<ul>
-<li>persistent volume</li>
-<li>node</li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>k api-resources <span class="token parameter variable">--namespaced</span><span class="token operator">=</span>false
-k api-resources <span class="token parameter variable">--namespaced</span><span class="token operator">=</span>true
-</code></pre><ul>
-<li>You can change the active namespace with kubens
-<ul>
-<li>without a need to <code>k get pod -n myNameSpace</code></li>
-</ul>
-</li>
-</ul>
-<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>brew <span class="token function">install</span> kubectx
-kubens
-kubens my-namespace
-  Active namespace is <span class="token string">"my-namespace"</span>
-</code></pre><ul>
-<li>Ingress
-<ul>
+<li><a href="https://www.youtube.com/watch?v=NPFbYpb0I7w&amp;ab_channel=IBMTechnology">https://www.youtube.com/watch?v=NPFbYpb0I7w&amp;ab_channel=IBMTechnology</a></li>
+<li><a href="https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb">https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb</a></li>
+<li><a href="https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&amp;t=7312">https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&amp;t=7312</a></li>
+<li><a href="https://www.youtube.com/watch?v=y5-u4jtflic&amp;ab_channel=TTABAE-LEARN">https://www.youtube.com/watch?v=y5-u4jtflic&amp;ab_channel=TTABAE-LEARN</a></li>
+<li><a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&amp;t=739" target="_blank">Service &amp; Ingress</a></li>
+<li><code>https://my-app.com</code> (ingress can configure secure https protocal with domain name) -&gt; forwards traffic into <code>internal</code> service</li>
 <li><a href="https://traefik.io/glossary/kubernetes-ingress-and-ingress-controller-101/#:~:text=A%20Kubernetes%20ingress%20controller%20follows,state%20requested%20by%20the%20user">ingress by traefik.io</a></li>
 <li><a href="https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io">gke ingress</a></li>
 <li><a href="https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab">load balancer and ingress duo</a></li>
 <li><a href="https://medium.com/@thekubeguy/load-balancer-vs-ingress-why-do-we-need-both-for-same-work-3ae2b9afdd5a">load balancer vs. ingress</a></li>
 </ul>
 </li>
+<li>
+<p>Let's walk through the flow of traffic in a Kubernetes environment with:</p>
+<ul>
+<li>Ingress</li>
+<li>Ingress Controller</li>
+<li>external Load Balancer (such as an Application Load Balancer, ALB):</li>
 </ul>
-<p>Let's walk through the flow of traffic in a Kubernetes environment with Ingress, an Ingress Controller, and an external Load Balancer (such as an Application Load Balancer, ALB):</p>
+</li>
+</ul>
 <ol>
 <li>
 <p><strong>Ingress Creation</strong>:</p>
@@ -518,6 +273,7 @@ kubens my-namespace
 <li>Ingress Controller Pod -&gt; Ingress (routing rule) -&gt; Service -&gt; Pod</li>
 <li>using ingress, you can configure https connection</li>
 </ul>
+<h3 id="ingress-explained">Ingress Explained </h3>
 <ol>
 <li>External Service (without Ingress)</li>
 </ol>
@@ -821,6 +577,257 @@ k describe ingress dashboard-ingress <span class="token parameter variable">-n</
   <span class="token key atrule">tls.crt</span><span class="token punctuation">:</span> base64 encoded cert
   <span class="token key atrule">tls.key</span><span class="token punctuation">:</span> base64 encoded key
 <span class="token key atrule">type</span><span class="token punctuation">:</span> kubernetes.io/tls
+</code></pre><ul>
+<li>
+<p>ConfigMap</p>
+<ul>
+<li>stored in plaintext format</li>
+<li>external configuration of your application</li>
+<li><code>DB_URL = monngo-db</code></li>
+</ul>
+</li>
+<li>
+<p>Secret</p>
+<ul>
+<li>Caution: "Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd)."
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/configuration/secret/">https://kubernetes.io/docs/concepts/configuration/secret/</a></li>
+</ul>
+</li>
+<li>stored in base64 encoded format</li>
+<li><code>DB_USER = mongo-user</code></li>
+<li><code>DB_PW = mongo-pw</code></li>
+</ul>
+</li>
+<li>
+<p>Volume (like an external hdd plugged into cluster)</p>
+<ul>
+<li>k8s does not manage data persistence</li>
+<li>if database pod dies the data disappears</li>
+<li>it requires persistent database</li>
+<li>strorage could on:
+<ul>
+<li>on Local</li>
+<li>on Remote, outside of the cluster</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>What if pod dies =&gt; downtime occurs.</p>
+<ul>
+<li>use service as a load balancer which distributes traffic to multiple nodes</li>
+<li>Use multi-node and pod replicas(deployment as abstraction for pods)</li>
+<li>deployment specifies how many pods are deployed into multiple nodes</li>
+<li>BUT, database pods cannot be replicated. it requires to store data into a single storage
+<ul>
+<li>use StatefulSet for stateful apps such as Databases</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>Deployemnt</code> for stateless apps</p>
+<ul>
+<li>Deployment is the Abstraction of Pods</li>
+</ul>
+</li>
+<li>
+<p><code>StatefulSet</code> for stateFul apps or databases</p>
+<ul>
+<li>DB can't be replicated via deployment.</li>
+<li>Avoid data inconsistencies</li>
+<li>=&gt; StatefulSet for STATEFUL apps. e.g. mysql, mongodb, elastic search</li>
+<li>But deploying StatefulSet is not easy</li>
+<li><code>NOTE</code>: "DB are often hosted outside of k8s cluster"</li>
+</ul>
+</li>
+<li>
+<p>Minikube</p>
+<ul>
+<li>master and worker process run on a single node</li>
+<li>usually via virtual box or other hypervisor</li>
+<li>for testing purposes</li>
+</ul>
+</li>
+<li>
+<p>deployment</p>
+<ul>
+<li>blueprint for creating pods</li>
+<li>most basic configuration for deployemnt (name and image to use)</li>
+<li>rest defaults</li>
+</ul>
+</li>
+<li>
+<p>replicaset</p>
+<ul>
+<li>another abstraction of layer</li>
+<li>manages the replicas of a pod</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>k create deployment nginx-depl <span class="token parameter variable">--image</span><span class="token operator">=</span>nginx:alpine
+k get replicaset
+</code></pre><ul>
+<li>Layers of Abstraction
+<ul>
+<li>Deployment : manages a replicaset</li>
+<li>ReplicaSet : manages replicas of pods</li>
+<li>Pod : is an abstraction of containers</li>
+<li>Container</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code><span class="token comment"># edit deployement, but not pod directly</span>
+k edit deployment nginx-depl
+</code></pre><ul>
+<li>
+<p>YAML configuration file</p>
+<ul>
+<li>Attributes of <code>spec</code> are specific to the <code>kind</code></li>
+<li>each configuration file has 3 parts
+<ul>
+<li>metadata</li>
+<li>specification</li>
+<li>status: automatically generated by k8s (desired ==? actual) self-healing feature
+<ul>
+<li>k8s gets this status from <code>etcd</code>!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Store the YAML config file with your code (git repository)</li>
+<li><code>template</code> also has its own <code>metadata</code> and <code>spec</code>: applies to Pod
+<ul>
+<li>blueprint for a Pod</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Connecting the component</p>
+<ul>
+<li>labels &amp; selectors</li>
+<li><code>metadata</code> contains labels, <code>spec</code> contains selectors
+<ul>
+<li>metadata define key-value pair for label which is matched by the spec selector for pod</li>
+<li>pod gets the label through the spec.template blueprint</li>
+<li>pod belongs to deployment by label</li>
+<li>deployment labels are connected to service's spec.selector</li>
+<li>service's spec.selector uses deployment's metadata labels to make connection to deployement(pods)</li>
+</ul>
+</li>
+<li>service expose port (accessible) -&gt; forward to service targetPort -&gt; deployment's containerPort</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> apps/v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> Deployment
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx<span class="token punctuation">-</span>deployment
+  <span class="token comment"># NOTE label for deployment which is used by service to make connection to deployement(pods)</span>
+  <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+    <span class="token key atrule">app</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
+<span class="token key atrule">spec</span><span class="token punctuation">:</span>
+  <span class="token key atrule">replicas</span><span class="token punctuation">:</span> <span class="token number">2</span>
+  <span class="token key atrule">selector</span><span class="token punctuation">:</span>
+    <span class="token comment"># NOTE allows `Deployment` to find and manage Pods with this matching label</span>
+    <span class="token key atrule">matchLabels</span><span class="token punctuation">:</span>
+      <span class="token key atrule">app</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
+  <span class="token key atrule">template</span><span class="token punctuation">:</span>
+    <span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+      <span class="token comment"># NOTE sets the labels for the `Pods` created by the Deployment.</span>
+      <span class="token key atrule">labels</span><span class="token punctuation">:</span>
+        <span class="token key atrule">app</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
+    <span class="token key atrule">spec</span><span class="token punctuation">:</span>
+      <span class="token key atrule">containers</span><span class="token punctuation">:</span>
+      <span class="token punctuation">-</span> <span class="token key atrule">name</span><span class="token punctuation">:</span> fe<span class="token punctuation">-</span>nginx
+        <span class="token key atrule">image</span><span class="token punctuation">:</span> jnuho/fe<span class="token punctuation">-</span>nginx<span class="token punctuation">:</span>latest
+        <span class="token key atrule">imagePullPolicy</span><span class="token punctuation">:</span> IfNotPresent
+        <span class="token key atrule">ports</span><span class="token punctuation">:</span>
+        <span class="token punctuation">-</span> <span class="token key atrule">containerPort</span><span class="token punctuation">:</span> <span class="token number">80</span>
+      <span class="token comment">#imagePullSecrets:</span>
+      <span class="token comment">#- name: regcred</span>
+</code></pre><pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>k describe svc serivceName
+  Endpoints: podip:targetPort
+  <span class="token builtin class-name">:</span> this Endpoint <span class="token function">ip</span> matches pod <span class="token function">ip</span>
+
+k get pod podName <span class="token parameter variable">-o</span> wide
+k get deploy nginx-depl <span class="token parameter variable">-o</span> yaml
+  check the status is automatically generated by k8s
+  retrieve result of status from etcd
+</code></pre><ul>
+<li>
+<p>Complete Application setup with Kubernetes components</p>
+<ul>
+<li>mongodb(internal service; no external requests), mongo-express(Web-app)</li>
+<li>mongo express get url,id, pw from configmap and secret to connect to mongodb</li>
+<li>mongo express accessible from browser: NodeIp:PortOfExternalService</li>
+<li>2 Deployment / Pod</li>
+<li>2 Service</li>
+<li>1 ConfigMap</li>
+<li>1 Secret</li>
+<li>Browser -&gt; mongo express external service -&gt; mongoexpress pod -&gt; mongodb internal service -&gt; mongodb pod</li>
+</ul>
+</li>
+<li>
+<p>Namespace</p>
+<ul>
+<li>kube-system: system processes, master and kubectl processes</li>
+<li>kube-public: publicly accessible data, configmap, that contains cluster information <code>k cluster-info</code></li>
+<li>kube-node-lease: heartbeats of node, determines the availability of a node</li>
+<li>default: resources you create</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>kubectl create namespace myNameSpace
+</code></pre><ul>
+<li>
+<p>Group applications into namespaces</p>
+<ul>
+<li>e.g. database/ logging / monitoring/ nginx-ingress/elastic stack</li>
+<li>no need to create namespaces for smaller projects with about 10 users</li>
+<li>create namespaces if there are many teams, same application(same name)</li>
+<li>staging/development namespace resources use same resource in certain namespaces</li>
+<li>blue/green deployment using namespaces (Production green/blue)</li>
+<li>access and resource limits on nameaspaces</li>
+</ul>
+</li>
+<li>
+<p>Each NS must define own ConfigMap/Secret</p>
+<ul>
+<li>suppose projectA, projectB namespaces</li>
+<li>both namespace must have ConfigMap with exact same content</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="yaml" class="language-yaml yaml"><code><span class="token key atrule">apiVersion</span><span class="token punctuation">:</span> v1
+<span class="token key atrule">kind</span><span class="token punctuation">:</span> ConfigMap
+<span class="token key atrule">metadata</span><span class="token punctuation">:</span>
+  <span class="token key atrule">name</span><span class="token punctuation">:</span> mysql<span class="token punctuation">-</span>configmap
+<span class="token key atrule">data</span><span class="token punctuation">:</span>
+  <span class="token key atrule">db_url</span><span class="token punctuation">:</span> mysql<span class="token punctuation">-</span>service.database
+</code></pre><ul>
+<li>Components, which can't be created within a namespace
+<ul>
+<li>persistent volume</li>
+<li>node</li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>k api-resources <span class="token parameter variable">--namespaced</span><span class="token operator">=</span>false
+k api-resources <span class="token parameter variable">--namespaced</span><span class="token operator">=</span>true
+</code></pre><ul>
+<li>You can change the active namespace with kubens
+<ul>
+<li>without a need to <code>k get pod -n myNameSpace</code></li>
+</ul>
+</li>
+</ul>
+<pre data-role="codeBlock" data-info="sh" class="language-bash sh"><code>brew <span class="token function">install</span> kubectx
+kubens
+kubens my-namespace
+  Active namespace is <span class="token string">"my-namespace"</span>
 </code></pre><ul>
 <li>
 <p>Helm explained</p>

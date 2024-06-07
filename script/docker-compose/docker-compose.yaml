@@ -1,9 +1,9 @@
-version: "3"
 services:
   fe-nginx:
     build:
-      context: ../
+      context: ../../
       dockerfile: ./dockerfiles/Dockerfile-nginx
+    # hostPort:containerPort
     ports:
       - 8080:80
     depends_on:
@@ -15,7 +15,7 @@ services:
 
   be-go:
     build:
-      context: ../
+      context: ../../
       dockerfile: ./dockerfiles/Dockerfile-go
     ports:
       - 3001:3001
@@ -27,7 +27,7 @@ services:
 
   be-py:
     build:
-      context: ../
+      context: ../../
       dockerfile: ./dockerfiles/Dockerfile-py
     ports:
       - 3002:3002

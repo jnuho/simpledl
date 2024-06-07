@@ -1,9 +1,7 @@
 
-### Kubernetes Concept
+### Kubernetes Core Concept
 
-While I've been using `kubectl` commands to manage services in a cluster; creating ingress, service, pod components, etc,
-I've been lacking deeper knowledge of what they are, how they are interconnected and how clients access the cluster via endpoints.
-So I tried to understand the concept of each component.
+While I've been using `kubectl` commands to manage services in a cluster; creating ingress, service, pod components, etc, I've been lacking deeper knowledge of what they are, how they are interconnected and how clients access the cluster via endpoints. So I tried to understand the concept of each component.
 
 - <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
 - <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
@@ -16,21 +14,19 @@ So I tried to understand the concept of each component.
 | *components-of-kubernetes* |
 
 - Master node
-  - runs the control plane components and manage overall state of the cluster
-  - schedule, re-schedule, re-start pod
-  - monitor resources
-  - join a new node
-  - 4 process run on every master node:
+  - runs the control plane components, monitor and manage overall state of the cluster and resources
+  - schedule and start pods
+  - 4 processes run on every master node:
   - `kube-apiserver`
     - exposes the Kubernetes API and provides the front end to the Control Plane.
     - a single entrypoint (cluster gateway) for interacting with the k8s control plane
     - handles api requests, authentication, and authorization
     - acts as a gatekeeper for authentication
-      - request -> api server -> validates request -> other processes -> pod creation
+      - request → api server → validates request → other processes → pod creation
     - UI (dashboard), API(script,sdk), CLI (kubectl)
   - `kube-scheduler`
-    - schedule new pod -> api server -> scheduler
-    - -> which node to put the new Pod (intelligently decide based on resource percentage of nodes being used)
+    - schedule new pod → api server → scheduler
+    - → intelligently decide which node to put the new Pods based on resource percentage of nodes being used
     - scans for newly created pods and assigns them nodes based on a variety of factors
       - including resource requirements, hardware/software constraints and data locality.
     - distribute workloads across worker nodes
@@ -43,7 +39,7 @@ So I tried to understand the concept of each component.
       - Endpoints Controller — Populates endpoints and joins services and pods.
       - Service Account and Token Controller — Creation of accounts and API Access tokens.
     - detect cluster state changes(pods state)
-    - Controller Manager(detect pod state) -> Scheduler -> Kublet(on worker node)
+    - Controller Manager(detect pod state) → Scheduler → Kublet(on worker node)
   - `cloud-controller-manager`
   - `etcd`
     - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
@@ -78,6 +74,13 @@ So I tried to understand the concept of each component.
     - responsible for pulling images, creating containers
     - e.g. containerd
 
+- https://kubernetes.io/docs/concepts/architecture/
+
+|<img src="https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg" alt="add-node" width="820">|
+|:--:| 
+| *kubernetes-cluster-architecture* |
+
+
 - Example of Cluster Set-up
   - 2 Master nodes, 3 Worker nodes
   - Master node : less resources
@@ -108,8 +111,12 @@ So I tried to understand the concept of each component.
   - microservice app deployed
 
 - Ingress
+  - https://www.youtube.com/watch?v=NPFbYpb0I7w&ab_channel=IBMTechnology
+  - https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb
+  - https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&t=7312
+  - https://www.youtube.com/watch?v=y5-u4jtflic&ab_channel=TTABAE-LEARN
   - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
-  - `https://my-app.com` (ingress can configure secure https protocal with domain name) -> forwards traffic into `internal` service
+  - `https://my-app.com` (ingress can configure secure https protocal with domain name) → forwards traffic into `internal` service
   - [ingress by traefik.io](https://traefik.io/glossary/kubernetes-ingress-and-ingress-controller-101/#:~:text=A%20Kubernetes%20ingress%20controller%20follows,state%20requested%20by%20the%20user)
   - [gke ingress](https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io)
   - [load balancer and ingress duo](https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab)
@@ -140,18 +147,16 @@ So, the complete flow is: **ALB → Ingress Controller → Ingress → Service �
 Ingress allows fine-grained routing, and the Ingress Controller ensures that the load balancer routes requests correctly. If you need more complex routing based on HTTP criteria, Ingress is a powerful tool! 🚀
 
 
-1. Use External Service: http://my-node-ip:svcNodePort -> Pod
+1. Use External Service: http://my-node-ip:svcNodePort → Pod
   - service.spec.type=LoadBalancer, nodePort=30510
   - http://localhost:30510/
     - in VirtualBox port-forward 30510
 2. Use `Ingress` + Internal service: https://my-app.com
-  - Ingress Controller Pod -> Ingress (routing rule) -> Service -> Pod
+  - Ingress Controller Pod → Ingress (routing rule) → Service → Pod
   - using ingress, you can configure https connection
 
 
 ### Ingress Explained
-
-- https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&t=7312
 
 1. External Service (without Ingress)
 
@@ -172,7 +177,7 @@ spec:
       nodePort: 30510
 ```
 
-2. Using Ingress -> internal Service (e.g. `myapp-internal-service`)
+2. Using Ingress → internal Service (e.g. `myapp-internal-service`)
   - internal service has no `nodePort` and the type should be `type: ClusterIP`
   - must be valid domain address
   - map domain name to Node's IP address, which is the entrypoint
@@ -219,11 +224,11 @@ spec:
     - e.g. k8s Nginx Ingress Controller
   - HAVE TO CONSIDER the environemnt where the k8s cluster is running
     - Cloud Service Provider (AWS, GCP, AZURE)
-      - External reqeust from the browser ->
-        - Cloud Load balancer ->
-        - Ingress Controller Pod ->
-        - Ingress ->
-        - Service ->
+      - External reqeust from the browser →
+        - Cloud Load balancer →
+        - Ingress Controller Pod →
+        - Ingress →
+        - Service →
         - Pod
       - using cloud lb, you do not have to implement load balancer yourself
     - Baremetal
@@ -232,7 +237,7 @@ spec:
       - software or hardware solution can be used
       - must provide entrypoint
       - e.g. Proxy Server: public ip address and open ports
-        - Proxy server -> Ingress Controller Pod -> Ingress (checks ingress rules) -> Service -> Pod
+        - Proxy server → Ingress Controller Pod → Ingress (checks ingress rules) → Service → Pod
         - no server in k8s cluster is publicly accessible from outside
 
 
@@ -526,7 +531,7 @@ k edit deployment nginx-depl
     - pod belongs to deployment by label
     - deployment labels are connected to service's spec.selector
     - service's spec.selector uses deployment's metadata labels to make connection to deployement(pods)
-  - service expose port (accessible) -> forward to service targetPort -> deployment's containerPort
+  - service expose port (accessible) → forward to service targetPort → deployment's containerPort
 
 ```yaml
 apiVersion: apps/v1
@@ -578,7 +583,7 @@ k get deploy nginx-depl -o yaml
   - 2 Service
   - 1 ConfigMap
   - 1 Secret
-  - Browser -> mongo express external service -> mongoexpress pod -> mongodb internal service -> mongodb pod
+  - Browser → mongo express external service → mongoexpress pod → mongodb internal service → mongodb pod
 
 
 - Namespace
@@ -694,8 +699,8 @@ helm install --set version=2.0.0
 - version2:
   - client  (cli)
   - server (tiller)
-  - helm install(cli) -> tiller execute yaml and deploy the cluster
-  - helm install/upgrade/rollback -> tiller create history with revision
+  - helm install(cli) → tiller execute yaml and deploy the cluster
+  - helm install/upgrade/rollback → tiller create history with revision
     - revision 1,2... history is stored
     - downsides: tiller has too much power inside of k8s cluster
       - security risk
@@ -797,7 +802,7 @@ spec:
 
 - Stateful and stateless applications example
   - nodejs(stateless) + mongodb(stateful)
-  - http request (doesn't depend on previous data to handle)-> nodejs
+  - http request (doesn't depend on previous data to handle)→ nodejs
     - handle it based on the payload of request
     - update/query from mongodb app
   - mongodb update data based on previous state / query data
@@ -832,7 +837,7 @@ spec:
     - where node2: 10.2.2.x
     - where node3: 10.2.3.x
     - `k get pod -o wide` to check pod ip
-    - Ingress -> Service(ClusterIP) -> Pods
+    - Ingress → Service(ClusterIP) → Pods
     - Sevice's `spec.selector` : which Pods it forward to
     - Sevice's `spec.ports.targetPort` : which Ports it forward to
     - Pods are identified via selectors
@@ -957,7 +962,7 @@ mongodb-service-headless ClusterIP  None       <none>      27017/TCP
     - `nodePort` range should be: 30000 - 32767
     - `http://ip-address-worker-node:nodePort`
     - When you create NodePort Service, ClusterIP Service is also automatically created because nodePort has to be routed to `port` of Service
-      - `nodePort` -> `port`
+      - `nodePort` → `port`
       - e.g.  `port:3200`, `nodePort:30008`
         - cluster-ip:3200
         - node-ip:30008
@@ -995,8 +1000,8 @@ spec:
 - Wrap-up
   - NodePort Service NOT for external connection! TEST-ONLY
   - two common practice:
-    - Ingress -> Service (ClusterIP)
-    - LoadBalanceri -> Service (ClusterIP)
+    - Ingress → Service (ClusterIP)
+    - LoadBalanceri → Service (ClusterIP)
 
 
 
@@ -1129,7 +1134,7 @@ source .bashrc
   - Ingress rule을 통해 하나의 Ip 주소로 들어오도록 설정
   - Ingress Controller가 실제 traffic route하며, Ingress는 rule을 정의하는 역할
 
-- 이미지 만들기 -> Dockerhub에 push
+- 이미지 만들기 → Dockerhub에 push
 
 ```sh
 # 이미지 만들기

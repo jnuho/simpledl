@@ -50,20 +50,21 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 		"cat_url": catURL,
 	})
 	resp, err := http.Post("http://be-py-service:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+	// resp, err := http.Post("http://be-py:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("request to python failed: %v", err)
 	}
 	defer resp.Body.Close()
 
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("reading python server response failed: %v", err)
 	}
 
 	var result responseParam
 	err = json.Unmarshal(b, &result)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unmarshal python response body failed: %v", err)
 	}
 
 	return &result, nil
@@ -71,6 +72,7 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 
 // handle POST request from client
 func postMethodHandler(c *gin.Context) {
+	log.Printf("Before python call\n")
 	catObj, err := validateRequest(c)
 	if err != nil {
 		log.Println(err)
@@ -84,6 +86,7 @@ func postMethodHandler(c *gin.Context) {
 	result, err := callPythonBackend(catObj.URL)
 	if err != nil {
 		log.Fatalln(err)
+		c.AbortWithStatus(http.StatusForbidden)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Error calling Python backend",
 		})
@@ -101,13 +104,25 @@ func postMethodHandler(c *gin.Context) {
 
 }
 
+// func customErrorHandler(c *gin.Context) {
+// 	c.Next() // Execute the remaining handlers
+
+// 	// Check if the response status is 403
+// 	if c.Writer.Status() == http.StatusForbidden {
+// 		// Log additional details (e.g., request path)
+// 		fmt.Printf("403 error for path: %s\n", c.Request.URL.Path)
+// 		// You can log other relevant information here
+// 	}
+// }
+
 func StartServer(host string) error {
 	// Router
 	router := gin.Default()
 
 	// Apply the CORS middleware to the router
 	config := cors.Config{
-		AllowOrigins:     []string{"http://localhost"}, // or use "*" to allow all origins
+		// AllowOrigins:     []string{"http://localhost"}, // or use "*" to allow all origins
+		AllowOrigins:     []string{"*"}, // or use "*" to allow all origins
 		AllowMethods:     []string{"POST", "GET"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -116,7 +131,8 @@ func StartServer(host string) error {
 	router.Use(cors.New(config))
 
 	router.GET("/", getMethodHandler)
-	router.POST("/", postMethodHandler)
+	router.POST("/", postMethodHandler) // in k8s ingress env
+	// router.POST("/web/cat", postMethodHandler) // in docker env
 
 	// NOTE: r.Run("localhost:3001") means your server will only be accessible
 	// via the same machine on which it is running. So, another docker container cannot access it.

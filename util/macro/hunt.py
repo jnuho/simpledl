@@ -178,7 +178,7 @@ class GController(object):
 
 if __name__ == "__main__":
     # ["dsa", "3c", "raide"]
-    controller = GController(monster_type=0, req_food=True)
+    controller = GController(0, True)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object
