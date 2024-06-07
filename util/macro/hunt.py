@@ -15,13 +15,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GController(object):
-    def __init__(self, failsafe=False, monster_type=0, req_food=True):
+    def __init__(self, monster_type=0, req_food=True):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
         self.req_food = req_food
 
-        self.monster = ["dsa", "3c", "raide"][monster_type]
+        self.monster = ["dsa", "3c", "raide",][monster_type]
         self.resv_attack_cnt = {
             "dsa": {
                 8: 0,
@@ -45,7 +45,7 @@ class GController(object):
             },
         }[self.monster]
 
-        pag.FAILSAFE = failsafe
+        pag.FAILSAFE = False
 
         title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
         windows = gw.getWindowsWithTitle(title)
@@ -177,8 +177,8 @@ class GController(object):
 
 
 if __name__ == "__main__":
-    # ["dsa", "3c", "raide"]
-    controller = GController(0, True)
+    # ["dsa", "3c", "raide", "cho"]
+    controller = GController(0, False)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object

@@ -20,8 +20,6 @@ class GController(object):
         pag.FAILSAFE = failsafe
 
 
-
-
     def pressAndRelease(self, key):
         self.kb.press(key)
         time.sleep(random.gauss(mu=.01, sigma=.001))
