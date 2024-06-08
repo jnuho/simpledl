@@ -96,7 +96,7 @@ class GController(object):
                 time.sleep(random.gauss(mu=.3, sigma=.001))
                 self.pressAndRelease('j')
 
-            time.sleep(random.gauss(mu=25*60, sigma=.5))
+            time.sleep(random.gauss(mu=25*60, sigma=1))
 
 
     def cleanup(self):

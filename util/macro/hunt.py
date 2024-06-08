@@ -77,9 +77,9 @@ class GController(object):
         # mu : mean
         # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
         self.kb.press(key)
-        time.sleep(random.gauss(mu=.018, sigma=.0001/6))
+        time.sleep(random.gauss(mu=.0181, sigma=.001))
         self.kb.release(key)
-        time.sleep(random.gauss(mu=.018, sigma=.0001/6))
+        time.sleep(random.gauss(mu=.0181, sigma=.001))
 
 
     def retreat(self):
@@ -165,7 +165,7 @@ class GController(object):
                 self.pressAndRelease('r')
                 for _ in range(v):
                     self.pressAndRelease('e')
-                time.sleep(random.gauss(mu=.01, sigma=.0001))
+                time.sleep(random.gauss(mu=.01, sigma=.001))
 
         # elif event.name == 'x':
         elif event == KeyCode.from_char('\''):
@@ -178,7 +178,7 @@ class GController(object):
 
 if __name__ == "__main__":
     # ["dsa", "3c", "raide", "cho"]
-    controller = GController(0, False)
+    controller = GController(0, True)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object
