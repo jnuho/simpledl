@@ -77,9 +77,9 @@ class GController(object):
         # mu : mean
         # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
         self.kb.press(key)
-        time.sleep(random.gauss(mu=.0181, sigma=.001))
+        time.sleep(random.gauss(mu=.018, sigma=.001))
         self.kb.release(key)
-        time.sleep(random.gauss(mu=.0181, sigma=.001))
+        time.sleep(random.gauss(mu=.018, sigma=.001))
 
 
     def retreat(self):
