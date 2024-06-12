@@ -16,13 +16,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GController(object):
-    def __init__(self, failsafe=False):
+    def __init__(self):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
         self.running = True
 
-        pag.FAILSAFE = failsafe
+        pag.FAILSAFE = False
 
     def mouse_l_click(self, x, y):
         pag.moveTo(x,y)

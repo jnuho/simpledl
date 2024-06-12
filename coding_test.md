@@ -18,10 +18,10 @@
   - O(1) read/write i^th element (due to RAM; random access memory)
   - O(1) insert/remove *at the end*
     - stored address is not neccessarily right after the previous array element
-  - O(n) insert in the middle in worst case
+  - O(n) insert in the middle in worst case (shifting to the right takes roughly 'n' operations)
     - 5, 6 (inserting 4 requres shifting in arrays)
     - 4, 5, 6
-  - O(n) remove in the middle
+  - O(n) remove in the middle (shift from left takes roughly 'n' operations)
     - 5, 6 (inserting 4 requres shifting in arrays)
     - 4, 5, 6
 
@@ -50,4 +50,21 @@ Remove from Middle  | O(n) (copy to new array) | O(n)
 
 
 - Stack
+  - implemented using Dynamic Array
+  - LIFO; Last In, First Out
+  - push O(1)
+  - pop O(1)
+  - peek/top  O(1)
+
+- Linked List
+
+```go
+type ListNode struct {
+  Value int
+  Next *ListNode
+}
+
+```
+
+
 

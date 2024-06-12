@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -24,8 +25,15 @@ type responseParam struct {
 	STATUS string `json:"status"`
 }
 
+func oneTimeOp() {
+	fmt.Println("one time op start")
+	time.Sleep(3 * time.Second)
+	fmt.Println("one time op started")
+}
+
 // handle GET request from client
 func getMethodHandler(c *gin.Context) {
+	once.Do(oneTimeOp)
 	c.String(http.StatusOK, "pong")
 }
 

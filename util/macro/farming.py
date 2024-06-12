@@ -17,15 +17,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GController(object):
-    def __init__(self, failsafe=False):
+    def __init__(self):
         self.kb = KbController()
         self.mouse = MouseController()
         self.window = None
         self.running = True
 
-        pag.FAILSAFE = failsafe
+        pag.FAILSAFE = False
 
     def mouse_l_click(self, x, y):
+        x = random.gauss(mu=x, sigma=.03)
+        y = random.gauss(mu=y, sigma=.03)
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
         time.sleep(random.gauss(mu=.3, sigma=.001))
@@ -81,7 +83,11 @@ class GController(object):
                 self.pressAndRelease('i')
 
                 # Food
-                pag.moveTo(w.left + (w.width*.5835), w.top + (w.height*.2484))
+                food_x = w.left + (w.width*.5835)
+                food_y = w.top + (w.height*.2484)
+                food_x = random.gauss(mu=food_x, sigma=.03)
+                food_y = random.gauss(mu=food_y, sigma=.03)
+                pag.moveTo(food_x, food_y)
                 time.sleep(random.gauss(mu=.3, sigma=.001))
 
                 self.mouse_r_click()

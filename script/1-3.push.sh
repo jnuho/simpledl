@@ -5,6 +5,6 @@
 
 docker login
 
-docker push jnuho/fe-nginx-k8s
-docker push jnuho/be-go-k8s
+docker push jnuho/fe-nginx
+docker push jnuho/be-go
 docker push jnuho/be-py

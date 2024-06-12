@@ -15,4 +15,7 @@ def getNumpyRandNorm():
 
 if __name__ == "__main__":
     for i in range(10):
-        print(random.gauss(mu=.1, sigma=.01))
+        x,y = 750, 200
+        x = random.gauss(mu=x, sigma=.03)
+        y = random.gauss(mu=y, sigma=.03)
+        print(x,y)

@@ -2,38 +2,49 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
+	"sync"
 )
 
+func worker(workerId int, jobs <-chan int, results chan<- int) {
+	for job := range jobs {
+		results <- job
+		fmt.Printf("worker(%d) is doing job-%d\n", workerId, job)
+	}
+}
+
 func main() {
-	c := make(chan int)
-	// Both producer and consumer goroutine do not have to coexist
-	// i.e. even if the producer goroutine finishes (and closes the channel),
-	// the consumer goroutine range loop will receive all the values.
+	// 3 goroutines(workers) on 10 jobs and 10 results
+	numOfWorkers := 3
+	numOfJobs := 10
 
-	// producer
+	jobs := make(chan int, numOfJobs)
+	results := make(chan int, numOfJobs)
+
+	var wg sync.WaitGroup
+
+	// pool of workers
+	for i := 1; i <= numOfWorkers; i++ {
+		wg.Add(1)
+		// consume jobs -> results
+		go func(workerId int) {
+			defer wg.Done()
+			worker(workerId, jobs, results)
+		}(i)
+	}
+
+	// produce jobs
+	for i := 1; i <= numOfJobs; i++ {
+		jobs <- i
+	}
+	close(jobs)
+
 	go func() {
-		for i := 0; i < 5; i++ {
-			c <- i
-			time.Sleep(1 * time.Second)
-		}
-		// Without closing channel, the consumer will wait indefinitely for channel
-		close(c)
-		fmt.Println("producer finished.")
+		wg.Wait()
+		close(results)
 	}()
 
-	// consumer
-	go func() {
-		for i := range c {
-			fmt.Printf("consumer gets i = %d\n", i)
-		}
-		fmt.Println("consumer finished. press ctrl+c to exit")
-	}()
-
-	e := make(chan os.Signal)
-	signal.Notify(e, syscall.SIGINT, syscall.SIGTERM)
-	<-e
+	// read results
+	for result := range results {
+		fmt.Printf("reading result: job-%d\n", result)
+	}
 }
