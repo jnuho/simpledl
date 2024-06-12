@@ -28,6 +28,8 @@ class GController(object):
 
 
     def mouse_l_click(self, x, y):
+        x = random.gauss(mu=x, sigma=.03)
+        y = random.gauss(mu=y, sigma=.03)
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
         time.sleep(random.gauss(mu=.08, sigma=.001))
@@ -38,9 +40,17 @@ class GController(object):
     def locateToClick(self, keyword):
         # for _ in range(self.conv_cnt):
         try:
-            accept = pag.locateCenterOnScreen("util/images/" + keyword + ".png", confidence=.93, grayscale=True)
-            self.mouse_l_click(accept.x, accept.y)
-            pag.moveTo(self.window.left+self.window.width/2, self.window.top +self.window.height/2)
+            found = pag.locateCenterOnScreen("util/images/" + keyword + ".png", confidence=.93, grayscale=True)
+            found_x = random.gauss(mu=found.x, sigma=.03)
+            found_y = random.gauss(mu=found.y, sigma=.03)
+            self.mouse_l_click(found_x, found_y)
+
+            default_x = self.window.left+self.window.width/2
+            default_y = self.window.top +self.window.height/2
+            default_x = random.gauss(mu=default_x, sigma=.03)
+            default_y = random.gauss(mu=default_y, sigma=.03)
+            pag.moveTo(default_x, default_y)
+
             return True
         except pag.ImageNotFoundException:
             print("`" + keyword + "`" + "NOT FOUND")

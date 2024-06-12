@@ -25,6 +25,8 @@ class GController(object):
         pag.FAILSAFE = False
 
     def mouse_l_click(self, x, y):
+        x = random.gauss(mu=x, sigma=.03)
+        y = random.gauss(mu=y, sigma=.03)
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
         time.sleep(random.gauss(mu=.3, sigma=.001))
