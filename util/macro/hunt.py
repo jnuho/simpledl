@@ -1,6 +1,7 @@
 import pyautogui as pag
 import pygetwindow as gw
 
+# import pydirectinput
 from pynput.keyboard import KeyCode, Key, Listener
 from pynput.keyboard import Controller as KbController
 from pynput.mouse import Button
@@ -10,6 +11,7 @@ import time
 import base64
 import random
 import os
+import traceback
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -56,6 +58,7 @@ class GController(object):
 
     def get_food(self):
         try:
+            # TODO region=()
             pos_found = pag.locateCenterOnScreen("util/images/food.png", confidence=.93, grayscale=True)
             # 150 바 = 687-537
             # 248: 100%        # -310 일때 길이: 225
@@ -69,7 +72,8 @@ class GController(object):
                     self.kb.release('2')
                     time.sleep(random.gauss(mu=.2, sigma=.0005))
                 self.kb.release(Key.alt)
-        except pag.ImageNotFoundException:
+        except:
+            print(traceback.format_exc())
             print("not found")
 
 
@@ -178,7 +182,7 @@ class GController(object):
 
 if __name__ == "__main__":
     # ["dsa", "3c", "raide", "cho"]
-    controller = GController(1, False)
+    controller = GController(0, True)
 
     # The with statement is used to create a context in which the Listener object is active.
     # it ensures proper setup and cleanup of the Listener object

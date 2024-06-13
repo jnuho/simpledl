@@ -125,7 +125,7 @@ func postMethodHandler(c *gin.Context) {
 
 func StartServer(host string) error {
 	// Router
-	router := gin.Default()
+	r := gin.Default()
 
 	// Apply the CORS middleware to the router
 	config := cors.Config{
@@ -136,21 +136,22 @@ func StartServer(host string) error {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}
-	router.Use(cors.New(config))
+	r.Use(cors.New(config))
 
-	router.GET("/", getMethodHandler)
-	router.POST("/", postMethodHandler) // in k8s ingress env
-	// router.POST("/web/cat", postMethodHandler) // in docker env
+	r.GET("/", getMethodHandler)
+	r.POST("/", postMethodHandler) // in k8s ingress env
+	// r.POST("/web/cat", postMethodHandler) // in docker env
 
 	// NOTE: r.Run("localhost:3001") means your server will only be accessible
 	// via the same machine on which it is running. So, another docker container cannot access it.
-	err := router.Run(host)
+	err := r.Run(host)
 	return err
 }
 
 func main() {
 	// ./go-app -web-host=":3001"
-	host := flag.String("web-host", ":3001", "Specify host and port for backend.")
+	host := flag.String("web-host", "localhost:3001", "Specify host and port for backend.")
+	flag.Parse()
 	err := StartServer(*host)
 	if err != nil {
 		glog.Fatal(err)
