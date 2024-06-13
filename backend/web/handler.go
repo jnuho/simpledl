@@ -15,6 +15,8 @@ type Server struct {
 	rootCancel func()
 	webURL     url.URL
 	httpServer *http.Server
+
+	donec chan struct{}
 }
 
 func getRequestHandler(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +55,11 @@ func CORS(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+// StopNotify returns receive-only stop channel to notify the server has stopped.
+func (srv *Server) StopNotify() <-chan struct{} {
+	return srv.donec
+}
+
 func StartServer(scheme, hostPort string) (*Server, error) {
 	// Log format
 	log.SetFlags(log.Ltime)
@@ -69,6 +76,7 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		rootCancel: cancel,
 		webURL:     url.URL{Scheme: scheme, Host: hostPort},
 		httpServer: &http.Server{Addr: hostPort, Handler: mux},
+		donec:      make(chan struct{}),
 	}
 
 	// Create a channel to handle OS signals (e.g., Ctrl+C)
@@ -89,23 +97,28 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		// Ensures that resources (goroutines, network connections, etc.) associated with the context
 		// are properly cleaned up when the program exits.
 		defer func() {
-			cancel()
+			srv.rootCancel()
 		}()
 
 		log.Printf("Server listening on %v\n", hostPort)
 		if err := srv.httpServer.ListenAndServe(); err != nil {
 			log.Fatalf("%v", err)
 		}
-	}()
 
-	// Wait for OS signals or context cancellation
-	select {
-	case <-sigCh:
-		log.Println("Received interrupt signal. Shutting down gracefully...")
-		cancel() // Cancel the context
-	case <-ctx.Done():
-		// Context canceled (e.g., due to an error)
-	}
+		// Wait for OS signals or context cancellation
+		select {
+		case <-sigCh:
+			log.Println("Received interrupt signal. Shutting down gracefully...")
+			srv.rootCancel() // Cancel the context
+		case <-srv.rootCtx.Done():
+			return
+		case <-srv.donec:
+			return
+			// Context canceled (e.g., due to an error)
+		default:
+			close(srv.donec)
+		}
+	}()
 
 	// Shutdown the server gracefully
 	// if err := server.Shutdown(ctx); err != nil {
