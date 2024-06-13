@@ -2,6 +2,8 @@ package web
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -9,6 +11,20 @@ import (
 	"os/signal"
 	"syscall"
 )
+
+type key int
+
+const (
+	serverKey key = iota
+	queueKey
+	cacheKey
+	userKey
+)
+
+type Item struct {
+	URL    string `json:"cat_url"`
+	STATUS int64  `json:"status"`
+}
 
 type Server struct {
 	rootCtx    context.Context
@@ -19,46 +35,88 @@ type Server struct {
 	donec chan struct{}
 }
 
-func getRequestHandler(w http.ResponseWriter, r *http.Request) {
+func with(h ContextHandler, srv *Server) ContextHandler {
+	return ContextHandlerFunc(func(ctx context.Context, w http.ResponseWriter, req *http.Request) error {
+		ctx = context.WithValue(ctx, serverKey, srv)
+		// ctx = context.WithValue(ctx, queueKey, qu)
+		// ctx = context.WithValue(ctx, cacheKey, cache)
+		// ctx = context.WithValue(ctx, userKey, generateUserID(req))
+
+		// CORS setting
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, etc.)
+
+		// if r.Method == "OPTIONS" {
+		// 	http.Error(w, "No Content", http.StatusNoContent)
+		// 	return nil
+		// }
+		return h.ServeHTTPContext(ctx, w, req)
+	})
+}
+
+func getRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case http.MethodGet:
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("pong"))
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		return
+		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
 	}
+	return nil
 }
 
-func postRequestHandler(w http.ResponseWriter, r *http.Request) {
+func validateRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Error parsing form data", http.StatusBadRequest)
+		return nil, err
+	}
+
+	// Get the value of the "cat_url" parameter
+	catURL := r.FormValue("cat_url")
+	catObj := Item{URL: catURL, STATUS: http.StatusOK}
+
+	return &catObj, nil
+}
+
+func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	catObj, err := validateRequest(w, r)
+	if err != nil {
+		http.Error(w, "Error parsing form data", http.StatusBadRequest)
+		return err
+	}
+
 	switch r.Method {
 	case http.MethodPost:
+		// jsonData, _ := json.Marshal(map[string]string{
+		// 	"cat_url": catURL,
+		// })
+		return json.NewEncoder(w).Encode(catObj)
+
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		return
+		return fmt.Errorf("invalid request method: %v", r.Method)
 	}
 }
 
-func CORS(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, etc.)
+// func CORS(next http.HandlerFunc) http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
+// 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+// 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+// 		w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, etc.)
 
-		if r.Method == "OPTIONS" {
-			http.Error(w, "No Content", http.StatusNoContent)
-			return
-		}
+// 		if r.Method == "OPTIONS" {
+// 			http.Error(w, "No Content", http.StatusNoContent)
+// 			return
+// 		}
 
-		next(w, r)
-	}
-}
-
-// StopNotify returns receive-only stop channel to notify the server has stopped.
-func (srv *Server) StopNotify() <-chan struct{} {
-	return srv.donec
-}
+// 		next(w, r)
+// 	}
+// }
 
 func StartServer(scheme, hostPort string) (*Server, error) {
 	// Log format
@@ -85,8 +143,16 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 	// Create a ServeMux
-	mux.HandleFunc("/ping", CORS(getRequestHandler))
-	mux.HandleFunc("/web/cat", CORS(postRequestHandler))
+	mux.Handle("/ping", &ContextAdapter{
+		ctx:     srv.rootCtx,
+		handler: with(ContextHandlerFunc(getRequestHandler), srv),
+	})
+
+	mux.Handle("/web/cat", &ContextAdapter{
+		ctx:     srv.rootCtx,
+		handler: with(ContextHandlerFunc(postRequestHandler), srv),
+	})
+
 	// mux.HandleFunc("/ping", CORS(helloHandler))
 	// mux.HandleFunc("/web/cat", CORS(helloHandler))
 	// r.POST("/", postMethodHandler) // in k8s ingress env
@@ -102,6 +168,7 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 
 		log.Printf("Server listening on %v\n", hostPort)
 		if err := srv.httpServer.ListenAndServe(); err != nil {
+			fmt.Println(err)
 			log.Fatalf("%v", err)
 		}
 
@@ -126,4 +193,9 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		log.Fatalf("Error shutting down server: %v\n", err)
 	}
 	return srv, nil
+}
+
+// StopNotify returns receive-only stop channel to notify the server has stopped.
+func (srv *Server) StopNotify() <-chan struct{} {
+	return srv.donec
 }
