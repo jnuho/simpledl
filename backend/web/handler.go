@@ -1,13 +1,21 @@
 package web
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
 )
+
+type Response struct {
+	CatURL       string `json:"cat_url"`
+	GoServer     string `json:"go-server"`
+	PythonServer int    `json:"python-server"`
+}
 
 type Item struct {
 	URL    string `json:"cat_url"`
@@ -57,7 +65,7 @@ func getRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Reque
 	switch r.Method {
 	case http.MethodGet:
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("pong"))
+		w.Write([]byte("OK"))
 		return nil
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -79,6 +87,32 @@ func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 	return &catObj, nil
 }
 
+// Send POST Request to another backend python server
+func callPythonBackend(catURL string) (*Item, error) {
+	jsonData, _ := json.Marshal(map[string]string{
+		"cat_url": catURL,
+	})
+	resp, err := http.Post("http://be-py-service:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+	// resp, err := http.Post("http://be-py:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("request to python failed: %v", err)
+	}
+	defer resp.Body.Close()
+
+	b, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("reading python server response failed: %v", err)
+	}
+
+	var result Item
+	err = json.Unmarshal(b, &result)
+	if err != nil {
+		return nil, fmt.Errorf("unmarshal python response body failed: %v", err)
+	}
+
+	return &result, nil
+}
+
 func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	catObj, err := validateCatRequest(w, r)
 	if err != nil {
@@ -88,10 +122,29 @@ func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Requ
 
 	switch r.Method {
 	case http.MethodPost:
+		result, err := callPythonBackend(catObj.URL)
+		if err != nil {
+			// log.Fatalln(err)
+			// c.AbortWithStatus(http.StatusForbidden)
+			// c.JSON(http.StatusInternalServerError, gin.H{
+			// 	"message": "Error calling Python backend",
+			// })
+			return fmt.Errorf("error calling python backend: %v", err)
+		}
+		log.Printf("RESULT FROM Python ASGI SERVER!!! %v\n", result)
+
+		// Response
+		// c.JSON(http.StatusOK, catUrl)
+		retObj := &Response{
+			CatURL:       result.URL,
+			GoServer:     "ok",
+			PythonServer: int(result.STATUS),
+		}
+
 		// jsonData, _ := json.Marshal(map[string]string{
 		// 	"cat_url": catURL,
 		// })
-		return json.NewEncoder(w).Encode(catObj)
+		return json.NewEncoder(w).Encode(retObj)
 
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
@@ -141,7 +194,7 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 	// signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 	// Create a ServeMux
-	mux.Handle("/ping", &ContextAdapter{
+	mux.Handle("/healthz", &ContextAdapter{
 		ctx:     rootCtx,
 		handler: with(ContextHandlerFunc(getRequestHandler), srv),
 	})
