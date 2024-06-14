@@ -7,18 +7,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os"
-	"os/signal"
-	"syscall"
-)
-
-type key int
-
-const (
-	serverKey key = iota
-	queueKey
-	cacheKey
-	userKey
 )
 
 type Item struct {
@@ -34,6 +22,15 @@ type Server struct {
 
 	donec chan struct{}
 }
+
+type key int
+
+const (
+	serverKey key = iota
+	queueKey
+	cacheKey
+	userKey
+)
 
 func with(h ContextHandler, srv *Server) ContextHandler {
 	return ContextHandlerFunc(func(ctx context.Context, w http.ResponseWriter, req *http.Request) error {
@@ -61,14 +58,14 @@ func getRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Reque
 	case http.MethodGet:
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("pong"))
+		return nil
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
 	}
-	return nil
 }
 
-func validateRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
+func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Error parsing form data", http.StatusBadRequest)
@@ -83,7 +80,7 @@ func validateRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 }
 
 func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	catObj, err := validateRequest(w, r)
+	catObj, err := validateCatRequest(w, r)
 	if err != nil {
 		http.Error(w, "Error parsing form data", http.StatusBadRequest)
 		return err
@@ -123,33 +120,34 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 	log.SetFlags(log.Ltime)
 
 	// Create a context with cancellation support
-	ctx, cancel := context.WithCancel(context.Background())
+	rootCtx, rootCancel := context.WithCancel(context.Background())
 
 	// Create a ServeMux
 	mux := http.NewServeMux()
 
-	// Define HTTP server abstraction and encapsulation of server configuration
+	// Define HTTP server abstraction and configuration
+	webURL := url.URL{Scheme: scheme, Host: hostPort}
 	srv := &Server{
-		rootCtx:    ctx,
-		rootCancel: cancel,
-		webURL:     url.URL{Scheme: scheme, Host: hostPort},
-		httpServer: &http.Server{Addr: hostPort, Handler: mux},
+		rootCtx:    rootCtx,
+		rootCancel: rootCancel,
+		webURL:     webURL,
+		httpServer: &http.Server{Addr: webURL.Host, Handler: mux},
 		donec:      make(chan struct{}),
 	}
 
 	// Create a channel to handle OS signals (e.g., Ctrl+C)
 	// and registers the channel sigCh to receive notifications for specific OS signals.
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+	// sigCh := make(chan os.Signal, 1)
+	// signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 	// Create a ServeMux
 	mux.Handle("/ping", &ContextAdapter{
-		ctx:     srv.rootCtx,
+		ctx:     rootCtx,
 		handler: with(ContextHandlerFunc(getRequestHandler), srv),
 	})
 
 	mux.Handle("/web/cat", &ContextAdapter{
-		ctx:     srv.rootCtx,
+		ctx:     rootCtx,
 		handler: with(ContextHandlerFunc(postRequestHandler), srv),
 	})
 
@@ -167,16 +165,15 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		}()
 
 		log.Printf("Server listening on %v\n", hostPort)
-		if err := srv.httpServer.ListenAndServe(); err != nil {
-			fmt.Println(err)
+		if err := srv.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("%v", err)
 		}
 
 		// Wait for OS signals or context cancellation
 		select {
-		case <-sigCh:
-			log.Println("Received interrupt signal. Shutting down gracefully...")
-			srv.rootCancel() // Cancel the context
+		// case <-sigCh:
+		// 	log.Println("Received interrupt signal. Shutting down gracefully...")
+		// 	srv.rootCancel() // Cancel the context
 		case <-srv.rootCtx.Done():
 			return
 		case <-srv.donec:
@@ -189,9 +186,9 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 
 	// Shutdown the server gracefully
 	// if err := server.Shutdown(ctx); err != nil {
-	if err := srv.httpServer.Shutdown(ctx); err != nil {
-		log.Fatalf("Error shutting down server: %v\n", err)
-	}
+	// if err := srv.httpServer.Shutdown(rootCtx); err != nil {
+	// 	log.Fatalf("Error shutting down server: %v\n", err)
+	// }
 	return srv, nil
 }
 
