@@ -199,8 +199,7 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		handler: with(ContextHandlerFunc(getRequestHandler), srv),
 	})
 
-	// mux.Handle("/web/cat", &ContextAdapter{
-	mux.Handle("/", &ContextAdapter{
+	mux.Handle("/web/cat", &ContextAdapter{
 		ctx:     rootCtx,
 		handler: with(ContextHandlerFunc(postRequestHandler), srv),
 	})
