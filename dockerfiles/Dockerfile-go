@@ -10,7 +10,6 @@ COPY ./go.sum ./
 COPY ./cmd/backend-web-server/main.go ./
 
 # Install the app dependencies inside the docker image
-# RUN go get github.com/jnuho/simpledl/backend/web
 RUN go mod download && go mod verify
 
 
