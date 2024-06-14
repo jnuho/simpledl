@@ -5,11 +5,12 @@ FROM golang:1.22.3-alpine as build
 WORKDIR /
 
 # Copy package.json and package-lock.json into the working directory
-COPY ./cmd/backend-web-server/go.mod ./
-COPY ./cmd/backend-web-server/go.sum ./
+COPY ./go.mod ./
+COPY ./go.sum ./
 COPY ./cmd/backend-web-server/main.go ./
 
 # Install the app dependencies inside the docker image
+RUN go get github.com/jnuho/simpledl/backend/web
 RUN go mod download && go mod verify
 
 
@@ -27,4 +28,4 @@ EXPOSE 3001
 
 # When you specify CMD ["go-app"], Docker looks for an executable named go-app in the system’s $PATH.
 # The $PATH includes common directories where executables are stored, such as /usr/local/bin, /usr/bin, and others.
-CMD ["go-app -web-scheme=http -web-host=localhost:8080"]
+CMD ["go-app -web-scheme=http -web-host=localhost:3001"]
