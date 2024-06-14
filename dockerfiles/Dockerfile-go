@@ -5,21 +5,17 @@ FROM golang:1.22.3-alpine as build
 WORKDIR /
 
 # # Copy package.json and package-lock.json into the working directory
-COPY ./go.mod ./
-COPY ./go.sum ./
-COPY ./backend/web ./backend/web
-COPY ./cmd/backend-web-server/main.go ./cmd/backend-web-server/main.go
+COPY go.mod go.sum ./
+COPY backend/web ./backend/web
+COPY cmd/backend-web-server/main.go ./cmd/backend-web-server/main.go
 
 # # Install the app dependencies inside the docker image
 RUN go mod download && go mod verify
 
 
 # # Define the command to run your app using CMD which defines your runtime
-RUN go build -o backend-web-server ./cmd/backend-web-server
-# RUN go build -v -o /backend-web-server && \
-#     rm -rf /var/cache/apk/* /tmp/*
-
-# RUN go install -v ./cmd/backend-web-server
+RUN go build -o backend-web-server ./cmd/backend-web-server && \
+    rm -rf /var/cache/apk/* /tmp/*
 
 # Use a smaller base image for the final image
 FROM alpine:latest
