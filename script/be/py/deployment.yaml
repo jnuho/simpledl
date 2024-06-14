@@ -17,7 +17,7 @@ spec:
       containers:
       - name: be-py
         image: jnuho/be-py:latest
-        imagePullPolicy: IfNotPresent
+        #imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3002
       #imagePullSecrets:

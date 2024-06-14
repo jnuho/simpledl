@@ -712,6 +712,8 @@ sudo snap install microk8s --classic
 sudo usermod -a -G microk8s $USER
 sudo chown -f -R $USER ~/.kube
 
+microk8s start
+
 microk8s.status --wait-ready
 microk8s kubectl get no
 microk8s kubectl get svc
@@ -723,8 +725,6 @@ EOF
 
 source ~/.bashrc
 
-
-microk8s start
 
 # Join node (All 3 are master nodes)
 sudo su -
