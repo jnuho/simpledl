@@ -12,6 +12,9 @@ COPY cmd/backend-web-server/main.go ./cmd/backend-web-server/main.go
 # # Install the app dependencies inside the docker image
 RUN go mod download && go mod verify
 
+# Set GOARCH and GOOS for the build target
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
+
 
 # # Define the command to run your app using CMD which defines your runtime
 RUN go build -o backend-web-server ./cmd/backend-web-server && \
