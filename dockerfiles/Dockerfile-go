@@ -4,27 +4,31 @@ FROM golang:1.22.3-alpine as build
 # Set the temporary working directory in the container in the first stage
 WORKDIR /
 
-# Copy package.json and package-lock.json into the working directory
+# # Copy package.json and package-lock.json into the working directory
 COPY ./go.mod ./
 COPY ./go.sum ./
-COPY ./cmd/backend-web-server/main.go ./
+COPY ./backend/web ./backend/web
+COPY ./cmd/backend-web-server/main.go ./cmd/backend-web-server/main.go
 
-# Install the app dependencies inside the docker image
+# # Install the app dependencies inside the docker image
 RUN go mod download && go mod verify
 
 
-# Define the command to run your app using CMD which defines your runtime
-RUN go build -v -o /go-app && \
-    rm -rf /var/cache/apk/* /tmp/*
+# # Define the command to run your app using CMD which defines your runtime
+RUN go build -o backend-web-server ./cmd/backend-web-server
+# RUN go build -v -o /backend-web-server && \
+#     rm -rf /var/cache/apk/* /tmp/*
+
+# RUN go install -v ./cmd/backend-web-server
 
 # Use a smaller base image for the final image
 FROM alpine:latest
 
 # Copy the binary from the build stage
-COPY --from=build /go-app /usr/local/bin/go-app
+COPY --from=build /backend-web-server /usr/local/bin/backend-web-server
 
 EXPOSE 3001
 
 # When you specify CMD ["go-app"], Docker looks for an executable named go-app in the system’s $PATH.
 # The $PATH includes common directories where executables are stored, such as /usr/local/bin, /usr/bin, and others.
-CMD ["go-app -web-scheme=http -web-host=localhost:3001"]
+CMD ["backend-web-server -web-scheme=http -web-host=localhost:3001"]
