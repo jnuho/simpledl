@@ -22,9 +22,9 @@ class GController(object):
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(random.gauss(mu=.01, sigma=.001))
+        tick(.01)
         self.kb.release(key)
-        time.sleep(random.gauss(mu=.01, sigma=.001))
+        tick(.01)
 
 
     def mouse_l_click(self, x, y):
@@ -32,9 +32,9 @@ class GController(object):
         y = random.gauss(mu=y, sigma=.03)
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        time.sleep(random.gauss(mu=.08, sigma=.001))
+        tick(.08)
         self.mouse.release(Button.left)
-        time.sleep(random.gauss(mu=.1, sigma=.001))
+        tick(.1)
 
 
     def locateToClick(self, keyword):
@@ -58,9 +58,9 @@ class GController(object):
 
     def check_quest(self):
         self.pressAndRelease('q')
-        time.sleep(random.gauss(mu=1, sigma=.001))
+        tick(1)
         self.locateToClick("check_quest")
-        time.sleep(random.gauss(mu=.5, sigma=.001))
+        tick(.5)
         self.pressAndRelease('q')
 
     def on_key_press(self, event):
@@ -84,10 +84,14 @@ class GController(object):
                     break
                 if self.locateToClick("close"):
                     break
-                time.sleep(random.gauss(mu=1, sigma=.001))
+                tick(1)
 
             # self.check_quest()
             # os.kill(os.getpid(), signal.SIGINT)
+
+
+def tick(mu):
+    time.sleep(random.gauss(mu=mu, sigma=.001))
 
 if __name__ == "__main__":
     controller = GController()

@@ -28,7 +28,7 @@ class GController(object):
             path = 'util/images/s_{}.png'.format(file)
 
             region = (w.left, w.top, w.width, w.height)
-            pag.screenshot(f'{path}', region=region)
+            pag.screenshot(f'{path}')
 
 
 if __name__ == "__main__":

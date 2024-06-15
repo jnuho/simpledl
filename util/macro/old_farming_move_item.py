@@ -29,22 +29,22 @@ class GController(object):
         y = random.gauss(mu=y, sigma=.03)
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        time.sleep(random.gauss(mu=.3, sigma=.001))
+        tick(.3)
         self.mouse.release(Button.left)
-        time.sleep(random.gauss(mu=.5, sigma=.001))
+        tick(.5)
 
 
     def mouse_r_click(self):
         self.mouse.press(Button.right)
-        time.sleep(random.gauss(mu=.3, sigma=.001))
+        tick(.3)
         self.mouse.release(Button.right)
-        time.sleep(random.gauss(mu=.5, sigma=.001))
+        tick(.5)
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        time.sleep(random.gauss(mu=.3, sigma=.001))
+        tick(.3)
         self.kb.release(key)
-        time.sleep(random.gauss(mu=.3, sigma=.001))
+        tick(.3)
 
     def stop(self):
         self.running = False
@@ -56,26 +56,23 @@ class GController(object):
     def cleanup(self):
         # while self.running:
         if self.running:
-            # time.sleep(random.gauss(mu=24*60*60, sigma=.5))
 
             windows = []
             title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
-            temp = gw.getWindowsWithTitle(title)
-            for w in temp:
+            for w in gw.getWindowsWithTitle(title):
                 if w.title == title:
                     windows.append(w)
-            del temp
 
             for i, _ in enumerate(windows):
                 w = windows[len(windows)-1-i]
 
-                time.sleep(random.gauss(mu=.5, sigma=.001))
+                tick(.5)
                 w.minimize()
                 w.restore()
                 # w.activate()
                 w.moveTo(60 +30*i, 3)
                 print(w)
-                time.sleep(random.gauss(mu=.8, sigma=.001))
+                tick(.8)
 
                 # game_window.activate()
                 self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
@@ -134,6 +131,8 @@ class GController(object):
                 self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
                 self.pressAndRelease('j')
 
+def tick(mu):
+    time.sleep(random.gauss(mu=mu, sigma=.001))
 
 if __name__ == "__main__":
     controller = GController()
