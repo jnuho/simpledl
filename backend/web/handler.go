@@ -81,10 +81,18 @@ func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 	}
 
 	// Get the value of the "cat_url" parameter
-	catURL := r.FormValue("cat_url")
-	catObj := Item{URL: catURL, STATUS: http.StatusOK}
+	catURL := r.Form.Get("cat_url")
+	if catURL == "" {
+		http.Error(w, "missing cat_url parameter", http.StatusBadRequest)
+		return nil, fmt.Errorf("missing cat_url parameter %v", http.StatusBadRequest)
+	}
 
-	return &catObj, nil
+	catObj := &Item{
+		URL:    catURL,
+		STATUS: http.StatusOK,
+	}
+
+	return catObj, nil
 }
 
 // Send POST Request to another backend python server
