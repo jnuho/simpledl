@@ -33,7 +33,7 @@ func oneTimeOp() {
 
 // handle GET request from client
 func getMethodHandler(c *gin.Context) {
-	once.Do(oneTimeOp)
+	// once.Do(oneTimeOp)
 	c.String(http.StatusOK, "pong")
 }
 
