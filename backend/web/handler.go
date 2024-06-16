@@ -114,6 +114,7 @@ func callPythonBackend(catURL string) (*Item, error) {
 }
 
 func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	log.Printf("LALLALALA\n")
 	catObj, err := validateCatRequest(w, r)
 	if err != nil {
 		http.Error(w, "Error parsing form data", http.StatusBadRequest)
