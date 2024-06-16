@@ -26,16 +26,10 @@ class LoopController(object):
     def __init__(self, monster="dosa", req_food=True):
         self.kb = KbController()
         self.mouse = MouseController()
-        self.window = None
-
-        self.monster = monster
-        self.req_food = req_food
 
         pag.FAILSAFE = False
 
     def pressAndRelease(self, key):
-        # mu : mean
-        # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
         self.kb.press(key)
         tick(.018)
         self.kb.release(key)
@@ -117,6 +111,7 @@ class GController(object):
         }[self.monster]
 
         pag.FAILSAFE = False
+
         title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
         windows = gw.getWindowsWithTitle(title)
         for w in windows:
@@ -215,6 +210,7 @@ class GController(object):
             tick(.1)
 
             self.pressAndRelease('2')
+            tick(.015)
             self.mouse.press(Button.right)
             tick(.015)
             self.mouse.release(Button.right)
@@ -289,7 +285,6 @@ class GController(object):
                     self.retreat()
                     tick(.2)
 
-
                 # # Print the locations
                 # if len(rectangles) == 0:
                 #     print("No instances of 'util/images/logo.png' found on the screen.")
@@ -328,27 +323,29 @@ class GController(object):
                 self.get_food()
                 counter += 1
 
+def tick(mu):
+    # mu : mean
+    # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
+    time.sleep(random.gauss(mu=mu, sigma=.001))
+
+# The with statement is used to create a context in which the Listener object is active.
+# it ensures proper setup and cleanup of the Listener object
+# it is concurrent programming, but do not achieve true parallelism because it is a blocking operation 
+# make the main thread waits for Listener thread to __exit__()
 def run_listener(controller):
     with Listener(on_press=controller.on_key_press) as listener:
         listener.join()
 
-def tick(mu):
-    time.sleep(random.gauss(mu=mu, sigma=.001))
 
 if __name__ == "__main__":
     # ["dosa", "1c", "3c", "raide"]
     c1 = GController(monster="dosa", req_food=1)
-    # c1 = GController(monster="raide", req_food=0)
     # c1 = GController(monster="1c", req_food=0)
+    # c1 = GController(monster="3c", req_food=0)
+    # c1 = GController(monster="raide", req_food=0)
     # c2 = LoopController(monster="3c", req_food=0)
 
-
-    # The with statement is used to create a context in which the Listener object is active.
-    # it ensures proper setup and cleanup of the Listener object
-    # it is concurrent programming, but do not achieve true parallelism because it is a blocking operation 
-    # make the main thread waits for Listener thread to __exit__()
-
-    # Assuming controller1 and controller2 are already defined and have an on_key_press method
+    # Assuming c1 and c2 are already defined and have an on_key_press method
     thread1 = threading.Thread(target=run_listener, args=(c1,))
     # thread2 = threading.Thread(target=run_listener, args=(c2,))
 

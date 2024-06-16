@@ -50,9 +50,6 @@ class GController(object):
     def stop(self):
         self.running = False
 
-    def handle_interrupt(signum, frame):
-        controller.stop()
-
     def get_food(self):
         while self.running:
             tick(1)
@@ -66,7 +63,6 @@ class GController(object):
 
             for i, _ in enumerate(windows):
                 w = windows[len(windows)-1-i]
-
                 tick(.5)
                 w.minimize()
                 w.restore()
@@ -186,11 +182,11 @@ def tick(mu):
     time.sleep(random.gauss(mu=mu, sigma=.001))
 
 if __name__ == "__main__":
-    controller = GController()
+    c1 = GController()
 
     # Create two threads
-    food_thread = threading.Thread(target=controller.get_food)
-    cleanup_thread = threading.Thread(target=controller.cleanup)
+    food_thread = threading.Thread(target=c1.get_food)
+    cleanup_thread = threading.Thread(target=c1.cleanup)
 
     # Start both threads
     food_thread.start()

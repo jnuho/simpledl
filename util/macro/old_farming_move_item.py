@@ -33,7 +33,6 @@ class GController(object):
         self.mouse.release(Button.left)
         tick(.5)
 
-
     def mouse_r_click(self):
         self.mouse.press(Button.right)
         tick(.3)
@@ -48,10 +47,6 @@ class GController(object):
 
     def stop(self):
         self.running = False
-
-    def handle_interrupt(signum, frame):
-        controller.stop()
-
 
     def cleanup(self):
         # while self.running:
@@ -135,10 +130,10 @@ def tick(mu):
     time.sleep(random.gauss(mu=mu, sigma=.001))
 
 if __name__ == "__main__":
-    controller = GController()
+    c1 = GController()
 
     # Create two threads
-    cleanup_thread = threading.Thread(target=controller.cleanup)
+    cleanup_thread = threading.Thread(target=c1.cleanup)
 
     # Start both threads
     cleanup_thread.start()
