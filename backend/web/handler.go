@@ -61,17 +61,17 @@ func with(h ContextHandler, srv *Server) ContextHandler {
 	})
 }
 
-func getRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	switch r.Method {
-	case http.MethodGet:
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-		return nil
-	default:
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
-	}
-}
+// func getRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+// 	switch r.Method {
+// 	case http.MethodGet:
+// 		w.WriteHeader(http.StatusOK)
+// 		w.Write([]byte("OK"))
+// 		return nil
+// 	default:
+// 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+// 		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
+// 	}
+// }
 
 func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 	err := r.ParseForm()
@@ -113,7 +113,7 @@ func callPythonBackend(catURL string) (*Item, error) {
 	return &result, nil
 }
 
-func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	catObj, err := validateCatRequest(w, r)
 	if err != nil {
 		http.Error(w, "Error parsing form data", http.StatusBadRequest)
@@ -121,6 +121,10 @@ func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Requ
 	}
 
 	switch r.Method {
+	case http.MethodGet:
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+		return nil
 	case http.MethodPost:
 		result, err := callPythonBackend(catObj.URL)
 		if err != nil {
@@ -140,15 +144,22 @@ func postRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Requ
 			GoServer:     "ok",
 			PythonServer: int(result.STATUS),
 		}
+		// Set response header to JSON
+		w.Header().Set("Content-Type", "application/json")
 
 		// jsonData, _ := json.Marshal(map[string]string{
 		// 	"cat_url": catURL,
 		// })
-		return json.NewEncoder(w).Encode(retObj)
+		if err := json.NewEncoder(w).Encode(retObj); err != nil {
+			http.Error(w, "Error encoding response", http.StatusInternalServerError)
+			log.Printf("Error encoding response: %v", err)
+			return err
+		}
+		return nil
 
 	default:
 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		return fmt.Errorf("invalid request method: %v", r.Method)
+		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
 	}
 }
 
@@ -194,15 +205,15 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 	// signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 	// Create a ServeMux
-	mux.Handle("/healthz", &ContextAdapter{
+	mux.Handle("/", &ContextAdapter{
 		ctx:     rootCtx,
-		handler: with(ContextHandlerFunc(getRequestHandler), srv),
+		handler: with(ContextHandlerFunc(clientRequestHandler), srv),
 	})
 
-	mux.Handle("/web/cat", &ContextAdapter{
-		ctx:     rootCtx,
-		handler: with(ContextHandlerFunc(postRequestHandler), srv),
-	})
+	// mux.Handle("/web/cat", &ContextAdapter{
+	// 	ctx:     rootCtx,
+	// 	handler: with(ContextHandlerFunc(postRequestHandler), srv),
+	// })
 
 	// mux.HandleFunc("/ping", CORS(helloHandler))
 	// mux.HandleFunc("/web/cat", CORS(helloHandler))
