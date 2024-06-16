@@ -32,7 +32,7 @@ window.onload = function(){
     try{
       const response1 = await axios({
         method: 'post',
-        url: 'http://localhost:3001/web/cat', // in k8s ingress env
+        url: 'http://localhost/web/cat', // in k8s ingress env
         // url: 'http://localhost:3001/web/cat', // in docker-compose env
         data: {
           cat_url: url
