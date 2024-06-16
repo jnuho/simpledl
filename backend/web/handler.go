@@ -114,7 +114,6 @@ func callPythonBackend(catURL string) (*Item, error) {
 }
 
 func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	log.Printf("LALLALALA\n")
 	catObj, err := validateCatRequest(w, r)
 	if err != nil {
 		http.Error(w, "Error parsing form data", http.StatusBadRequest)
@@ -145,6 +144,8 @@ func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Re
 			GoServer:     "ok",
 			PythonServer: int(result.STATUS),
 		}
+		log.Printf("RESPONSE DATA : %v\n", retObj)
+
 		// Set response header to JSON
 		w.Header().Set("Content-Type", "application/json")
 
@@ -207,10 +208,6 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 
 	// Create a ServeMux
 	mux.Handle("/", &ContextAdapter{
-		ctx:     rootCtx,
-		handler: with(ContextHandlerFunc(clientRequestHandler), srv),
-	})
-	mux.Handle("/web/cat", &ContextAdapter{
 		ctx:     rootCtx,
 		handler: with(ContextHandlerFunc(clientRequestHandler), srv),
 	})

@@ -1012,3 +1012,24 @@ curl 35.184.204.214:8080/hello-world
   - fe-nginx-docker
   - be-go-docker
   - be-py
+
+
+
+### Trouble shooting
+
+- fe-nginx's POST request `http://localhost/web/cat` gets 502 error
+  - solution: be-go should be listen to `:3001` instead of `localhost:3001` whcih is only accessible within pod itself
+
+```sh
+kubectl exec -it <be-go-pod-name> -- /bin/sh
+netstat -tuln
+  Active Internet connections (only servers)
+  Proto Recv-Q Send-Q Local Address Foreign Address State
+  tcp 0 0 127.0.0.1:3001 0.0.0.0:* LISTEN
+
+
+# After changing from "localhost:3001" to ":3001"
+netstat -tuln
+  Proto Recv-Q Send-Q Local Address           Foreign Address         State
+tcp        0      0 0.0.0.0:3001            0.0.0.0:*               LISTEN
+```
