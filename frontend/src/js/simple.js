@@ -27,7 +27,7 @@ window.onload = function(){
   
   // ECS 클러스터 리스트 조회
   async function identityCat() {
-    var url = catUrl.value;
+    var catUrl = catUrl.value;
   
     try{
       const response1 = await axios({
@@ -35,7 +35,7 @@ window.onload = function(){
         url: 'http://localhost/web/cat', // in k8s ingress env
         // url: 'http://localhost:3001/web/cat', // in docker-compose env
         data: {
-          cat_url: url
+          cat_url: catUrl,
         },
       });
 
