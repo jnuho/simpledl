@@ -14,5 +14,5 @@ class Response(BaseModel):
 @app.post("/worker/cat")
 async def create_item(item: Item):
     # You can now access the cat_url with item.cat_url
-    response = Response(cat_url=item.cat_url, status="ok")
+    response = Response(cat_url=item.cat_url, status=200)
     return response
