@@ -61,7 +61,7 @@ class LoopController(object):
         elif event == Key.f10:
             while True:
                 windows = []
-                title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
+                title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
                 for w in gw.getWindowsWithTitle(title):
                     if w.title == title:
                         windows.append(w)
@@ -112,7 +112,7 @@ class GController(object):
 
         pag.FAILSAFE = False
 
-        title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
+        title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
         windows = gw.getWindowsWithTitle(title)
         for w in windows:
             if w.title == title:
@@ -158,7 +158,6 @@ class GController(object):
         self.kb.press(Key.esc)
         tick(.1)
         self.kb.release(Key.esc)
-
 
     # pag.keyboard not working
     def on_key_press(self, event):
@@ -242,48 +241,22 @@ class GController(object):
         elif event == KeyCode.from_char('\''):
 
             if self.monster == "3c":
-                # Capture the screen
-                screen = np.array(ImageGrab.grab())
-
-                # Convert the screen capture to grayscale
-                screen_gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-
-                # Load the template image
-                template = cv2.imread('util/images/logo.png', cv2.IMREAD_GRAYSCALE)
-                w, h = template.shape[::-1]
-
-                # Perform template matching
-                result = cv2.matchTemplate(screen_gray, template, cv2.TM_CCOEFF_NORMED)
-
-                # Define a threshold
-                threshold = 0.8
-
-                # Get the locations of the matched regions
-                loc = np.where(result >= threshold)
-
-                # List to hold the rectangles where the template matches
-                rectangles = []
-                for pt in zip(*loc[::-1]):
-                    rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
-                    rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
-
-                # Use groupRectangles to group overlapping rectangles
-                rectangles, weights = cv2.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
-
                 pag.moveTo(400, 1050)
                 self.mouse.press(Button.left)
                 tick(.02)
                 self.mouse.release(Button.left)
                 tick(.1)
 
+                # find all instances of an image
+                rectangles = getRectangles('util/images/logo.png')
                 for i, (x, y, w, h) in enumerate(rectangles, start=1):
-                    pag.moveTo(x, y)
+                    pag.moveTo(x+w/2, y+h/2)
                     self.mouse.press(Button.left)
                     tick(.03)
                     self.mouse.release(Button.left)
                     tick(.05)
                     self.retreat()
-                    tick(.2)
+                    tick(.3)
 
                 # # Print the locations
                 # if len(rectangles) == 0:
@@ -313,7 +286,7 @@ class GController(object):
 
     def get_food_for_3c(self):
         counter=0
-        title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
+        title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
         for w in gw.getWindowsWithTitle(title):
             if w.title == title:
                 tick(.5)
@@ -322,6 +295,37 @@ class GController(object):
                 w.moveTo(60 +415*counter, 5+ 115*counter)
                 self.get_food()
                 counter += 1
+
+def getRectangles(image_path):
+    # Capture the screen
+    screen = np.array(ImageGrab.grab())
+
+    # Convert the screen capture to grayscale
+    screen_gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+
+    # Load the template image
+    template = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    w, h = template.shape[::-1]
+
+    # Perform template matching
+    result = cv2.matchTemplate(screen_gray, template, cv2.TM_CCOEFF_NORMED)
+
+    # Define a threshold
+    threshold = 0.8
+
+    # Get the locations of the matched regions
+    loc = np.where(result >= threshold)
+
+    # List to hold the rectangles where the template matches
+    rectangles = []
+    for pt in zip(*loc[::-1]):
+        rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
+        rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
+
+    # Use groupRectangles to group overlapping rectangles
+    rectangles, weights = cv2.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
+    return rectangles
+
 
 def tick(mu):
     # mu : mean

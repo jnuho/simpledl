@@ -81,41 +81,20 @@ class LocateController(object):
             print("> You pressed F11. Exiting gracefully.")
             raise KeyboardInterrupt
         elif event == KeyCode.from_char('\\'):
-            # Capture the screen
-            screen = np.array(ImageGrab.grab())
-
-            # Convert the screen capture to grayscale
-            screen_gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
-
-            # Load the template image
-            template = cv2.imread('util/images/logo.png', cv2.IMREAD_GRAYSCALE)
-            w, h = template.shape[::-1]
-
-            # Perform template matching
-            result = cv2.matchTemplate(screen_gray, template, cv2.TM_CCOEFF_NORMED)
-
-            # Define a threshold
-            threshold = 0.8
-
-            # Get the locations of the matched regions
-            loc = np.where(result >= threshold)
-
-            # List to hold the rectangles where the template matches
-            rectangles = []
-            for pt in zip(*loc[::-1]):
-                rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
-                rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
-
-            # Use groupRectangles to group overlapping rectangles
-            rectangles, weights = cv2.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
-
             pag.moveTo(400, 1050)
+            self.mouse.press(Button.left)
+            tick(.02)
+            self.mouse.release(Button.left)
+            tick(.1)
+
+            # find all instances of an image
+            rectangles = getRectangles('util/images/logo.png')
             for i, (x, y, w, h) in enumerate(rectangles, start=1):
-                pag.moveTo(x, y)
+                pag.moveTo(x+w/2, y+h/2)
                 self.mouse.press(Button.left)
-                tick(.02)
+                tick(.03)
                 self.mouse.release(Button.left)
-                tick(.9)
+                tick(.3)
 
 
             # # Print the locations
@@ -129,13 +108,41 @@ class LocateController(object):
             # # Optional: Draw rectangles on the screen capture to visualize the matches
             # for (x, y, w, h) in rectangles:
             #     cv2.rectangle(screen, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                
 
             # # Show the screen capture with rectangles drawn
             # cv2.imshow('Matches', screen)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
 
+def getRectangles(image_path):
+    # Capture the screen
+    screen = np.array(ImageGrab.grab())
+
+    # Convert the screen capture to grayscale
+    screen_gray = cv2.cvtColor(screen, cv2.COLOR_BGR2GRAY)
+
+    # Load the template image
+    template = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    w, h = template.shape[::-1]
+
+    # Perform template matching
+    result = cv2.matchTemplate(screen_gray, template, cv2.TM_CCOEFF_NORMED)
+
+    # Define a threshold
+    threshold = 0.8
+
+    # Get the locations of the matched regions
+    loc = np.where(result >= threshold)
+
+    # List to hold the rectangles where the template matches
+    rectangles = []
+    for pt in zip(*loc[::-1]):
+        rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
+        rectangles.append([int(pt[0]), int(pt[1]), int(w), int(h)])
+
+    # Use groupRectangles to group overlapping rectangles
+    rectangles, weights = cv2.groupRectangles(rectangles, groupThreshold=1, eps=0.5)
+    return rectangles
 
 
 def tick(mu):

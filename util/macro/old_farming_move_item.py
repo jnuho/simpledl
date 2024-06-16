@@ -53,7 +53,7 @@ class GController(object):
         if self.running:
 
             windows = []
-            title = base64.b64decode(os.getenv("WINDOW_TITLE")).decode("utf-8")
+            title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
             for w in gw.getWindowsWithTitle(title):
                 if w.title == title:
                     windows.append(w)
