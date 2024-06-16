@@ -9,7 +9,7 @@ class Item(BaseModel):
 
 class Response(BaseModel):
     cat_url: Optional[str] = None
-    status: Optional[str] = None
+    status: Optional[int] = None
 
 @app.post("/worker/cat")
 async def create_item(item: Item):
