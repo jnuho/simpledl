@@ -150,7 +150,7 @@ func StartServer(host string) error {
 
 func main() {
 	// ./go-app -web-host=":3001"
-	host := flag.String("web-host", "localhost:3001", "Specify host and port for backend.")
+	host := flag.String("web-host", ":3001", "Specify host and port for backend.")
 	flag.Parse()
 	err := StartServer(*host)
 	if err != nil {

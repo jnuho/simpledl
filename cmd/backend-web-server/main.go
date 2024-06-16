@@ -11,7 +11,7 @@ import (
 func main() {
 	// `go run main.go -web-scheme=http -web-host=localhost:8181`
 	webScheme := flag.String("web-scheme", "http", "Specify scheme for backend.")
-	hostPort := flag.String("web-host", "localhost:3001", "Specify host and port for backend.")
+	hostPort := flag.String("web-host", ":3001", "Specify host and port for backend.")
 	flag.Parse()
 
 	// Log format
