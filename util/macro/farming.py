@@ -30,20 +30,20 @@ class GController(object):
         y = random.gauss(mu=y, sigma=.03)
         pag.moveTo(x,y)
         self.mouse.press(Button.left)
-        tick(.3)
+        tick(.33)
         self.mouse.release(Button.left)
         tick(.5)
 
 
     def mouse_r_click(self):
         self.mouse.press(Button.right)
-        tick(.3)
+        tick(.33)
         self.mouse.release(Button.right)
         tick(.5)
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        tick(.3)
+        tick(.33)
         self.kb.release(key)
         tick(.3)
 
