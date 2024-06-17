@@ -728,7 +728,6 @@ source ~/.bashrc
 
 # Join node (All 3 are master nodes)
 sudo su -
-vim /etc/hosts
 
 cat >> /etc/hosts <<-EOF
 

@@ -50,8 +50,8 @@ func with(h ContextHandler, srv *Server) ContextHandler {
 		// CORS setting
 		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-		// w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		// w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, etc.)
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, etc.)
 
 		// if r.Method == "OPTIONS" {
 		// 	http.Error(w, "No Content", http.StatusNoContent)
@@ -60,18 +60,6 @@ func with(h ContextHandler, srv *Server) ContextHandler {
 		return h.ServeHTTPContext(ctx, w, req)
 	})
 }
-
-// func getRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-// 	switch r.Method {
-// 	case http.MethodGet:
-// 		w.WriteHeader(http.StatusOK)
-// 		w.Write([]byte("OK"))
-// 		return nil
-// 	default:
-// 		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-// 		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
-// 	}
-// }
 
 func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 	err := r.ParseForm()
