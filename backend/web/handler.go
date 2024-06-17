@@ -62,24 +62,22 @@ func with(h ContextHandler, srv *Server) ContextHandler {
 }
 
 func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
-	err := r.ParseForm()
+	decoder := json.NewDecoder(r.Body)
+	var t Item
+	err := decoder.Decode(&t)
 	if err != nil {
 		http.Error(w, "Error parsing form data", http.StatusBadRequest)
 		return nil, err
 	}
+	log.Printf("catURL: %v\n", t.URL)
 
-	// Get the value of the "cat_url" parameter
-	catURL := r.FormValue("cat_url")
-
-	log.Printf("catURL: %v\n", catURL)
-
-	if catURL == "" {
+	if t.URL == "" {
 		http.Error(w, "missing cat_url parameter", http.StatusBadRequest)
 		return nil, fmt.Errorf("missing cat_url parameter %v", http.StatusBadRequest)
 	}
 
 	catObj := &Item{
-		URL:    catURL,
+		URL:    t.URL,
 		STATUS: http.StatusOK,
 	}
 
@@ -113,18 +111,17 @@ func callPythonBackend(catURL string) (*Item, error) {
 }
 
 func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	catObj, err := validateCatRequest(w, r)
-	if err != nil {
-		http.Error(w, "Error parsing form data", http.StatusBadRequest)
-		return err
-	}
-
 	switch r.Method {
 	case http.MethodGet:
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 		return nil
 	case http.MethodPost:
+		catObj, err := validateCatRequest(w, r)
+		if err != nil {
+			http.Error(w, "Error parsing form data", http.StatusBadRequest)
+			return err
+		}
 		result, err := callPythonBackend(catObj.URL)
 		if err != nil {
 			// log.Fatalln(err)
