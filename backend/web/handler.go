@@ -9,6 +9,9 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 type Response struct {
@@ -197,26 +200,11 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		donec:      make(chan struct{}),
 	}
 
-	// Create a channel to handle OS signals (e.g., Ctrl+C)
-	// and registers the channel sigCh to receive notifications for specific OS signals.
-	// sigCh := make(chan os.Signal, 1)
-	// signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-
 	// Create a ServeMux
 	mux.Handle("/", &ContextAdapter{
 		ctx:     rootCtx,
 		handler: with(ContextHandlerFunc(clientRequestHandler), srv),
 	})
-
-	// mux.Handle("/web/cat", &ContextAdapter{
-	// 	ctx:     rootCtx,
-	// 	handler: with(ContextHandlerFunc(postRequestHandler), srv),
-	// })
-
-	// mux.HandleFunc("/ping", CORS(helloHandler))
-	// mux.HandleFunc("/web/cat", CORS(helloHandler))
-	// r.POST("/", postMethodHandler) // in k8s ingress env
-	// // router.POST("/web/cat", postMethodHandler) // in docker env
 
 	// Start HTTP server in a separate goroutine
 	go func() {
@@ -236,21 +224,37 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 		// case <-sigCh:
 		// 	log.Println("Received interrupt signal. Shutting down gracefully...")
 		// 	srv.rootCancel() // Cancel the context
+		// 	return
+
+		// Wait for srv.rootCancel()
 		case <-srv.rootCtx.Done():
+			log.Println("srv.rootCtx.Done()")
 			return
+		// srv.donec is an unbuffered channel and receiving from an unbuffered channel blocks until a sender is ready.
+		// so it's effectively used here for signal notification rather than data passing.
 		case <-srv.donec:
+			log.Println("<-srv.donec:")
 			return
 			// Context canceled (e.g., due to an error)
 		default:
+			log.Println("close(srv.donec)")
 			close(srv.donec)
 		}
 	}()
 
-	// Shutdown the server gracefully
-	// if err := server.Shutdown(ctx); err != nil {
-	// if err := srv.httpServer.Shutdown(rootCtx); err != nil {
-	// 	log.Fatalf("Error shutting down server: %v\n", err)
-	// }
+	// Create a channel to handle OS signals (e.g., Ctrl+C)
+	// and registers the channel sigCh to receive notifications for specific OS signals.
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+
+	// listens for OS signals and triggers graceful shutdown
+	// Handle OS signals (e.g., Ctrl+C) for graceful shutdown
+	go func() {
+		sig := <-sigCh
+		log.Printf("Received signal %v. Shutting down gracefully...\n", sig)
+		close(srv.donec)
+	}()
+
 	return srv, nil
 }
 
