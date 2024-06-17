@@ -24,10 +24,10 @@ echo "-------[Ingress]-------"
 microk8s kubectl get ingress
 
 echo ""
-echo "-------[Configmap]-------"
-microk8s kubectl get configmap
+#echo "-------[Configmap]-------"
+#microk8s kubectl get configmap
 
-echo ""
-echo "-------[Secret]-------"
-microk8s kubectl get secret
+#echo ""
+#echo "-------[Secret]-------"
+#microk8s kubectl get secret
 
