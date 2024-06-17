@@ -69,7 +69,7 @@ func validateCatRequest(w http.ResponseWriter, r *http.Request) (*Item, error) {
 	}
 
 	// Get the value of the "cat_url" parameter
-	catURL := r.PostFormValue("cat_url")
+	catURL := r.FormValue("cat_url")
 
 	log.Printf("catURL: %v\n", catURL)
 
