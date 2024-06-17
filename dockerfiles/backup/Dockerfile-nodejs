@@ -5,14 +5,14 @@ FROM node:20.12.2-alpine as build
 WORKDIR /nodejs
 
 # Copy package.json and package-lock.json into the working directory
-COPY ./frontend/package*.json ./
+COPY ./web/package*.json ./
 
 # Install the app dependencies inside the docker image
 RUN npm install
 
 # Copy the rest of your app's source code from your host to your image filesystem.
-COPY ./frontend/src ./src
-COPY ./frontend/index.html ./
+COPY ./web/src ./src
+COPY ./web/index.html ./
 
 
 # Your package.json is configured to use port 80

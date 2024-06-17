@@ -15,10 +15,10 @@ RUN go mod download && go mod verify
 # Set GOARCH and GOOS for the build target
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-
 # # Define the command to run your app using CMD which defines your runtime
-RUN go build -o backend-web-server ./cmd/backend-web-server && \
-    rm -rf /var/cache/apk/* /tmp/*
+RUN go build -o backend-web-server ./cmd/backend-web-server
+
+RUN rm -rf /var/cache/apk/* /tmp/*
 
 # Use a smaller base image for the final image
 FROM alpine:latest
