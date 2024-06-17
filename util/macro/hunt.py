@@ -26,15 +26,13 @@ class LoopController(object):
     def __init__(self, monster="dosa", req_food=True):
         self.kb = KbController()
         self.mouse = MouseController()
-
         pag.FAILSAFE = False
 
     def pressAndRelease(self, key):
         self.kb.press(key)
-        tick(.018)
+        tick(.0181, .0001)
         self.kb.release(key)
-        tick(.018)
-
+        tick(.0181, .0001)
 
     def retreat(self):
         self.kb.press(Key.esc)
@@ -47,14 +45,6 @@ class LoopController(object):
 
     # pag.keyboard not working
     def on_key_press(self, event):
-        # a: ,
-        # d: /
-        # w: ;
-        # s: .
-        # q: [
-        # e: ]
-        # c: \
-        # x: '
         if event == Key.f11:
             print("> You pressed F11. Exiting gracefully.")
             raise KeyboardInterrupt
@@ -94,7 +84,6 @@ class GController(object):
             "1c": {
                 2: 0,
                 1: 0,
-                4: 0,
             },
             "3c": {
                 2: 0,
@@ -145,9 +134,9 @@ class GController(object):
         # mu : mean
         # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
         self.kb.press(key)
-        tick(.018)
+        tick(.0181, .0001)
         self.kb.release(key)
-        tick(.018)
+        tick(.0181, .0001)
 
 
     def retreat(self):
@@ -327,10 +316,10 @@ def getRectangles(image_path):
     return rectangles
 
 
-def tick(mu):
+def tick(mu, sigma=.001):
     # mu : mean
     # sigma : standard deviation, assuming a 6-sigma range for 99.7% coverage
-    time.sleep(random.gauss(mu=mu, sigma=.001))
+    time.sleep(random.gauss(mu=mu, sigma=sigma))
 
 # The with statement is used to create a context in which the Listener object is active.
 # it ensures proper setup and cleanup of the Listener object
@@ -343,8 +332,8 @@ def run_listener(controller):
 
 if __name__ == "__main__":
     # ["dosa", "1c", "3c", "raide"]
-    c1 = GController(monster="dosa", req_food=1)
-    # c1 = GController(monster="1c", req_food=0)
+    # c1 = GController(monster="dosa", req_food=1)
+    c1 = GController(monster="1c", req_food=0)
     # c1 = GController(monster="3c", req_food=0)
     # c1 = GController(monster="raide", req_food=0)
     # c2 = LoopController(monster="3c", req_food=0)

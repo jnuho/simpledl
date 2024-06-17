@@ -126,8 +126,8 @@ class GController(object):
                 self.mouse_l_click(w.left + (w.width*.2049), w.top + (w.height*.4341))
                 self.pressAndRelease('j')
 
-def tick(mu):
-    time.sleep(random.gauss(mu=mu, sigma=.001))
+def tick(mu, sigma=.001):
+    time.sleep(random.gauss(mu=mu, sigma=sigma))
 
 if __name__ == "__main__":
     c1 = GController()

@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import time
 
 
 def getNumpyRandNorm():
@@ -12,8 +13,10 @@ def getNumpyRandNorm():
     #     print(f"Generated value: {x:.3f}")
     return samples[0]
 
+def tick(mu, sigma=.001):
+    print(mu,sigma, random.gauss(mu=mu, sigma=sigma))
+    # time.sleep(random.gauss(mu=mu, sigma=sigma))
 
 if __name__ == "__main__":
     for i in range(10):
-        n = random.gauss(mu=.01, sigma=.001)
-        print(n)
+        tick(.019, .0001)
