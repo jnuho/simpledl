@@ -116,9 +116,14 @@ func callPythonBackend(catURL string) (*Item, error) {
 func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case http.MethodGet:
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
-		return nil
+		if r.URL.Path == "/healthz" {
+			log.Println(r.URL.Path)
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("OK"))
+			return nil
+		}
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return fmt.Errorf("method not allowed (%d): %v", http.StatusMethodNotAllowed, r.Method)
 	case http.MethodPost:
 		catObj, err := validateCatRequest(w, r)
 		if err != nil {

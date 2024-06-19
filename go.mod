@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.55.1
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
+	github.com/go-chi/chi/v5 v5.0.13
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/golang/glog v1.2.1
 	github.com/jnuho/simpledl/util/crawl v0.0.0-20240527081333-f4a4ee5920c5

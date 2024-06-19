@@ -1,7 +1,6 @@
 import pyautogui as pag
 import pygetwindow as gw
 
-# import pydirectinput
 from pynput.keyboard import KeyCode, Key, Listener
 from pynput.keyboard import Controller as KbController
 from pynput.mouse import Button
@@ -332,8 +331,8 @@ def run_listener(controller):
 
 if __name__ == "__main__":
     # ["dosa", "1c", "3c", "raide"]
-    # c1 = GController(monster="dosa", req_food=1)
-    c1 = GController(monster="1c", req_food=0)
+    c1 = GController(monster="dosa", req_food=1)
+    # c1 = GController(monster="1c", req_food=0)
     # c1 = GController(monster="3c", req_food=0)
     # c1 = GController(monster="raide", req_food=0)
     # c2 = LoopController(monster="3c", req_food=0)
