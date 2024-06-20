@@ -1032,3 +1032,5 @@ netstat -tuln
   Proto Recv-Q Send-Q Local Address           Foreign Address         State
 tcp        0      0 0.0.0.0:3001            0.0.0.0:*               LISTEN
 ```
+
+https://mco-mnist-draw-rwpxka3zaa-ue.a.run.app/
