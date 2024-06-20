@@ -279,6 +279,7 @@ The basic operations for forward and backward propagations in deep learning algo
 - cat vs.non-cat image classification and hand-written digits recognition
 - https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
 - https://detexify.kirelabs.org/classify.html
+- https://mco-mnist-draw-rwpxka3zaa-ue.a.run.app/
 
 
 
@@ -1118,11 +1119,6 @@ gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 [↑ Back to top](#)
 <br><br>
 
-- Google Cloud SDK
-    - Create Service account
-        - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
-        - Create key and download and rename `gcp-sa-key.json`
-
 
 - Google Kubernetes Engine
     - <a href="https://www.youtube.com/watch?v=P1x1Rk_TzV4" target="_blank">Ingress in 5 Minutes</a>
@@ -1196,24 +1192,36 @@ curl 35.184.204.214:8080/hello-world
 ```
 
 
-
 [↑ Back to top](#)
 <br><br>
 
-### docker image tag
 
-- in Kubernetes
-    - fe-nginx-k8s
-    - be-go-k8s
-    - be-py
+- golang cloud library to create VM
+    - Create Service account
+        - IAM & Admin > Service accounts > Create Service account
+            - Assign the `Compute Admin` role
+            - click 3 dots for 'Key Management'
+            - Create key (JSON) and download and rename `gcp-sa-key.json`
+    - Write golang code to execute to create GCP VM.
 
-- in docker-compose
-    - fe-nginx-docker
-    - be-go-docker
-    - be-py
+```
+gcp_credential="my-sa-key.json"
+gcp_vm_region="asia-northeast3"
+gcp_vm_zone="asia-northeast3-a"
+gcp_vm_machine_type="e2-medium"
+#ubuntu 24.04 50GB
+#gcp_vm_boot_disk=50GB
+#gcp_vm_identity_and_api_access="Allow full access to all Cloud APIs
+#gcp_vm_firewall="http,https,loadbalancer_health_check"
+```
 
+
+- Download Google Cloud SDK and use gcloud to access vm
+
+```sh
+gcloud init
+gcloud compute ssh instance-20240620-115251 --zone asia-northeast3-a
+```
 
 [↑ Back to top](#)
 <br><br>
-
-https://mco-mnist-draw-rwpxka3zaa-ue.a.run.app/
