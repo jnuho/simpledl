@@ -229,7 +229,7 @@ class GController(object):
         elif event == KeyCode.from_char('\''):
 
             if self.monster == "3c":
-                pag.moveTo(400, 1050)
+                pag.moveTo(1372, 1055)
                 self.mouse.press(Button.left)
                 tick(.02)
                 self.mouse.release(Button.left)
@@ -244,7 +244,7 @@ class GController(object):
                     self.mouse.release(Button.left)
                     tick(.05)
                     self.retreat()
-                    tick(.3)
+                    tick(.2)
 
                 # # Print the locations
                 # if len(rectangles) == 0:
@@ -271,18 +271,48 @@ class GController(object):
                 tick(1.65)
                 self.get_food()
 
+            if self.monster == "3c" and self.req_food: 
+                pag.moveTo(1372, 1055)
+                self.mouse.press(Button.left)
+                tick(.02)
+                self.mouse.release(Button.left)
+                tick(.1)
+
+                # find all instances of an image
+                rectangles = getRectangles('util/images/logo.png')
+                for i, (x, y, w, h) in enumerate(rectangles, start=1):
+                    pag.moveTo(x+w/2, y+h/2)
+                    self.mouse.press(Button.left)
+                    tick(.03)
+                    self.mouse.release(Button.left)
+                    tick(.05)
+                    self.get_food()
+                    tick(.2)
+
 
     def get_food_for_3c(self):
-        counter=0
-        title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
-        for w in gw.getWindowsWithTitle(title):
-            if w.title == title:
-                tick(.5)
-                w.minimize()
-                w.restore()
-                w.moveTo(60 +415*counter, 5+ 115*counter)
-                self.get_food()
-                counter += 1
+        pag.moveTo(1372, 1055)
+        self.mouse.press(Button.left)
+        tick(.02)
+        self.mouse.release(Button.left)
+        tick(.1)
+
+        # find all instances of an image
+        rectangles = getRectangles('util/images/logo.png')
+        for i, (x, y, w, h) in enumerate(rectangles, start=1):
+            pag.moveTo(x+w/2, y+h/2)
+            self.mouse.press(Button.left)
+            tick(.03)
+            self.mouse.release(Button.left)
+            tick(.05)
+            # self.get_food()
+            for i in range(2):
+                self.kb.press('2')
+                tick(.2)
+                self.kb.release('2')
+                tick(.2)
+            self.kb.release(Key.alt)
+            tick(1)
 
 def getRectangles(image_path):
     # Capture the screen
