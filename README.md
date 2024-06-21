@@ -569,26 +569,88 @@ k get ingress
 - Accessing application
     - For accessing these applications in a local cluster, you should access it through node port (30000 ports) or use a reverse proxy to send them.
     - But is there any way to access app on port 80 or 443?
-        - use Port-forward or `MetalLB` to allow access to app on port 80 or 443.
+        - use 1.`Port-forward` or 2.`MetalLB` to allow access to app on port 80 or 443.
 
-- port forward
+### 9-1. Port Forward
 
 ```sh
 k get svc -n ingress-nginx
-NAME                                                                 TYPE                CLUSTER-IP         EXTERNAL-IP     PORT(S)                                            AGE
-ingress-nginx-controller                         NodePort        10.107.26.28     <none>                80:32361/TCP,443:31064/TCP     3h9m
-ingress-nginx-controller-admission     ClusterIP     10.106.14.66     <none>                443/TCP                                            3h9m
+    NAME                                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+    ingress-nginx-controller             NodePort    10.109.183.14    <none>        80:31078/TCP,443:31420/TCP   6m17s
+    ingress-nginx-controller-admission   ClusterIP   10.110.101.115   <none>        443/TCP                      6m17s
 
-kubectl port-forward -n <namespace> svc/<service-name> <local-port>:<service-port>
-kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80 3001:3001 3002:3002
 
+# In Chrome browser, "http://localhost:8080" -> ingress controller on 80
+k port-forward -n <namespace> svc/<service-name> <local-port>:<service-port>
+k port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80 3001:3001 3002:3002
 ```
 
+The need for port-forwarding arises due to the way Kubernetes networking and Minikube are structured. Here's a breakdown of why you might need to use port-forwarding and why direct access might not work without it:
+
+### Why Direct Access Might Not Work
+
+9-1-1. **Network Isolation:**
+   - **Kubernetes Networking:** Kubernetes clusters are designed to have an isolated network. Services within the cluster communicate with each other via internal cluster IPs that are not accessible from the outside world directly.
+   - **Minikube Networking:** Minikube sets up a local virtual machine (VM) on your computer. This VM has its own network namespace, separate from your host machine's network. The services running inside Minikube are isolated from your host machine by default.
+
+9-1-2. **ClusterIP Services:**
+   - **ClusterIP Type:** The services you've listed (`be-go-service`, `be-py-service`, `fe-nginx-service`, and `kubernetes`) are of type `ClusterIP`. This means they are only accessible within the cluster. External traffic from your host machine cannot reach these services directly.
+
+9-1-3. **Minikube IP Address:**
+   - Minikube typically runs on a virtual IP address, such as `192.168.49.2` in your case. Accessing this IP directly from your host might not be straightforward due to network isolation.
+
+### Why Port-Forwarding is Needed
+
+Port-forwarding provides a bridge between your host machine and the Kubernetes cluster, allowing you to access cluster services from your local machine as if they were running locally.
+
+- **Accessing Cluster Services:**
+   - Port-forwarding allows you to map a port on your local machine to a port on a pod or service within the cluster. This makes it possible to access cluster services using `localhost` on your host machine.
+
+- **Bypassing Network Isolation:**
+   - By forwarding a port, you bypass the network isolation of the cluster, making it possible to communicate with services running inside Minikube directly from your host.
+
+### Alternative Approaches
+
+If you prefer not to use port-forwarding, there are other approaches you can consider:
+
+- **Minikube Tunnel:**
+   - Minikube provides a `minikube tunnel` command that can create a network tunnel to your cluster, making services of type `LoadBalancer` accessible from your host machine.
+
+   ```sh
+   minikube tunnel
+   ```
+
+- **NodePort Services:**
+   - Change the service type to `NodePort`, which exposes the service on a port on each node of the cluster. You can then access the service using the Minikube IP and the NodePort.
+
+   Example of changing a service to NodePort:
+   ```yaml
+   apiVersion: v1
+   kind: Service
+   metadata:
+     name: fe-nginx-service
+   spec:
+     type: NodePort
+     ports:
+       - port: 8080
+         targetPort: 8080
+         nodePort: 30080  # Example NodePort
+     selector:
+       app: fe-nginx
+   ```
+
+- **Ingress with Minikube IP:**
+   - You can use the Minikube IP address and configure your `/etc/hosts` file to point `localhost` to the Minikube IP.
+
+### Summary
+
+Using `kubectl port-forward` is a convenient and straightforward way to access your services without altering service types or cluster configurations. It helps bridge the network isolation between your host machine and the Kubernetes cluster set up by Minikube.
 
 [↑ Back to top](#)
 <br><br>
 
-- Installing Metallb
+
+### 9-2. Installing Metallb
 
 ```sh
 # strictARP to true
@@ -665,6 +727,83 @@ k get svc
 
 [↑ Back to top](#)
 <br><br>
+
+### 10. Tailscale
+
+- [`Tailscale Funnel Example`](https://tailscale.com/kb/1247/funnel-examples)
+- [`Tailscale Funnel Minikube Guide`](https://tailscale.com/learn/managing-access-to-kubernetes-with-tailscale)
+- With `Tailscale Funnel`, you can expose local services, individual folders, or even plain text to the public internet over HTTPS.
+
+
+- Create Tailscale account and Download
+    - Now talescale dashboard shows your Machines (ip)
+
+- Create Minikube local cluster on your Device (Windows in my case)
+
+- Deploy Tailscale in Your Kubernetes Cluster
+    - Create auth key in Tailscale dashboard: `Settings > Keys > Generate auth key`
+    - Copy the key
+
+- Copy the following YAML manifest and save it to `tailscale-secret.yaml` in your working directory:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tailscale-auth
+stringData:
+  TS_AUTHKEY: tskey-0123456789abcdef
+```
+
+- Next, you must create a Kubernetes service account, role, and role binding to configure role-based access control (RBAC) for your Tailscale deployment. You'll run your Tailscale pods as this new service account. The pods will be able to use the granted RBAC permissions to perform limited interactions with your Kubernetes cluster.
+
+Copy the following YAML manifest to `tailscale-rbac.yaml`:
+
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tailscale
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tailscale
+rules:
+  - apiGroups: [""]
+    resourceNames: ["tailscale-auth"]
+    resources: ["secrets"]
+    verbs: ["get", "update", "patch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tailscale
+subjects:
+  - kind: ServiceAccount
+    name: tailscale
+roleRef:
+  kind: Role
+  name: tailscale
+  apiGroup: rbac.authorization.k8s.io
+```
+
+- For each sidebar, proxy, and subnet router you want to use, you need to create a new Tailscale pod running the official Docker image.
+
+
+
+
+
+
+
+
+
+
 
 
 ### Using Minikube for image build and local development
@@ -824,6 +963,7 @@ minikube dashboard --url
 https://stackoverflow.com/a/73735009
 
 ```sh
+# minikube start --cpus 4 --memory 4096
 minikube start
 minikube addons enable ingress
 minikube addons enable ingress-dns

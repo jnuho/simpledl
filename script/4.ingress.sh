@@ -2,9 +2,9 @@
 
 # Enable nginx ingress controller
 # 1. minikube addon
-# minikube addons enable ingress
+minikube addons enable ingress
 
-microk8s enable ingress
+#microk8s enable ingress
 #foo@ubuntu-2:~/simpledl/script$ k get pod -n ingress -o wide
 #NAME                                      READY   STATUS    RESTARTS      AGE     IP             NODE       NOMINATED NODE   READINESS GATES
 #nginx-ingress-microk8s-controller-24zmd   1/1     Running   5 (34m ago)   6d19h   10.1.163.174   ubuntu-3   <none>           <none>
@@ -19,5 +19,5 @@ microk8s enable ingress
 sleep 1
 
 # Define ingress routing rule
-microk8s kubectl apply -f ingress.yaml
+minikube kubectl -- apply -f ingress.yaml
 

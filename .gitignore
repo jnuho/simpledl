@@ -28,3 +28,4 @@ dist-ssr
 .venv
 # gcp sa key
 gcp-sa-key.json
+script/tailscale-secret.yaml
