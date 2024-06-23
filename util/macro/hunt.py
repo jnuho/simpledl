@@ -33,15 +33,6 @@ class LoopController(object):
         self.kb.release(key)
         tick(.0181, .0001)
 
-    def retreat(self):
-        self.kb.press(Key.esc)
-        tick(.1)
-        self.kb.release(Key.esc)
-        tick(.1)
-        self.kb.press(Key.esc)
-        tick(.1)
-        self.kb.release(Key.esc)
-
     # pag.keyboard not working
     def on_key_press(self, event):
         if event == Key.f11:
