@@ -81,20 +81,33 @@ class LocateController(object):
             print("> You pressed F11. Exiting gracefully.")
             raise KeyboardInterrupt
         elif event == KeyCode.from_char('\\'):
-            pag.moveTo(400, 1050)
-            self.mouse.press(Button.left)
-            tick(.02)
-            self.mouse.release(Button.left)
-            tick(.1)
+            try:
+                # TODO region=()
+                pos_100 = pag.locateCenterOnScreen("util/images/food_100.png", confidence=.93, grayscale=True)
+                pos_0 = pag.locateCenterOnScreen("util/images/food_0.png", confidence=.93, grayscale=True)
+                # 150 바 = 687-537
+                # 248: 100%        # -310 일때 길이: 225
+                x_diff = pos_100.x - pos_0.x
+                print(x_diff)
+                if x_diff < 224:
+                    print("LALALAL")
+            except:
+                print(traceback.format_exc())
+                print("not found")
 
+            # pag.moveTo(400, 1050)
+            # self.mouse.press(Button.left)
+            # tick(.02)
+            # self.mouse.release(Button.left)
+            # tick(.1)
             # find all instances of an image
-            rectangles = getRectangles('util/images/logo.png')
-            for i, (x, y, w, h) in enumerate(rectangles, start=1):
-                pag.moveTo(x+w/2, y+h/2)
-                self.mouse.press(Button.left)
-                tick(.03)
-                self.mouse.release(Button.left)
-                tick(.3)
+            # rectangles = getRectangles('util/images/logo.png')
+            # for i, (x, y, w, h) in enumerate(rectangles, start=1):
+            #     pag.moveTo(x+w/2, y+h/2)
+            #     self.mouse.press(Button.left)
+            #     tick(.03)
+            #     self.mouse.release(Button.left)
+            #     tick(.3)
 
 
             # # Print the locations

@@ -21,44 +21,13 @@ import numpy as np
 
 load_dotenv()
 
-class LoopController(object):
-    def __init__(self, monster="dosa", req_food=True):
-        self.kb = KbController()
-        self.mouse = MouseController()
-        pag.FAILSAFE = False
-
-    def pressAndRelease(self, key):
-        self.kb.press(key)
-        tick(.0181, .0001)
-        self.kb.release(key)
-        tick(.0181, .0001)
-
-    # pag.keyboard not working
-    def on_key_press(self, event):
-        if event == Key.f11:
-            print("> You pressed F11. Exiting gracefully.")
-            raise KeyboardInterrupt
-        elif event == Key.f10:
-            while True:
-                windows = []
-                title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
-                for w in gw.getWindowsWithTitle(title):
-                    if w.title == title:
-                        windows.append(w)
-                for i, _ in enumerate(windows):
-                    w = windows[len(windows)-1-i]
-                    w.moveTo(60 , 5)
-                    # w.minimize()
-                    # w.restore()
-                    w.activate()
-                    tick(3)
 
 
 class GController(object):
     def __init__(self, monster="dosa", req_food=True):
         self.kb = KbController()
         self.mouse = MouseController()
-        self.window = None
+        # self.window = None
 
         self.monster = monster
         self.req_food = req_food
@@ -91,22 +60,25 @@ class GController(object):
 
         pag.FAILSAFE = False
 
-        title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
-        windows = gw.getWindowsWithTitle(title)
-        for w in windows:
-            if w.title == title:
-                self.window = w
-                break
+        if self.monster == "3c":
+            position_windows()
+        # title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
+        # windows = gw.getWindowsWithTitle(title)
+        # for w in windows:
+        #     if w.title == title:
+        #         self.window = w
+        #         break
 
 
     def get_food(self,):
         try:
             # TODO region=()
-            pos_found = pag.locateCenterOnScreen("util/images/food.png", confidence=.93, grayscale=True)
+            pos_1 = pag.locateCenterOnScreen("util/images/food_1.png", confidence=.93, grayscale=True)
+            pos_0 = pag.locateCenterOnScreen("util/images/food_0.png", confidence=.93, grayscale=True)
             # 150 바 = 687-537
             # 248: 100%        # -310 일때 길이: 225
-            x_diff = pos_found.x - self.window.left
-            if x_diff < 224:
+            x_diff = pos_1.x - pos_0.x
+            if x_diff < 132:
                 self.kb.press(Key.alt)
                 tick(.05)
                 for i in range(2):
@@ -276,34 +248,24 @@ class GController(object):
                     self.mouse.press(Button.left)
                     tick(.03)
                     self.mouse.release(Button.left)
-                    tick(.05)
+                    tick(.2)
                     self.get_food()
                     tick(.2)
 
 
-    def get_food_for_3c(self):
-        pag.moveTo(1372, 1055)
-        self.mouse.press(Button.left)
-        tick(.02)
-        self.mouse.release(Button.left)
-        tick(.1)
-
-        # find all instances of an image
-        rectangles = getRectangles('util/images/logo.png')
-        for i, (x, y, w, h) in enumerate(rectangles, start=1):
-            pag.moveTo(x+w/2, y+h/2)
-            self.mouse.press(Button.left)
-            tick(.03)
-            self.mouse.release(Button.left)
-            tick(.05)
-            # self.get_food()
-            for i in range(2):
-                self.kb.press('2')
-                tick(.2)
-                self.kb.release('2')
-                tick(.2)
-            self.kb.release(Key.alt)
-            tick(1)
+def position_windows():
+    windows = []
+    title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
+    for w in gw.getWindowsWithTitle(title):
+        if w.title == title:
+            windows.append(w)
+    for i, _ in enumerate(windows):
+        w = windows[len(windows)-1-i]
+        w.moveTo(60 +410*i, 3 + 110*i)
+        # w.minimize()
+        # w.restore()
+        # w.activate()
+        # tick(3)
 
 def getRectangles(image_path):
     # Capture the screen
@@ -352,13 +314,9 @@ def run_listener(controller):
 
 if __name__ == "__main__":
     # ["dosa", "1c", "3c", "raide"]
-    c1 = GController(monster="dosa", req_food=1)
-    # c1 = GController(monster="1c", req_food=1)
-    # c1 = GController(monster="1c", req_food=0)
-    # c1 = GController(monster="3c", req_food=1)
-    # c1 = GController(monster="3c", req_food=0)
-    # c1 = GController(monster="raide", req_food=0)
-    # c2 = LoopController(monster="3c", req_food=0)
+    monster = "dosa"
+    req_food = 1
+    c1 = GController(monster, req_food)
 
     # Assuming c1 and c2 are already defined and have an on_key_press method
     thread1 = threading.Thread(target=run_listener, args=(c1,))
