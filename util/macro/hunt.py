@@ -22,7 +22,6 @@ import numpy as np
 load_dotenv()
 
 
-
 class GController(object):
     def __init__(self, monster="dosa", req_food=True):
         self.kb = KbController()
@@ -62,22 +61,16 @@ class GController(object):
 
         if self.monster == "3c":
             position_windows()
-        # title = base64.b64decode(os.getenv("G_WINDOW_TITLE")).decode("utf-8")
-        # windows = gw.getWindowsWithTitle(title)
-        # for w in windows:
-        #     if w.title == title:
-        #         self.window = w
-        #         break
+  
 
-
-    def get_food(self,):
+    def get_food(self):
         try:
             # TODO region=()
             pos_1 = pag.locateCenterOnScreen("util/images/food_1.png", confidence=.93, grayscale=True)
             pos_0 = pag.locateCenterOnScreen("util/images/food_0.png", confidence=.93, grayscale=True)
-            # 150 바 = 687-537
-            # 248: 100%        # -310 일때 길이: 225
+            # 147 bar
             x_diff = pos_1.x - pos_0.x
+            # < 90%
             if x_diff < 132:
                 self.kb.press(Key.alt)
                 tick(.05)

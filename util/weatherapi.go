@@ -50,11 +50,14 @@ func getGeoloc(ctx context.Context, city, apiKey string) (GeoCityResponse, error
 
 	limit := 1
 	url := fmt.Sprintf("http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=%d&appid=%s", city, limit, apiKey)
+
+	// create a new HTTP request with the provided context.
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return GeoCityResponse{}, fmt.Errorf("error creating request: %w", err)
 	}
 
+	// send the HTTP request and receive the response.
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return GeoCityResponse{}, fmt.Errorf("error fetching geolocation for %s: %w", city, err)
@@ -86,12 +89,15 @@ func getCurrWeather(ctx context.Context, city, apiKey string, ch chan<- WeatherR
 	var data WeatherResponse
 	units := "metric"
 	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?lat=%.2f&lon=%.2f&units=%s&appid=%s", info.Lat, info.Lon, units, apiKey)
+
+	// create a new HTTP request with the provided context.
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		log.Printf("Error creating request: %v\n", err)
 		return
 	}
 
+	// send the HTTP request and receive the response.
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		log.Printf("Error fetching weather for lat,lon =(%.2f, %.2f): %v\n", info.Lat, info.Lon, err)
