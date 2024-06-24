@@ -79,11 +79,12 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 }
 
 // handle POST request from client
-func postMethodHandler(c *gin.Context, done chan<- error) {
+// func postMethodHandler(c *gin.Context, done chan<- error) {
+func postMethodHandler(c *gin.Context) {
 	log.Printf("Before python call\n")
 	catObj, err := validateRequest(c)
 	if err != nil {
-		log.Println(err)
+		log.Println("Validation error: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})
@@ -94,7 +95,7 @@ func postMethodHandler(c *gin.Context, done chan<- error) {
 	// Python backend call
 	result, err := callPythonBackend(catObj.URL)
 	if err != nil {
-		log.Println(err)
+		log.Println("Python backend call error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Error calling Python backend",
 		})
@@ -110,7 +111,7 @@ func postMethodHandler(c *gin.Context, done chan<- error) {
 		"python-server": result.STATUS,
 	})
 
-	done <- nil // No error, send nil to done channel
+	// done <- nil // No error, send nil to done channel
 }
 
 func StartServer(ctx context.Context, host string, done chan<- error) {
@@ -138,8 +139,10 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 
 	// POST endpoint
 	r.POST("/web/cat", func(c *gin.Context) {
-		postMethodHandler(c, done) // Pass done channel to postMethodHandler
+		// postMethodHandler(c, done) // Pass done channel to postMethodHandler
+		postMethodHandler(c)
 	})
+
 	r.POST("/weather", func(c *gin.Context) {
 		// weatherHandler(c, done) // Pass done channel to postMethodHandler
 		c.String(http.StatusOK, time.Now().Format(time.RFC3339)+"weather")
