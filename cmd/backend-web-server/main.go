@@ -24,7 +24,7 @@ type requestParam struct {
 
 type responseParam struct {
 	URL    string `json:"cat_url"`
-	STATUS string `json:"status"`
+	STATUS int    `json:"status"`
 }
 
 func oneTimeOp() {
