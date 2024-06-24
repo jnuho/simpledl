@@ -6,6 +6,7 @@ require (
 	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang/glog v1.2.1
+	github.com/jnuho/simpledl/pkg v0.0.0-20240614013626-cf0d42924d95
 	github.com/joho/godotenv v1.5.1
 )
 
