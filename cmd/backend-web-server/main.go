@@ -6,16 +6,19 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
+	"github.com/joho/godotenv"
 )
 
 type requestParam struct {
@@ -28,9 +31,9 @@ type responseParam struct {
 }
 
 func oneTimeOp() {
-	fmt.Println("one time op - Server start")
-	time.Sleep(1 * time.Second)
-	fmt.Println("one time op - Server started")
+	// fmt.Println("one time op - Server start")
+	// time.Sleep(1 * time.Second)
+	log.Println("ONE TIME OP - SERVER STARTED")
 }
 
 // handle GET request from client
@@ -55,24 +58,27 @@ func validateRequest(c *gin.Context) (*requestParam, error) {
 
 // Send POST Request to another backend python server
 func callPythonBackend(catURL string) (*responseParam, error) {
-	jsonData, _ := json.Marshal(map[string]string{
+	url := os.Getenv("python_url")
+
+	jsonData, err := json.Marshal(map[string]string{
 		"cat_url": catURL,
 	})
-	resp, err := http.Post("http://be-py-service:3002/worker/cat", "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal request data: %v", err)
+	}
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return nil, fmt.Errorf("request to python failed: %v", err)
 	}
 	defer resp.Body.Close()
-
-	b, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("reading python server response failed: %v", err)
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("python backend returned non-200 status: %d", resp.StatusCode)
 	}
 
 	var result responseParam
-	err = json.Unmarshal(b, &result)
-	if err != nil {
-		return nil, fmt.Errorf("unmarshal python response body failed: %v", err)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to decode python backend response: %v", err)
 	}
 
 	return &result, nil
@@ -135,19 +141,14 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 	// Apply the CORS middleware to the router
 	r.Use(corsConfig())
 
-	r.GET("/healthz", func(c *gin.Context) {
-		// getMethodHandler(c, done) // Pass done channel to getMethodHandler
-		getMethodHandler(c)
-	})
+	r.GET("/healthz", getMethodHandler)
 
-	r.POST("/web/cat", func(c *gin.Context) {
-		// postMethodHandler(c, done) // Pass done channel to postMethodHandler
-		postMethodHandler(c)
-	})
-
+	r.POST("/web/cat", postMethodHandler)
+	// r.POST("/web/cat", func(c *gin.Context) {
+	// 	postMethodHandler(c, done) // Pass done channel to postMethodHandler
+	// })
 	r.POST("/weather", func(c *gin.Context) {
-		// weatherHandler(c, done) // Pass done channel to postMethodHandler
-		c.String(http.StatusOK, time.Now().Format(time.RFC3339)+"weather")
+		c.String(http.StatusOK, time.Now().Format(time.RFC3339)+" weather")
 	})
 
 	server := &http.Server{
@@ -182,24 +183,39 @@ const (
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	done := make(chan error)
+
+	// Load environment variables
+	go func() {
+		if err := godotenv.Load(); err != nil {
+			done <- fmt.Errorf("error loading .env file: %v", err)
+			cancel()
+		}
+	}()
+
 	host := flag.String("web-host", ":3001", "Specify host and port for backend.")
 	flag.Parse()
 
 	log.SetPrefix(time.Now().Format(YYYYMMDD+" "+HHMMSS24h) + ": ")
 	log.SetFlags(log.Lshortfile)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	done := make(chan error)
 	go StartServer(ctx, *host, done)
+
+	// Handle OS signals for graceful shutdown
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	select {
 	case err := <-done:
 		if err != nil {
-			fmt.Println("DDD")
 			glog.Fatal(err)
 		}
+	case sig := <-sigChan:
+		log.Printf("Received signal: %v. Shutting down...", sig)
+		cancel()
 	case <-ctx.Done():
 		fmt.Println("Context cancelled")
 	}
