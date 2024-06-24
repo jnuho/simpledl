@@ -81,7 +81,7 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 // handle POST request from client
 // func postMethodHandler(c *gin.Context, done chan<- error) {
 func postMethodHandler(c *gin.Context) {
-	log.Printf("Before python call\n")
+	// log.Printf("Before python call\n")
 	catObj, err := validateRequest(c)
 	if err != nil {
 		log.Println("Validation error: ", err)
@@ -102,7 +102,7 @@ func postMethodHandler(c *gin.Context) {
 		// done <- err // Send error to done channel
 		return
 	}
-	log.Printf("RESULT FROM Python ASGI SERVER!!! %v\n", result)
+	// log.Printf("RESULT FROM Python ASGI SERVER!!! %v\n", result)
 
 	// Response
 	c.JSON(http.StatusOK, gin.H{
