@@ -30,5 +30,4 @@ EXPOSE 3001
 
 # When you specify CMD ["go-app"], Docker looks for an executable named go-app in the system’s $PATH.
 # The $PATH includes common directories where executables are stored, such as /usr/local/bin, /usr/bin, and others.
-CMD ["backend-web-server", "-web-scheme=http", "-web-host=:3001"]
-# CMD ["backend-web-server"]
+CMD ["backend-web-server", "-web-host=:3001"]
