@@ -33,8 +33,8 @@ github.com/golang/glog v1.2.1/go.mod h1:6AhwSGph0fcJtXVM/PEHPqZlFeoLxhs7/t5UDAwm
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/M65Eg=
-github.com/jnuho/simpledl/pkg v0.0.0-20240614013626-cf0d42924d95 h1:Mo2NmQ5eUbixQxwJDqeLpn/zg/3OqGmJIJ5mNAKNMds=
-github.com/jnuho/simpledl/pkg v0.0.0-20240614013626-cf0d42924d95/go.mod h1:/FmEsiaWPuaaldmkKKBBPGm3+t1zpq98PUS/DZ/iXIU=
+github.com/jnuho/simpledl/pkg v0.0.0-20240624174306-963244b6a34f h1:4B7Xwbqruux/d3wZv0x0ZylNUVV+1VZGyRy7VwKbuSE=
+github.com/jnuho/simpledl/pkg v0.0.0-20240624174306-963244b6a34f/go.mod h1:0v2yJieQUqqhnRDSlRJTD+3uowqGt3bnLHUDpBC8JCk=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/json-iterator/go v1.1.12 h1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=
