@@ -1,20 +1,20 @@
-'use strict';
+"use strict";
 
 window.onload = function(){
 
     // Input
-    var catUrl = document.querySelector('.cat-url')
+    var catUrl = document.querySelector('.cat-url');
 
     // Buttons events
-    var runCatBtn = document.querySelector('.run-cat-btn')
-    var emptyCatBtn = document.querySelector('.empty-cat-btn')
-    var weatherBtn = document.querySelector('.weather-btn')
-    var weatherContainer = document.querySelector('.weather-container')
+    var runCatBtn = document.querySelector('.run-cat-btn');
+    var emptyCatBtn = document.querySelector('.empty-cat-btn');
+    var weatherBtn = document.querySelector('.weather-btn');
+    var weatherContainer = document.querySelector('.weather-container');
     
     // Input 'Enter key' event
     catUrl.addEventListener("keydown", function(event) {
         if (event.keyCode == 13) {
-            identityCat()
+            identityCat();
         }
     });
     
@@ -45,16 +45,16 @@ window.onload = function(){
                 },
             });
 
-            showCat(response1.data)
+            showCat(response1.data);
         } catch(error) {
             // console.error("Error calling /work/cat:", error);
             if (error.response) {
-                console.log(error.response.data)
+                console.log(error.response.data);
             }
         }
     }
     function showCat(data) {
-        alert(JSON.stringify(data, null, 4))
+        alert(JSON.stringify(data, null, 4));
     }
 
     async function getWeatherInfo() {
@@ -67,16 +67,16 @@ window.onload = function(){
                 // },
             });
 
-            showWeather(result.data)
+            showWeather(result.data);
         } catch(error) {
             // console.error("Error calling /work/cat:", error);
             if (error.response) {
-                console.log(error.response.data)
+                console.log(error.response.data);
             }
         }
     }
     function showWeather(data) {
-        weatherContainer.textContent = data
+        weatherContainer.textContent = data;
     }
     
     
@@ -88,7 +88,7 @@ window.onload = function(){
 
     emptyMnistBtn.addEventListener("click", function() {
             // svcListInput.focus();
-            console.log("empty draw board")
+            console.log("empty draw board");
     });
 
     // Function to get the service list
@@ -108,22 +108,18 @@ window.onload = function(){
     }
 
     function showDigit(data) {
-        console.log("draw the result,", data)
+        console.log("draw the result,", data);
     }
 
-    var cat_btn1 = document.querySelector('#cat_btn1')
-    var cat_btn2 = document.querySelector('#cat_btn2')
-    var cat_btn3 = document.querySelector('#cat_btn3')
-    var noncat_btn1 = document.querySelector('#noncat_btn1')
-    var noncat_btn2 = document.querySelector('#noncat_btn2')
-    var noncat_btn3 = document.querySelector('#noncat_btn3')
+    var cat_btn1 = document.querySelector('#cat_btn1');
+    var cat_btn2 = document.querySelector('#cat_btn2');
+    var noncat_btn1 = document.querySelector('#noncat_btn1');
+    var noncat_btn2 = document.querySelector('#noncat_btn2');
 
-    var cat_url1 = document.querySelector('#cat_url1')
-    var cat_url2 = document.querySelector('#cat_url2')
-    var cat_url3 = document.querySelector('#cat_url3')
-    var noncat_url1 = document.querySelector('#noncat_url1')
-    var noncat_url2 = document.querySelector('#noncat_url2')
-    var noncat_url3 = document.querySelector('#noncat_url3')
+    var cat_url1 = document.querySelector('#cat_url1');
+    var cat_url2 = document.querySelector('#cat_url2');
+    var noncat_url1 = document.querySelector('#noncat_url1');
+    var noncat_url2 = document.querySelector('#noncat_url2');
 
     cat_btn1.addEventListener("click", function(event) {
         copyToClipboard("cat_url1");
@@ -131,17 +127,11 @@ window.onload = function(){
     cat_btn2.addEventListener("click", function(event) {
         copyToClipboard("cat_url2");
     });
-    cat_btn3.addEventListener("click", function(event) {
-        copyToClipboard("cat_url3");
-    });
     noncat_btn1.addEventListener("click", function(event) {
         copyToClipboard("noncat_url1");
     });
     noncat_btn2.addEventListener("click", function(event) {
         copyToClipboard("noncat_url2");
-    });
-    noncat_btn3.addEventListener("click", function(event) {
-        copyToClipboard("noncat_url3");
     });
 
 
@@ -151,17 +141,11 @@ window.onload = function(){
     cat_url2.addEventListener("click", function(event) {
         copyToClipboard("cat_url2");
     });
-    cat_url3.addEventListener("click", function(event) {
-        copyToClipboard("cat_url3");
-    });
     noncat_url1.addEventListener("click", function(event) {
         copyToClipboard("noncat_url1");
     });
     noncat_url2.addEventListener("click", function(event) {
         copyToClipboard("noncat_url2");
-    });
-    noncat_url3.addEventListener("click", function(event) {
-        copyToClipboard("noncat_url3");
     });
 
 
@@ -174,21 +158,4 @@ window.onload = function(){
         });
     }
 
-    /**const pasteButton = document.querySelector('.paste-btn')
-    pasteButton.addEventListener('click', ()=> {
-        const inputElement = document.querySelector('.cat-url')
-        pasteClipboard(inputElement)
-    });
-
-    async function pasteClipboard(input) {
-        const text = await navigator.clipboard.readText();
-        input.value = text;
-    }
-    */
-
 }
-
-
-
-
-

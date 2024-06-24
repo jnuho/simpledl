@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> <!-- ❶ bootstrap 사용 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="src/css/simple.css" >
     <link rel="shortcut icon" href="#">
     <style>
@@ -21,39 +21,36 @@
 
 <body>
 <div class="padding">
-    <div class="tab-content">
-        <div class="container justify-content-center col-md-10">
-            <div class="row">
-                <div class="col-md-10 text-end">
-                    <div class="weather-container"></div>
-                    <div class="weather-input">
-                        <!--<button class="btn btn-sm btn-outline-primary paste-btn">Paste</button>-->
-                        <!-- <input type="text" class="form-control cat-url" placeholder="type cat image url"> -->
-                        <button class="add btn btn-sm btn-outline-second weather-btn">today</button>
-                        <!-- <button class="add btn btn-sm btn-outline-secondary empty-cat-btn">↻</button>  -->
-                    </div>
+    <div class="container justify-content-center col-md-10">
+        <div class="row">
+            <div class="col-md-10 text-end">
+                <div class="weather-container"></div>
+                <div class="weather-input">
+                    <!--<button class="btn btn-sm btn-outline-primary paste-btn">Paste</button>-->
+                    <!-- <input type="text" class="form-control cat-url" placeholder="type cat image url"> -->
+                    <button class="add btn btn-sm btn-outline-info weather-btn">today</button>
+                    <!-- <button class="add btn btn-sm btn-outline-secondary empty-cat-btn">↻</button>  -->
                 </div>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-10">
-                    <a class="card-title" href="https://en.wikipedia.org/wiki/Deep_learning" target="_blank">Deep learning</a>
-                        is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label). Here I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively. 
-                    <p class="p-3"></p>
-                </div>
+        <div class="row">
+            <div class="col-md-10">
+                <a class="card-title" href="https://en.wikipedia.org/wiki/Deep_learning" target="_blank">Deep learning</a>
+                    is an algorithm inspired by how 🧠 works. It distinguishes itself in the identification of patterns across various forms of data, including but not limited to images, text, and sound. It uses forward and backward propagation to find parameters (weights and biases) that minimize the cost function, which is a metric that measures how far off its predictions are from the actual answer(label). Here I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively. 
+                <p class="p-3"></p>
             </div>
         </div>
     </div>
 
 
     <div class="tab-content" id="nav-tabContent">
-    <nav class="col-md-10">
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-cat-tab" data-toggle="tab" href="#nav-cat" role="tab" aria-controls="nav-cat" aria-selected="true">Cat vs. Non-cat</a>
-            <a class="nav-item nav-link " id="nav-mnist-tab" data-toggle="tab" href="#nav-mnist" role="tab" aria-controls="nav-mnist" aria-selected="true">MNIST</a>
-            <!-- <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a> -->
-        </div>
-    </nav>
+        <nav class="col-md-10">
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-cat-tab" data-toggle="tab" href="#nav-cat" role="tab" aria-controls="nav-cat" aria-selected="true">Cat vs. Non-cat</a>
+                <a class="nav-item nav-link " id="nav-mnist-tab" data-toggle="tab" href="#nav-mnist" role="tab" aria-controls="nav-mnist" aria-selected="true">MNIST</a>
+            </div>
+        </nav>
 
         <div class="tab-pane fade show active" id="nav-cat" role="tabpanel" aria-labelledby="nav-cat-tab">
             <div class="container justify-content-center col-md-10">
@@ -68,38 +65,17 @@
                                     <a class="dropdown-item" href="#" data-toggle="collapse" data-target="#pane1">&#8595; Cat images</a>
                                 </div>
                                 <div id="pane1" class="collapse">
-                                    <button data-toggle="collapse" data-target="#pane1" class="btn btn-sm btn-light" id="cat_btn1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-</svg></button><a class="links link-dark" id="cat_url1"> https://cdn.pixabay.com/photo/2024/01/29/20/40/cat-8540772_1280.jpg</a><br>
-                                    <button data-toggle="collapse" data-target="#pane1" class="btn btn-sm btn-light" id="cat_btn2" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-</svg></button><a class="links link-dark" id="cat_url2"> https://cdn.pixabay.com/photo/2024/02/17/00/18/cat-8578562_1280.jpg</a><br>
-                                    <button data-toggle="collapse" data-target="#pane1" class="btn btn-sm btn-light" id="cat_btn3" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-</svg></button><a class="links link-dark" id="cat_url3"> https://cdn.pixabay.com/photo/2023/06/01/06/22/british-shorthair-8032816_1280.jpg</a><br>
+                                    <button data-toggle="collapse" data-target="#pane1" class="btn btn-sm btn-light" id="cat_btn1" ><i class="fa fa-clone"></i></button><a class="links link-dark" id="cat_url1">https://cdn.pixabay.com/photo/2024/01/29/20/40/cat-8540772_1280.jpg</a><br>
+                                    <button data-toggle="collapse" data-target="#pane1" class="btn btn-sm btn-light" id="cat_btn2" ><i class="fa fa-clone"></i></button><a class="links link-dark" id="cat_url2">https://cdn.pixabay.com/photo/2024/02/17/00/18/cat-8578562_1280.jpg</a><br>
                                 </div>
 
                                 <div class="dropdown">
                                     <a class="dropdown-item" href="#" data-toggle="collapse" data-target="#pane2">&#8595; Non-cat images</a>
                                 </div>
                                 <div id="pane2" class="collapse">
-                                    <button data-toggle="collapse" data-target="#pane2" class="btn btn-sm btn-light" id="noncat_btn1" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-</svg></button><a class="links link-dark" id="noncat_url1"> https://cdn.pixabay.com/photo/2023/06/29/10/33/lion-8096155_1280.png</a><br>
-                                    <button data-toggle="collapse" data-target="#pane2" class="btn btn-sm btn-light" id="noncat_btn2" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-</svg></button><a class="links link-dark" id="noncat_url2"> https://cdn.pixabay.com/photo/2016/03/27/21/52/woman-1284411_1280.jpg</a><br>
-                                    <button data-toggle="collapse" data-target="#pane2" class="btn btn-sm btn-light" id="noncat_btn3" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
-    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
-</svg></button><a class="links link-dark" id="noncat_url3"> https://cdn.pixabay.com/photo/2021/10/09/06/46/baloch-6693129_1280.jpg</a><br>
+                                    <button data-toggle="collapse" data-target="#pane2" class="btn btn-sm btn-light" id="noncat_btn1" ><i class="fa fa-clone"></i></button><a class="links link-dark" id="noncat_url1">https://cdn.pixabay.com/photo/2023/06/29/10/33/lion-8096155_1280.png</a><br>
+                                    <button data-toggle="collapse" data-target="#pane2" class="btn btn-sm btn-light" id="noncat_btn2" ><i class="fa fa-clone"></i></button><a class="links link-dark" id="noncat_url2">https://cdn.pixabay.com/photo/2016/03/27/21/52/woman-1284411_1280.jpg</a><br>
                                 </div>
-
 
                             </div>
                         </div>
