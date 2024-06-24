@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 type Response struct {
@@ -42,6 +43,9 @@ const (
 	cacheKey
 	userKey
 )
+
+// with() function wraps a ContextHandler with additional context values and CORS settings.
+// It sets serverKey, queueKey, cacheKey, and userKey in the context, and configures CORS headers.
 
 func with(h ContextHandler, srv *Server) ContextHandler {
 	return ContextHandlerFunc(func(ctx context.Context, w http.ResponseWriter, req *http.Request) error {
@@ -169,22 +173,6 @@ func clientRequestHandler(ctx context.Context, w http.ResponseWriter, r *http.Re
 	}
 }
 
-// func CORS(next http.HandlerFunc) http.HandlerFunc {
-// 	return func(w http.ResponseWriter, r *http.Request) {
-// 		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow any origin
-// 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-// 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-// 		w.Header().Set("Access-Control-Allow-Credentials", "true") // Allow credentials (cookies, etc.)
-
-// 		if r.Method == "OPTIONS" {
-// 			http.Error(w, "No Content", http.StatusNoContent)
-// 			return
-// 		}
-
-// 		next(w, r)
-// 	}
-// }
-
 func StartServer(scheme, hostPort string) (*Server, error) {
 	// Log format
 	log.SetFlags(log.Ltime)
@@ -215,9 +203,7 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 	go func() {
 		// Ensures that resources (goroutines, network connections, etc.) associated with the context
 		// are properly cleaned up when the program exits.
-		defer func() {
-			srv.rootCancel()
-		}()
+		defer srv.rootCancel()
 
 		log.Printf("Server listening on %v\n", hostPort)
 		if err := srv.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -257,6 +243,10 @@ func StartServer(scheme, hostPort string) (*Server, error) {
 	go func() {
 		sig := <-sigCh
 		log.Printf("Received signal %v. Shutting down gracefully...\n", sig)
+
+		// If the server does not shut down within 5 seconds, the context will be canceled, and the shutdown will be forced
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
 		close(srv.donec)
 	}()
 

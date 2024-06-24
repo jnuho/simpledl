@@ -123,7 +123,7 @@ func postMethodHandler(c *gin.Context) {
 // 	}
 // }
 
-func StartServer(host string) error {
+func StartServer(host string, done chan<- error) {
 	// Router
 	r := gin.Default()
 
@@ -131,7 +131,7 @@ func StartServer(host string) error {
 	config := cors.Config{
 		// AllowOrigins:     []string{"http://localhost"}, // or use "*" to allow all origins
 		AllowOrigins:     []string{"*"}, // or use "*" to allow all origins
-		AllowMethods:     []string{"POST", "GET"},
+		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
@@ -145,15 +145,21 @@ func StartServer(host string) error {
 	// NOTE: r.Run("localhost:3001") means your server will only be accessible
 	// via the same machine on which it is running. So, another docker container cannot access it.
 	err := r.Run(host)
-	return err
+	done <- err
 }
 
 func main() {
 	// ./go-app -web-host=":3001"
 	host := flag.String("web-host", ":3001", "Specify host and port for backend.")
 	flag.Parse()
-	err := StartServer(*host)
-	if err != nil {
-		glog.Fatal(err)
+
+	done := make(chan error)
+	go StartServer(*host, done)
+
+	select {
+	case err := <-done:
+		if err != nil {
+			glog.Fatal(err)
+		}
 	}
 }

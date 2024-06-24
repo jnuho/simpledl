@@ -10,8 +10,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	// "github.com/vbauerster/mpb/v7"
-	// "github.com/vbauerster/mpb/v7/decor"
 )
 
 // func downloadImage(ctx context.Context, url string, wg *sync.WaitGroup, p *mpb.Progress) {
