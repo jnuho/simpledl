@@ -28,9 +28,9 @@ type responseParam struct {
 }
 
 func oneTimeOp() {
-	fmt.Println("one time op start")
+	fmt.Println("one time op - Server start")
 	time.Sleep(1 * time.Second)
-	fmt.Println("one time op started")
+	fmt.Println("one time op - Server started")
 }
 
 // handle GET request from client
@@ -114,6 +114,17 @@ func postMethodHandler(c *gin.Context) {
 	// done <- nil // No error, send nil to done channel
 }
 
+func corsConfig() gin.HandlerFunc {
+	config := cors.Config{
+		AllowOrigins:     []string{"*"}, // or use "*" to allow all origins
+		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+	}
+	return cors.New(config)
+}
+
 func StartServer(ctx context.Context, host string, done chan<- error) {
 	var once sync.Once
 	once.Do(oneTimeOp)
@@ -122,22 +133,13 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 	r := gin.Default()
 
 	// Apply the CORS middleware to the router
-	config := cors.Config{
-		AllowOrigins:     []string{"*"}, // or use "*" to allow all origins
-		AllowMethods:     []string{"POST", "GET", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-	}
-	r.Use(cors.New(config))
+	r.Use(corsConfig())
 
-	// GET endpoint
 	r.GET("/healthz", func(c *gin.Context) {
 		// getMethodHandler(c, done) // Pass done channel to getMethodHandler
 		getMethodHandler(c)
 	})
 
-	// POST endpoint
 	r.POST("/web/cat", func(c *gin.Context) {
 		// postMethodHandler(c, done) // Pass done channel to postMethodHandler
 		postMethodHandler(c)
