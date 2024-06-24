@@ -582,7 +582,7 @@ k get svc -n ingress-nginx
 
 # In Chrome browser, "http://localhost:8080" -> ingress controller on 80
 k port-forward -n <namespace> svc/<service-name> <local-port>:<service-port>
-k port-forward -n ingress-nginx svc/ingress-nginx-controller 8080:80 3001:3001 3002:3002
+k port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80 3001:3001 3002:3002
 ```
 
 The need for port-forwarding arises due to the way Kubernetes networking and Minikube are structured. Here's a breakdown of why you might need to use port-forwarding and why direct access might not work without it:
