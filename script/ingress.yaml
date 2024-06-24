@@ -3,7 +3,9 @@ kind: Ingress
 metadata:
   name: fe-nginx-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+
+    # this annotation is set to /$1, which captures the first group in the path. Since we are using exact paths, this annotation is not strictly necessary for the /web/cat path.
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   # This field is used to specify the class of the Ingress. The Ingress class is used by the Ingress Controller to determine whether or not it should act on a particular Ingress resource. For example, if you have multiple Ingress Controllers running in your cluster, you can use the ingressClassName field to specify which Ingress Controller should handle this Ingress12.
   ingressClassName: nginx
@@ -26,6 +28,13 @@ spec:
             name: be-go-service
             port:
               number: 3001
+      - path: /weather
+        pathType: Prefix
+        backend:
+          service:
+            name: be-go-service
+            port:
+              number: 3001
       - path: /healthz
         pathType: Prefix
         backend:
@@ -33,10 +42,10 @@ spec:
             name: be-go-service
             port:
               number: 3001
-      - path: /mongo-express
-        pathType: Prefix
-        backend:
-          service:
-            name: mongo-express-service
-            port:
-              number: 8081
+      # - path: /mongo-express
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: mongo-express-service
+      #       port:
+      #         number: 8081

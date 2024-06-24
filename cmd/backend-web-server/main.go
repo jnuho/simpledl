@@ -131,14 +131,18 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 	r.Use(cors.New(config))
 
 	// GET endpoint
-	r.GET("/", func(c *gin.Context) {
+	r.GET("/healthz", func(c *gin.Context) {
 		// getMethodHandler(c, done) // Pass done channel to getMethodHandler
 		getMethodHandler(c)
 	})
 
 	// POST endpoint
-	r.POST("/", func(c *gin.Context) {
+	r.POST("/web/cat", func(c *gin.Context) {
 		postMethodHandler(c, done) // Pass done channel to postMethodHandler
+	})
+	r.POST("/weather", func(c *gin.Context) {
+		// weatherHandler(c, done) // Pass done channel to postMethodHandler
+		c.String(http.StatusOK, time.Now().Format(time.RFC3339)+"weather")
 	})
 
 	server := &http.Server{

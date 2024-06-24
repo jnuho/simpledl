@@ -155,10 +155,15 @@ func main() {
 		close(ch)
 	}()
 
+	str := ""
 	for result := range ch {
-		fmt.Printf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
+		// fmt.Printf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
+		str += fmt.Sprintf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
 		// fmt.Printf("ICON= https://openweathermap.org/img/wn/%s@2x.png\n", result.Weather[0].Icon)
 	}
 
-	fmt.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
+	// fmt.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
+	str += fmt.Sprintf("\nThis operation took: %v\n\n", time.Since(startNow))
+	fmt.Print(str)
+
 }
