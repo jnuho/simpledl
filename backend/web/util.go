@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jnuho/simpledl/pkg"
 )
 
 type requestParam struct {
@@ -59,4 +60,12 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 	}
 
 	return &result, nil
+}
+
+func callWeatherAPi() (string, error) {
+	str := pkg.GetWeatherInfo()
+	if str == "" {
+		return "", fmt.Errorf("failed to get weather info")
+	}
+	return str, nil
 }

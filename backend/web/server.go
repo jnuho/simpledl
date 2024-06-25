@@ -38,10 +38,11 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 	r.Use(corsConfig())
 
 	r.GET("/healthz", getMethodHandler)
-	r.POST("/web/cat", postMethodHandler)
-	r.POST("/weather", func(c *gin.Context) {
-		c.String(http.StatusOK, time.Now().Format(time.RFC3339)+" weather")
-	})
+	r.POST("/web/cat", catPostHandler)
+	r.POST("/weather", weatherPostHandler)
+	// r.POST("/weather", func(c *gin.Context) {
+	// 	c.String(http.StatusOK, time.Now().Format(time.RFC3339)+" weather")
+	// })
 
 	server := &http.Server{
 		Addr:    host,
