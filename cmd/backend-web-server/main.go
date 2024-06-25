@@ -40,7 +40,9 @@ func main() {
 	log.SetPrefix(time.Now().Format(YYYYMMDD+" "+HHMMSS24h) + ": ")
 	log.SetFlags(log.Lshortfile)
 
-	go web.StartServer(ctx, *host, done)
+	go func() {
+		web.StartServer(ctx, *host, done)
+	}()
 
 	// Handle OS signals for graceful shutdown
 	sigChan := make(chan os.Signal, 1)

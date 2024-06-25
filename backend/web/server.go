@@ -48,11 +48,10 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 		Handler: r,
 	}
 
-	go func() {
-		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			done <- err
-		}
-	}()
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		done <- err
+		return
+	}
 
 	<-ctx.Done()
 
@@ -61,6 +60,7 @@ func StartServer(ctx context.Context, host string, done chan<- error) {
 
 	if err := server.Shutdown(ctxShutDown); err != nil {
 		done <- fmt.Errorf("server shutdown failed: %v", err)
+		return
 	}
 
 	done <- nil
