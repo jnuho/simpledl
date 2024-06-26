@@ -131,7 +131,7 @@ const (
 	HHMMSS24h = "15:04:05"
 )
 
-func GetWeatherInfo() string {
+func GetWeatherInfo() []WeatherResponse {
 	log.SetPrefix(time.Now().Format(YYYYMMDD+" "+HHMMSS24h) + ": ")
 	log.SetFlags(log.Lshortfile)
 
@@ -155,15 +155,15 @@ func GetWeatherInfo() string {
 		close(ch)
 	}()
 
-	str := ""
+	weather_list := make([]WeatherResponse, 4)
 	for result := range ch {
-		str += fmt.Sprintf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
+		weather_list = append(weather_list, result)
+		// str += fmt.Sprintf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
 		// fmt.Printf("ICON= https://openweathermap.org/img/wn/%s@2x.png\n", result.Weather[0].Icon)
 	}
 
-	// fmt.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
-	str += fmt.Sprintf("\nThis operation took: %v\n\n", time.Since(startNow))
+	log.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
 	// fmt.Print(str)
-	return str
+	return weather_list
 
 }
