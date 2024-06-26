@@ -9,7 +9,11 @@ window.onload = function(){
     var runCatBtn = document.querySelector('.run-cat-btn');
     var emptyCatBtn = document.querySelector('.empty-cat-btn');
     var weatherBtn = document.querySelector('.weather-btn');
-    var weatherContainer = document.querySelector('.weather-container');
+    var weather1 = document.querySelector('.weather1');
+    var weather2 = document.querySelector('.weather2');
+    var weather3 = document.querySelector('.weather3');
+    var weather4 = document.querySelector('.weather4');
+
     
     // Input 'Enter key' event
     catUrl.addEventListener("keydown", function(event) {
@@ -76,7 +80,15 @@ window.onload = function(){
         }
     }
     function showWeather(data) {
-        weatherContainer.textContent = data.weather_info;
+        data.weather_list.forEach((weather, index) => {
+            var iconUrl = "https://openweathermap.org/img/wn/10d@" + weather.Weather[0].Icon + ".png"
+            document.querySelector(`.weather${index + 1}`).textContent = weather.Name + " " + weather.Main.Temp + "°C, " + weather.Main.Humidity + "% "
+            + `<img src="${iconUrl}">`;
+        });
+        weather1.textContent = data.weather_list[0].weather_info;
+        weather2.textContent = data.weather_list[1].weather_info;
+        weather3.textContent = data.weather_list[2].weather_info;
+        weather4.textContent = data.weather_list[3].weather_info;
     }
     
     

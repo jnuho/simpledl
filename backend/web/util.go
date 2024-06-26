@@ -63,9 +63,9 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 }
 
 func callWeatherAPi() (string, error) {
-	str := pkg.GetWeatherInfo()
-	if str == "" {
+	list := pkg.GetWeatherInfo()
+	if len(list) == 0 {
 		return "", fmt.Errorf("failed to get weather info")
 	}
-	return str, nil
+	return list, nil
 }

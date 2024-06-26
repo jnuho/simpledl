@@ -39,7 +39,7 @@ func catPostHandler(c *gin.Context) {
 
 func weatherPostHandler(c *gin.Context) {
 
-	result, err := callWeatherAPi()
+	list, err := callWeatherAPi()
 	if err != nil {
 		log.Println("WeatherApi call error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -49,6 +49,6 @@ func weatherPostHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"weather_info": result,
+		"weather_list": list,
 	})
 }
