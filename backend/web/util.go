@@ -42,7 +42,7 @@ func callPythonBackend(catURL string) (*responseParam, error) {
 		"cat_url": catURL,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal request data: %v", err)
+		return nil, fmt.Errorf("failed to marshal request data : %v", err)
 	}
 
 	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))

@@ -4,6 +4,16 @@ on:
   push:
     branches:
       - main
+    paths:
+      # fe-nginx
+      - 'web/**'
+      # be-go
+      - 'go.mod'
+      - 'go.sum'
+      - 'backend/web/**'
+      - 'cmd/backend-web-server/**'
+      # be-py
+      - 'backend/worker/**'
 
 jobs:
   docker-login:
@@ -23,8 +33,12 @@ jobs:
 
   build-go:
     needs: docker-login
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    if: |
+      contains(github.event.head_commit.message, 'go.mod') ||
+      contains(github.event.head_commit.message, 'go.sum') ||
+      contains(github.event.head_commit.message, 'backend/web/') ||
+      contains(github.event.head_commit.message, 'cmd/backend-web-server/')
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -39,17 +53,10 @@ jobs:
         cache-from: type=registry,ref=jnuho/be-go:latest
         cache-to: type=inline
 
-    # Only run this job if Go-related files are changed
-    paths:
-      - 'go.mod'
-      - 'go.sum'
-      - 'backend/web/**'
-      - 'cmd/backend-web-server/**'
-
   build-nginx:
     needs: docker-login
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'web/')
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -64,14 +71,10 @@ jobs:
         cache-from: type=registry,ref=jnuho/fe-nginx:latest
         cache-to: type=inline
 
-    # Only run this job if the 'web' directory is changed
-    paths:
-      - 'web/**'
-
   build-py:
     needs: docker-login
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'backend/worker/')
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -85,7 +88,3 @@ jobs:
         tags: jnuho/be-py:latest
         cache-from: type=registry,ref=jnuho/be-py:latest
         cache-to: type=inline
-
-    # Only run this job if the 'python' directory is changed
-    paths:
-      - 'backend/worker/**'
