@@ -81,8 +81,9 @@ window.onload = function(){
     }
     function showWeather(data) {
         data.weather_list.forEach((weather, index) => {
-            var iconUrl = "https://openweathermap.org/img/wn/" + weather.Weather[0].Icon + ".png"
-            document.querySelector(`.weather${index + 1}`).textContent = weather.Name + " " + weather.Main.Temp + "°C, " + weather.Main.Humidity + "% "
+            var iconUrl = "https://openweathermap.org/img/wn/" + weather.weather[0].icon + ".png"
+            console.log(iconUrl)
+            document.querySelector(`.weather${index + 1}`).innerHTML = weather.name + " " + weather.main.temp + "°C, " + weather.main.humidity + "% "
             + `<img src="${iconUrl}">`;
         });
     }

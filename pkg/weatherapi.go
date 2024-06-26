@@ -1,4 +1,4 @@
-package pkg
+package main
 
 import (
 	"context"
@@ -156,14 +156,23 @@ func GetWeatherInfo() []WeatherResponse {
 	}()
 
 	weather_list := make([]WeatherResponse, 4)
+	i := 0
 	for result := range ch {
-		weather_list = append(weather_list, result)
+		weather_list[i] = result
+		i++
 		// str += fmt.Sprintf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
 		// fmt.Printf("ICON= https://openweathermap.org/img/wn/%s@2x.png\n", result.Weather[0].Icon)
 	}
 
 	log.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
-	// fmt.Print(str)
+
 	return weather_list
 
+}
+
+func main() {
+	list := GetWeatherInfo()
+	for _, item := range list {
+		fmt.Println(item)
+	}
 }
