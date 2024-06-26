@@ -14,6 +14,8 @@ on:
       - 'cmd/backend-web-server/**'
       # be-py
       - 'backend/worker/**'
+      # dockerfiles
+      - 'dockerfiles/**'
 
 jobs:
   build-go:

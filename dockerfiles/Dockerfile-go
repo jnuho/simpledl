@@ -9,6 +9,9 @@ COPY go.mod go.sum ./
 COPY backend/web ./backend/web
 COPY cmd/backend-web-server/main.go ./cmd/backend-web-server/main.go
 
+# Copy the .env file into the working directory
+COPY .env .env
+
 # # Install the app dependencies inside the docker image
 RUN go mod download && go mod verify
 
