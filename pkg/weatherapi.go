@@ -137,7 +137,7 @@ func GetWeatherInfo() []WeatherResponse {
 
 	startNow := time.Now()
 	apiKey := getEnvVar("WEATHER_API_KEY")
-	cities := []string{"Los Angeles,CA,US", "Seattle,WA,US", "Taipei,TW", "Seongnam-si,KR"}
+	cities := []string{"Los Angeles,CA,US", "Seattle,WA,US", "Seongnam-si,KR"} //"Taipei,TW"
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -155,13 +155,11 @@ func GetWeatherInfo() []WeatherResponse {
 		close(ch)
 	}()
 
-	weather_list := make([]WeatherResponse, 4)
+	weather_list := make([]WeatherResponse, 3)
 	i := 0
 	for result := range ch {
 		weather_list[i] = result
 		i++
-		// str += fmt.Sprintf("→ %v  %v °C, Humidity: %v, Weather: %v\n", result.Name, result.Main.Temp, result.Main.Humidity, result.Weather[0])
-		// fmt.Printf("ICON= https://openweathermap.org/img/wn/%s@2x.png\n", result.Weather[0].Icon)
 	}
 
 	log.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
