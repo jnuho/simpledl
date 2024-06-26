@@ -1597,3 +1597,12 @@ gcloud compute ssh instance-20240620-115251 --zone asia-northeast3-a
 ### Github Actions
 
 - `.github/workflows/main.yml`
+
+
+### golang pkg
+
+- After updating `pkg/weatherapi.go`
+    - delete github.com/jnuho/simpledl/pkg in gopath
+    - delete simpledl/pkg lines from go.mod and go.sum
+    - `go mod tidy`
+
