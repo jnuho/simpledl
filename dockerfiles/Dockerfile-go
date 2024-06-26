@@ -30,7 +30,8 @@ FROM alpine:latest
 COPY --from=build /backend-web-server /usr/local/bin/backend-web-server
 
 # Copy the .env file from the build stage
-COPY --from=build /.env /usr/local/bin/.env
+# put in root directory / becasuse running CMD "backend-web-server" is ru
+COPY --from=build /.env /.env
 
 EXPOSE 3001
 
