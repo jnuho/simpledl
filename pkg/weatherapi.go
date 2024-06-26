@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sort"
 	"sync"
 	"time"
 
@@ -44,6 +45,12 @@ type Weather struct {
 	Description string `json:"description"`
 	Icon        string `json:"icon"`
 }
+
+type ByName []WeatherResponse
+
+func (a ByName) Len() int           { return len(a) }
+func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 func getGeoloc(ctx context.Context, city, apiKey string) (GeoCityResponse, error) {
 	var data []GeoCityResponse
@@ -131,6 +138,11 @@ const (
 	HHMMSS24h = "15:04:05"
 )
 
+// Function to sort WeatherResponse slice by Name in ascending order
+func SortWeatherResponsesByNames(weatherResponses []WeatherResponse) {
+	sort.Sort(ByName(weatherResponses))
+}
+
 func GetWeatherInfo() []WeatherResponse {
 	log.SetPrefix(time.Now().Format(YYYYMMDD+" "+HHMMSS24h) + ": ")
 	log.SetFlags(log.Lshortfile)
@@ -161,6 +173,7 @@ func GetWeatherInfo() []WeatherResponse {
 		weather_list[i] = result
 		i++
 	}
+	SortWeatherResponsesByNames(weather_list)
 
 	log.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
 
