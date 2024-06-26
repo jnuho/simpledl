@@ -57,6 +57,6 @@ func main() {
 		log.Printf("Received signal: %v. Shutting down...", sig)
 		cancel()
 	case <-ctx.Done():
-		fmt.Println("Context cancelled")
+		log.Printf("Context cancelled")
 	}
 }

@@ -6,9 +6,8 @@ on:
       - main
 
 jobs:
-  build:
+  docker-login:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -22,16 +21,38 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+  build-go:
+    needs: docker-login
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
     - name: Build and push Docker image for Go
       uses: docker/build-push-action@v4
       with:
-        # context: ./dockerfiles
         context: ./
         file: ./dockerfiles/Dockerfile-go
         push: true
         tags: jnuho/be-go:latest
         cache-from: type=registry,ref=jnuho/be-go:latest
         cache-to: type=inline
+
+    # Only run this job if Go-related files are changed
+    paths:
+      - 'go.mod'
+      - 'go.sum'
+      - 'backend/web/**'
+      - 'cmd/backend-web-server/**'
+
+  build-nginx:
+    needs: docker-login
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
     - name: Build and push Docker image for Nginx
       uses: docker/build-push-action@v4
@@ -43,6 +64,18 @@ jobs:
         cache-from: type=registry,ref=jnuho/fe-nginx:latest
         cache-to: type=inline
 
+    # Only run this job if the 'web' directory is changed
+    paths:
+      - 'web/**'
+
+  build-py:
+    needs: docker-login
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
     - name: Build and push Docker image for Python
       uses: docker/build-push-action@v4
       with:
@@ -52,3 +85,7 @@ jobs:
         tags: jnuho/be-py:latest
         cache-from: type=registry,ref=jnuho/be-py:latest
         cache-to: type=inline
+
+    # Only run this job if the 'python' directory is changed
+    paths:
+      - 'backend/worker/**'
