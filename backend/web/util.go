@@ -36,7 +36,7 @@ func validateRequest(c *gin.Context) (*requestParam, error) {
 }
 
 func callPythonBackend(catURL string) (*responseParam, error) {
-	url := os.Getenv("python_url")
+	url := os.Getenv("PYTHON_URL")
 
 	jsonData, err := json.Marshal(map[string]string{
 		"cat_url": catURL,
