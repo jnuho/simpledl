@@ -63,15 +63,29 @@ window.onload = function(){
 
     async function getWeatherInfo() {
         try{
-            const result = await axios({
-                method: 'post',
-                url: 'http://localhost/weather', // in k8s ingress env
-                // url: 'http://localhost:3001/weather', // in docker-compose env
-                // data: {
-                // },
+            // Make a POST request to the backend
+            const response = await fetch('http://localhost/weather', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Add any required payload here if needed
+                    // key: value
+                })
             });
+             // Check if the response is OK (status 200)
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            
+            // Parse the JSON response
+            const data = await response.json();
 
-            showWeather(result.data);
+            // Get the weather list from the response
+            const weatherList = data.weather_list;
+        
+            showWeather(weatherList);
         } catch(error) {
             // console.error("Error calling /work/cat:", error);
             if (error.response) {
@@ -79,11 +93,20 @@ window.onload = function(){
             }
         }
     }
-    function showWeather(data) {
-        data.weather_list.forEach((weather, index) => {
-            var iconUrl = "https://openweathermap.org/img/wn/" + weather.weather[0].icon + ".png";
-            console.log(iconUrl);
-            document.querySelector(`.weather${index + 1}`).innerHTML = weather.name + " " + weather.main.temp + "°C, " + weather.main.humidity + "% " + `<img src="${iconUrl}">`;
+    function showWeather(weatherList) {
+        // Iterate over the weather list using forEach and xtract the required elements
+        weatherList.forEach(weather => {
+            alert(weather)
+            const name = weather.name;
+            const temp = weather.main.temp;
+            const humidity = weather.main.humidity;
+            const icon = weather.weather[0].icon;
+            
+            // Do something with the extracted data
+            console.log(`City: ${name}, Temperature: ${temp}, Icon: ${icon}`);
+
+            var iconUrl = "https://openweathermap.org/img/wn/" + icon + ".png";
+            document.querySelector(`.weather${index + 1}`).innerHTML = name + " " + temp + "°C, " + humidity + "% " + `<img src="${iconUrl}">`;
         });
     }
     
