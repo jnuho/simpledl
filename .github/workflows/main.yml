@@ -38,6 +38,7 @@ jobs:
       run: |
         echo "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY}}" >> .env
         echo "PYTHON_URL=${{ secrets.PYTHON_URL}}" >> .env
+        cat .env
         # Add more environment variables as needed
 
     - name: Build and push Docker image for Go
