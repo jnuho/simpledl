@@ -2,8 +2,7 @@
 # Configure the AWS Provider
 provider "aws" {
   region = "ap-northeast-2"
-  access_key = "ACCES_KEY"
-  secret_key = "SECRET_KEY"
+  profile = "default"
 }
 
 # 가용역역
