@@ -34,11 +34,11 @@ jobs:
   build-go:
     needs: docker-login
     runs-on: ubuntu-latest
-    if: |
-      contains(github.event.head_commit.message, 'go.mod') ||
-      contains(github.event.head_commit.message, 'go.sum') ||
-      contains(github.event.head_commit.message, 'backend/web/') ||
-      contains(github.event.head_commit.message, 'cmd/backend-web-server/')
+    # if: |
+    #   contains(github.event.head_commit.message, 'go.mod') ||
+    #   contains(github.event.head_commit.message, 'go.sum') ||
+    #   contains(github.event.head_commit.message, 'backend/web/') ||
+    #   contains(github.event.head_commit.message, 'cmd/backend-web-server/')
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -56,7 +56,7 @@ jobs:
   build-nginx:
     needs: docker-login
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'web/')
+    # if: contains(github.event.head_commit.message, 'web/')
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -74,7 +74,7 @@ jobs:
   build-py:
     needs: docker-login
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, 'backend/worker/')
+    # if: contains(github.event.head_commit.message, 'backend/worker/')
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
