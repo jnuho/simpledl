@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"context"
@@ -168,11 +168,4 @@ func GetWeatherInfo() []WeatherResponse {
 
 	return weather_list
 
-}
-
-func main() {
-	list := GetWeatherInfo()
-	for _, item := range list {
-		fmt.Println(item)
-	}
 }
