@@ -6,3 +6,4 @@ kubectl delete -f be/go/deployment.yaml
 sleep 2
 
 kubectl apply -f be/go/deployment.yaml
+kubectl get pod --watch

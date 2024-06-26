@@ -94,20 +94,23 @@ window.onload = function(){
         }
     }
     function showWeather(weatherList) {
-        alert(weatherList)
         // Iterate over the weather list using forEach and xtract the required elements
         weatherList.forEach(weather => {
-            alert(weather)
             const name = weather.name;
             const temp = weather.main.temp;
             const humidity = weather.main.humidity;
             const icon = weather.weather[0].icon;
+            var iconUrl = "https://openweathermap.org/img/wn/" + icon + ".png";
             
             // Do something with the extracted data
-            console.log(`City: ${name}, Temperature: ${temp}, Icon: ${icon}`);
+            console.log(`City: ${name}, Temperature: ${temp}, Icon: ${iconUrl}`);
 
-            var iconUrl = "https://openweathermap.org/img/wn/" + icon + ".png";
-            document.querySelector(`.weather${index + 1}`).innerHTML = name + " " + temp + "°C, " + humidity + "% " + `<img src="${iconUrl}">`;
+
+            // Select the element with the corresponding class name
+            const weatherElement = document.querySelector(`.weather${index + 1}`);
+            if (weatherElement) {
+                weatherElement.innerHTML = `${name} ${temp}°C, ${humidity}% <img src="${iconUrl}">`;
+            }
         });
     }
     

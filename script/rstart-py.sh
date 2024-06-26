@@ -6,3 +6,4 @@ kubectl delete -f be/py/deployment.yaml
 sleep 2
 
 kubectl apply -f be/py/deployment.yaml
+kubectl get pod --watch
