@@ -16,7 +16,7 @@ RUN go mod download && go mod verify
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
 # # Define the command to run your app using CMD which defines your runtime
-RUN go build -o backend-web-server ./cmd/backend-web-server
+RUN go build -o backend-web-server ./cmd/bckend-web-server
 
 RUN rm -rf /var/cache/apk/* /tmp/*
 

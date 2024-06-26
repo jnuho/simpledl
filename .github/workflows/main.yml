@@ -25,7 +25,8 @@ jobs:
     - name: Build and push Docker image for Go
       uses: docker/build-push-action@v4
       with:
-        context: ./dockerfiles
+        # context: ./dockerfiles
+        context: ./
         file: ./dockerfiles/Dockerfile-go
         push: true
         tags: jnuho/be-go:latest
@@ -35,7 +36,7 @@ jobs:
     - name: Build and push Docker image for Nginx
       uses: docker/build-push-action@v4
       with:
-        context: ./dockerfiles
+        context: ./
         file: ./dockerfiles/Dockerfile-nginx
         push: true
         tags: jnuho/fe-nginx:latest
@@ -45,7 +46,7 @@ jobs:
     - name: Build and push Docker image for Python
       uses: docker/build-push-action@v4
       with:
-        context: ./dockerfiles
+        context: ./
         file: ./dockerfiles/Dockerfile-py
         push: true
         tags: jnuho/be-py:latest
