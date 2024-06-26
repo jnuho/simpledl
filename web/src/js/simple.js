@@ -76,7 +76,7 @@ window.onload = function(){
         }
     }
     function showWeather(data) {
-        weatherContainer.textContent = data;
+        weatherContainer.textContent = data.weather_info;
     }
     
     
