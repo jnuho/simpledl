@@ -94,6 +94,7 @@ window.onload = function(){
         }
     }
     function showWeather(weatherList) {
+        alert(weatherList)
         // Iterate over the weather list using forEach and xtract the required elements
         weatherList.forEach(weather => {
             alert(weather)
