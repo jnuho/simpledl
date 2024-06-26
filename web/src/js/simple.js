@@ -9,11 +9,6 @@ window.onload = function(){
     var runCatBtn = document.querySelector('.run-cat-btn');
     var emptyCatBtn = document.querySelector('.empty-cat-btn');
     var weatherBtn = document.querySelector('.weather-btn');
-    var weather1 = document.querySelector('.weather1');
-    var weather2 = document.querySelector('.weather2');
-    var weather3 = document.querySelector('.weather3');
-    var weather4 = document.querySelector('.weather4');
-
     
     // Input 'Enter key' event
     catUrl.addEventListener("keydown", function(event) {
@@ -95,7 +90,7 @@ window.onload = function(){
     }
     function showWeather(weatherList) {
         // Iterate over the weather list using forEach and xtract the required elements
-        weatherList.forEach(weather => {
+        weatherList.forEach((weather, index) => {
             const name = weather.name;
             const temp = weather.main.temp;
             const humidity = weather.main.humidity;
@@ -108,8 +103,9 @@ window.onload = function(){
 
             // Select the element with the corresponding class name
             const weatherElement = document.querySelector(`.weather${index + 1}`);
+            console.log(weatherElement);
             if (weatherElement) {
-                weatherElement.innerHTML = `${name} ${temp}°C, ${humidity}% <img src="${iconUrl}">`;
+                weatherElement.innerHTML = `${name} ${temp}°C, ${humidity}% <img src="${iconUrl}" style="width: 25px; height: 25px;">`;
             }
         });
     }
