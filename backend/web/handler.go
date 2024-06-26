@@ -43,7 +43,7 @@ func weatherPostHandler(c *gin.Context) {
 	if err != nil {
 		log.Println("WeatherApi call error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "Error calling WeatherApi",
+			"message": "Error calling GetWeatherInfo()",
 		})
 		return
 	}
