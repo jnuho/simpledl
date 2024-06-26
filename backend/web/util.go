@@ -24,7 +24,7 @@ type responseParam struct {
 func validateRequest(c *gin.Context) (*requestParam, error) {
 	catObj := requestParam{}
 	if err := c.BindJSON(&catObj); err != nil {
-		return nil, fmt.Errorf("invalid request: %v", err)
+		return nil, fmt.Errorf("invalid request : %v", err)
 	}
 
 	_, err := url.ParseRequestURI(catObj.URL)
