@@ -4,34 +4,21 @@ on:
   push:
     branches:
       - main
+    paths:
+      # fe-nginx
+      - 'web/**'
+      # be-go
+      - 'go.mod'
+      - 'go.sum'
+      - 'backend/web/**'
+      - 'cmd/backend-web-server/**'
+      # be-py
+      - 'backend/worker/**'
 
 jobs:
-  determine-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      web: ${{ steps.web.outputs.changed }}
-      go: ${{ steps.go.outputs.changed }}
-      python: ${{ steps.python.outputs.changed }}
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    - name: Check for web changes
-      id: web
-      run: echo "::set-output name=changed::$(git diff --name-only HEAD~1 HEAD | grep -E 'web/.*' || echo 'false')"
-
-    - name: Check for go changes
-      id: go
-      run: echo "::set-output name=changed::$(git diff --name-only HEAD~1 HEAD | grep -E 'go.mod|go.sum|backend/web/.*|cmd/backend-web-server/.*' || echo 'false')"
-
-    - name: Check for python changes
-      id: python
-      run: echo "::set-output name=changed::$(git diff --name-only HEAD~1 HEAD | grep -E 'backend/worker/.*' || echo 'false')"
-
   build-go:
     runs-on: ubuntu-latest
-    needs: determine-changes
-    if: ${{ needs.determine-changes.outputs.go != 'false' }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -57,8 +44,7 @@ jobs:
 
   build-nginx:
     runs-on: ubuntu-latest
-    needs: determine-changes
-    if: ${{ needs.determine-changes.outputs.web != 'false' }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -84,8 +70,7 @@ jobs:
 
   build-python:
     runs-on: ubuntu-latest
-    needs: determine-changes
-    if: ${{ needs.determine-changes.outputs.python != 'false' }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
