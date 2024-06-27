@@ -45,6 +45,8 @@ window.onload = function(){
             });
 
             showCat(response1.data);
+            catUrl.value = '';
+            catUrl.focus();
         } catch(error) {
             // console.error("Error calling /work/cat:", error);
             if (error.response) {
