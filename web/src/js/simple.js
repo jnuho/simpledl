@@ -90,10 +90,22 @@ window.onload = function(){
             }
         }
     }
+
     function showElapsed(elapsed) {
-        const elapsedEle = document.querySelector('.elapsed');
-        elapsedEle.innerHTML = elapsed.toFixed(2) + "ms";
+        const elapsedEle =document.querySelector('.elapsed');
+        elapsedEle.innerHTML = formatElapsedTime(elapsed)
     }
+
+    function formatElapsedTime(elapsedTime) {
+        if (elapsedTime >= 1000) {
+            // Convert to seconds and format as "x.xx s"
+            return (elapsedTime / 1000).toFixed(2) + ' s';
+        } else {
+            // Display in milliseconds as "xxx.xx ms"
+            return elapsedTime.toFixed(2) + ' ms';
+        }
+    }
+
     function showWeather(weatherList) {
         // Iterate over the weather list using forEach and xtract the required elements
         weatherList.forEach((weather, index) => {
