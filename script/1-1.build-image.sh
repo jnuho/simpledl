@@ -1,8 +1,3 @@
-#!/bin/bash
-
-# Any subsequent(*) commands which fail will cause the shell script to exit immediately
-#set -e
-
 docker rmi jnuho/fe-nginx
 docker rmi jnuho/be-go
 docker rmi jnuho/be-py

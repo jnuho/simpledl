@@ -1598,11 +1598,25 @@ gcloud compute ssh instance-20240620-115251 --zone asia-northeast3-a
 
 - `.github/workflows/main.yml`
 
+[↑ Back to top](#)
+<br><br>
 
-### golang pkg
+### golang package
 
 - After updating `pkg/weatherapi.go`
-    - delete github.com/jnuho/simpledl/pkg in gopath
-    - delete simpledl/pkg lines from go.mod and go.sum
-    - `go mod tidy`
+    - only have to go mod init the project `github.com/jnuho/simpledl`
+    - then any sub-project can be accessed as :
+        - `github.com/jnuho/simpledl/pkg`
+        - `github.com/jnuho/simpledl/backend/web`
 
+[↑ Back to top](#)
+<br><br>
+
+### Writing Dockerfile
+
+- https://docs.docker.com/reference/dockerfile/
+
+
+
+[↑ Back to top](#)
+<br><br>
