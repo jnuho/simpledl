@@ -117,12 +117,12 @@ sudo netplan apply
 
 ```sh
 
-mkdir -p /etc/docker/certs.d/devportal.mytest.com:5050
+mkdir -p /etc/docker/certs.d/portal.mytest.com:5050
 mkdir -p /etc/docker/certs.d/dev.mytest.com:10443
 
 # copy ssl certificates into the following paths
 cd /etc/docker/certs.d
-touch devportal.mytest.com:5050/ca.crt
+touch portal.mytest.com:5050/ca.crt
 touch dev.mytest.com:10443/ca.crt
 ```
 
@@ -156,7 +156,7 @@ services:
       - GIT_SSL_NO_VERIFY=1
     shm_size: '20gb'
     extra_hosts:
-      - 'devportal.mytest.com:172.16.9.10'
+      - 'portal.mytest.com:172.16.9.10'
       - 'dev.mytest.com:172.16.9.10'
 networks:
   my-networks:
@@ -194,7 +194,7 @@ services:
         ipv4_address: 10.2.2.2
     shm_size: '100gb'
     extra_hosts:
-      - 'devportal.mytest.com:172.16.9.10'
+      - 'portal.mytest.com:172.16.9.10'
       - 'my-dev.mytest.com:172.16.9.10'
 
 networks:
@@ -322,5 +322,5 @@ http://teamcity.mytest.com:8111/httpAuth/app/rest/builds/11353
 
 
 
-https://devportal.mytest.com/krview2.0/vendor/mytest/web-admin
+https://portal.mytest.com/krview2.0/vendor/mytest/web-admin
 
