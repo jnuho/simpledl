@@ -79,14 +79,20 @@ window.onload = function(){
 
             // Get the weather list from the response
             const weatherList = data.weather_list;
+            const elapsed = data.elapsed;
         
-            showWeather(weatherList);
+            showWeather(weatherList, elapsed);
+            showElapsed(elapsed);
         } catch(error) {
             // console.error("Error calling /work/cat:", error);
             if (error.response) {
                 console.log(error.response.data);
             }
         }
+    }
+    function showElapsed(elapsed) {
+        const elapsedEle = document.querySelector('.elapsed');
+        elapsedEle.innerHTML = elapsed.toFixed(2) + "ms";
     }
     function showWeather(weatherList) {
         // Iterate over the weather list using forEach and xtract the required elements
@@ -98,12 +104,10 @@ window.onload = function(){
             var iconUrl = "https://openweathermap.org/img/wn/" + icon + ".png";
             
             // Do something with the extracted data
-            console.log(`City: ${name}, Temperature: ${temp}, Icon: ${iconUrl}`);
-
+            // console.log(`City: ${name}, Temperature: ${temp}, Icon: ${iconUrl}`);
 
             // Select the element with the corresponding class name
             const weatherElement = document.querySelector(`.weather${index + 1}`);
-            console.log(weatherElement);
             if (weatherElement) {
                 weatherElement.innerHTML = `${name} ${temp}°C, ${humidity}% <img src="${iconUrl}" style="width: 25px; height: 25px;">`;
             }

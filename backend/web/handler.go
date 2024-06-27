@@ -3,6 +3,7 @@ package web
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,7 +40,13 @@ func catPostHandler(c *gin.Context) {
 
 func weatherPostHandler(c *gin.Context) {
 
+	startNow := time.Now()
+
 	list, err := callWeatherAPi()
+
+	duration := time.Since(startNow)
+	log.Printf("\nThis operation took: %v\n\n", duration)
+
 	if err != nil {
 		log.Println("WeatherApi call error:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -50,5 +57,6 @@ func weatherPostHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"weather_list": list,
+		"elapsed":      duration,
 	})
 }

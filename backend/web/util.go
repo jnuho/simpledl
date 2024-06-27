@@ -67,5 +67,6 @@ func callWeatherAPi() ([]pkg.WeatherResponse, error) {
 	if len(list) == 0 {
 		return nil, fmt.Errorf("failed to get weather info")
 	}
+
 	return list, nil
 }

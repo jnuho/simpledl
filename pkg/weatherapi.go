@@ -147,7 +147,6 @@ func GetWeatherInfo() []WeatherResponse {
 	log.SetPrefix(time.Now().Format(YYYYMMDD+" "+HHMMSS24h) + ": ")
 	log.SetFlags(log.Lshortfile)
 
-	startNow := time.Now()
 	apiKey := getEnvVar("WEATHER_API_KEY")
 	cities := []string{"Los Angeles,CA,US", "Seattle,WA,US", "Seongnam-si,KR"} //"Taipei,TW"
 
@@ -174,8 +173,6 @@ func GetWeatherInfo() []WeatherResponse {
 		i++
 	}
 	SortWeatherResponsesByNames(weather_list)
-
-	log.Printf("\nThis operation took: %v\n\n", time.Since(startNow))
 
 	return weather_list
 
