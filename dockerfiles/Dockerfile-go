@@ -8,6 +8,7 @@ WORKDIR /
 COPY go.mod go.sum ./
 COPY backend/web ./backend/web
 COPY cmd/backend-web-server/main.go ./cmd/backend-web-server/main.go
+COPY pkg ./pkg
 
 # Copy the .env file into the working directory
 COPY .env .env
