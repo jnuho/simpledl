@@ -19,19 +19,19 @@ spec:
           minReplicas: 2
         service:
           type: NodePort
-    - name: istio-ingressgateway-dashboard-alb-stage-etisalat
+    - name: istio-ingressgateway-dashboard-alb-stage-salat
       enabled: true
       label:
-        istio: ingressgateway-dashboard-alb-stage-etisalat
+        istio: ingressgateway-dashboard-alb-stage-salat
       k8s:
         hpaSpec:
           minReplicas: 2
         service:
           type: NodePort
-    - name: istio-ingressgateway-nlb-stage-etisalat
+    - name: istio-ingressgateway-nlb-stage-salat
       enabled: true
       label:
-        istio: ingressgateway-nlb-stage-etisalat
+        istio: ingressgateway-nlb-stage-salat
       k8s:
         hpaSpec:
           minReplicas: 2
@@ -63,7 +63,7 @@ spec:
               port: 1883
               targetPort: 1883
         serviceAnnotations:
-          service.beta.kubernetes.io/aws-load-balancer-name: rmsinfo-nlb-stage-etisalat
+          service.beta.kubernetes.io/aws-load-balancer-name: myinfo-nlb-stage-salat
           service.beta.kubernetes.io/aws-load-balancer-type: "external"
           service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
           service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"

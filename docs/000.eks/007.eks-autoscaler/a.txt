@@ -1,0 +1,97 @@
+
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html
+
+1.EKS cluster-autoscaler IAM role creation
+
+ refer : https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/autoscaling.html
+
+cluster-autoscaler-policy.json
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:TerminateInstanceInAutoScalingGroup"
+            ],
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceTag/k8s.io/cluster-autoscaler/my-stage-002": "owned"
+                }
+            }
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:DescribeAutoScalingGroups",
+                "ec2:DescribeLaunchTemplateVersions",
+                "autoscaling:DescribeTags",
+                "autoscaling:DescribeLaunchConfigurations",
+                "ec2:DescribeInstanceTypes"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+aws iam create-policy \
+    --policy-name AmazonEKSClusterAutoscalerPolicy \
+    --policy-document file://cluster-autoscaler-policy.json
+
+2.EKS cluster-autoscaler deploy
+
+curl -O https://raw.githubusercontent.com/kubernetes/autoscaler/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml
+
+vi cluster-autoscaler-autodiscover.yaml
+
+insert the cluster name=(my-stage-002) as below before deploy
+
+          command:
+            - ./cluster-autoscaler
+            - --v=4
+            - --stderrthreshold=info
+            - --cloud-provider=aws
+            - --skip-nodes-with-local-storage=false
+            - --expander=least-waste
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/my-stage-002
+
+
+kubectl apply -f cluster-autoscaler-autodiscover.yaml
+
+kubectl annotate serviceaccount cluster-autoscaler \
+  -n kube-system \
+eks.amazonaws.com/role-arn=arn:aws:iam::088356671508:role/my-stage-002-AmazonEKSClusterAutoscalerRole
+
+
+kubectl -n kube-system edit deployment.apps/cluster-autoscaler
+
+    spec:
+      containers:
+      - command
+        - ./cluster-autoscaler
+        - --v=4
+        - --stderrthreshold=info
+        - --cloud-provider=aws
+        - --skip-nodes-with-local-storage=false
+        - --expander=least-waste
+        - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,k8s.io/cluster-autoscaler/my-stage-002
+        - --balance-similar-node-groups
+        - --skip-nodes-with-system-pods=false
+
+
+look for cluster-autoscaler image version with matching EKS version
+
+https://github.com/kubernetes/autoscaler/releases
+
+
+kubectl set image deployment cluster-autoscaler \
+  -n kube-system \
+  cluster-autoscaler=registry.k8s.io/autoscaling/cluster-autoscaler:v1.26.2
+

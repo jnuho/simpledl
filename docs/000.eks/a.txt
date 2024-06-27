@@ -1,0 +1,32 @@
+
+1.aws-tool
+https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/getting-started-install.html
+
+2.aws-kubectl-tool
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/install-kubectl.html\
+
+3.eks-tool
+https://github.com/weaveworks/eksctl/blob/main/README.md#installation
+
+4.aws-iam-role
+-EKSClusterRole
+-AmazonEKSWorkerNodePolicy
+-AmazonEC2ContainerRegistryReadOnly 
+-AmazonEKS_CNI_Policy 
+
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/service_IAM_role.html
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/create-node-role.html
+
+6.eks create on the dashboard
+
+7.eks-oidc
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/enable-iam-roles-for-service-accounts.html
+
+8.eks-vpc-cni
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/cni-iam-role.html
+
+8.1 eks-vpc-cni update
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/managing-vpc-cni.html
+
+9.AWS Load Balancer Controller
+https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/aws-load-balancer-controller.html

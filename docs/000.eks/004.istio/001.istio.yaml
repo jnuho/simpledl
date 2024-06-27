@@ -1,0 +1,238 @@
+kind: IstioOperator
+metadata:
+    namespace: istio-system
+    name: istiocontrolplane
+spec:
+  profile: default
+  components:
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+    - name: istio-ingressgateway-dashboard-alb-stage-console
+      enabled: true
+      label:
+        istio: ingressgateway-dashboard-alb-stage-console
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+    - name: istio-ingressgateway-dashboard-alb-stage-xperi
+      enabled: true
+      label:
+        istio: ingressgateway-dashboard-alb-stage-xperi
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+    - name: istio-ingressgateway-dashboard-alb-stage-salat
+      enabled: true
+      label:
+        istio: ingressgateway-dashboard-alb-stage-salat
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+    - name: istio-ingressgateway-cwmp-alb-stage-console
+      enabled: true
+      label:
+        istio: ingressgateway-cwmp-alb-stage-console
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:
+            - name: cwmp
+              protocol: TCP
+              port: 7548
+              targetPort: 7548
+    - name: istio-ingressgateway-cwmp-alb-stage-xperi
+      enabled: true
+      label:
+        istio: ingressgateway-cwmp-alb-stage-xperi
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:		  
+            - name: cwmp
+              protocol: TCP
+              port: 7548
+              targetPort: 7548
+    - name: istio-ingressgateway-cwmp-alb-stage-salat
+      enabled: true
+      label:
+        istio: ingressgateway-cwmp-alb-stage-salat
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: NodePort
+          ports:		  
+            - name: cwmp
+              protocol: TCP
+              port: 7548
+              targetPort: 7548
+    - name: istio-ingressgateway-nlb-stage-console
+      enabled: true
+      label:
+        istio: ingressgateway-nlb-stage-console
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: LoadBalancer
+          ports:
+            - name: status-port
+              protocol: TCP
+              port: 15021
+              targetPort: 15021
+            - name: http2
+              protocol: TCP
+              port: 80
+              targetPort: 8080
+            - name: https
+              protocol: TCP
+              port: 443
+              targetPort: 8443
+            - name: df-xmpp-5222
+              protocol: TCP
+              port: 5222
+              targetPort: 5222
+            - name: df-xmpp-5223
+              protocol: TCP
+              port: 5223
+              targetPort: 5223
+            - name: df-mqtt-1883
+              protocol: TCP
+              port: 1883
+              targetPort: 1883
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-name: myinfo-nlb-stage-console
+          service.beta.kubernetes.io/aws-load-balancer-type: "external"
+          service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+          service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-08faf6e82ec7efa77, subnet-004b532cf812b1f66
+          service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443, 5223"
+          service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-2016-08
+          service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:088356671508:certificate/6dfe8103-265b-4993-a9dc-94ea7fc22949"
+          service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: traffic-port
+          service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=true
+    - name: istio-ingressgateway-nlb-stage-xperi
+      enabled: true
+      label:
+        istio: ingressgateway-nlb-stage-xperi
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: LoadBalancer
+          ports:
+            - name: status-port
+              protocol: TCP
+              port: 15021
+              targetPort: 15021
+            - name: http2
+              protocol: TCP
+              port: 80
+              targetPort: 8080
+            - name: https
+              protocol: TCP
+              port: 443
+              targetPort: 8443
+            - name: df-xmpp-5222
+              protocol: TCP
+              port: 5222
+              targetPort: 5222
+            - name: df-xmpp-5223
+              protocol: TCP
+              port: 5223
+              targetPort: 5223
+            - name: df-mqtt-1883
+              protocol: TCP
+              port: 1883
+              targetPort: 1883
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-name: myinfo-nlb-stage-xperi
+          service.beta.kubernetes.io/aws-load-balancer-type: "external"
+          service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+          service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-08faf6e82ec7efa77, subnet-004b532cf812b1f66
+          service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443, 5223"
+          service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-2016-08
+          service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:088356671508:certificate/6dfe8103-265b-4993-a9dc-94ea7fc22949"
+          service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: traffic-port
+          service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=true
+    - name: istio-ingressgateway-nlb-stage-salat
+      enabled: true
+      label:
+        istio: ingressgateway-nlb-stage-salat
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+        service:
+          type: LoadBalancer
+          ports:
+            - name: status-port
+              protocol: TCP
+              port: 15021
+              targetPort: 15021
+            - name: http2
+              protocol: TCP
+              port: 80
+              targetPort: 8080
+            - name: https
+              protocol: TCP
+              port: 443
+              targetPort: 8443
+            - name: df-xmpp-5222
+              protocol: TCP
+              port: 5222
+              targetPort: 5222
+            - name: df-xmpp-5223
+              protocol: TCP
+              port: 5223
+              targetPort: 5223
+            - name: df-mqtt-1883
+              protocol: TCP
+              port: 1883
+              targetPort: 1883
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-name: myinfo-nlb-stage-salat
+          service.beta.kubernetes.io/aws-load-balancer-type: "external"
+          service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+          service.beta.kubernetes.io/aws-load-balancer-subnets: subnet-08faf6e82ec7efa77, subnet-004b532cf812b1f66
+          service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443, 5223"
+          service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-2016-08
+          service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:ap-northeast-2:088356671508:certificate/6dfe8103-265b-4993-a9dc-94ea7fc22949"
+          service.beta.kubernetes.io/aws-load-balancer-healthcheck-port: traffic-port
+          service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=true
+    pilot:
+      enabled: true
+      k8s:
+        hpaSpec:
+          minReplicas: 2
+  meshConfig:
+    enableTracing: true
+    defaultConfig:
+      holdApplicationUntilProxyStarts: true
+    accessLogFile: /dev/stdout
+    outboundTrafficPolicy:
+      #mode: REGISTRY_ONLY
+      mode: ALLOW_ANY

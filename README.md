@@ -1620,3 +1620,9 @@ gcloud compute ssh instance-20240620-115251 --zone asia-northeast3-a
 
 [↑ Back to top](#)
 <br><br>
+
+
+
+### AWS EKS with terraform
+
+- [`LINK`](https://blogd.org/blog/2024/06/25/eks-with-terraform)

@@ -1,0 +1,20 @@
+
+1.Download a istioctl command
+
+curl -sL https://istio.io/downloadIstioctl | ISTIO_VERSION=1.17.2 TARGET_ARCH=x86_64 sh -
+cd ~/.istioctl/bin/
+cp istioctl ~/my-stage/000.eks/004.istio
+
+or
+
+wget https://github.com/istio/istio/releases/download/1.17.2/istioctl-1.17.2-linux-amd64.tar.gz
+
+2.Install the istio
+
+./istioctl install -f ./istio.yaml
+
+or
+
+./istioctl upgrade -f istio.yaml
+
+

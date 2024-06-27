@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: istio-ingressgateway-cwmp-alb-stage-salat
+  namespace: istio-system
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/load-balancer-name: myinfo-cwmp-stg-salat
+    alb.ingress.kubernetes.io/subnets: subnet-08faf6e82ec7efa77, subnet-004b532cf812b1f66
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/certificate-arn:  "arn:aws:acm:ap-northeast-2:088356671508:certificate/6dfe8103-265b-4993-a9dc-94ea7fc22949"
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz/ready
+    alb.ingress.kubernetes.io/healthcheck-port: '32208'
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 7547}, {"HTTPS": 7548}]'
+spec:
+  rules:
+  - host: "*.myinfo.net"
+    http:
+      paths:
+       - backend:
+           service:
+             name: istio-ingressgateway-cwmp-alb-stage-salat
+             port:
+               number: 7547
+         path: /
+         pathType: Prefix
+    http:
+      paths:
+       - backend:
+           service:
+             name: istio-ingressgateway-cwmp-alb-stage-salat
+             port:
+               number: 7548
+         path: /
+         pathType: Prefix
