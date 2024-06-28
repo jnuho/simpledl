@@ -1,4 +1,9 @@
 
+/* Private route tables route traffic through NAT gateways,
+ * while the public route table routes traffic through an Internet gateway.
+ */
+
+
 // private route table 01
 resource "aws_route_table" "private_rtb_01" {
   vpc_id = aws_vpc.vpc.id

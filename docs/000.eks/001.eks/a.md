@@ -31,10 +31,10 @@ sudo mv /tmp/eksctl /usr/local/bin
 
 ```sh
 # The cluster configuration is created in ~/.kube/config
-eksctl create cluster --name testcluster-001 --region ap-northeast-2
-eksctl create cluster --name testcluster-001 --region ap-northeast-2 --profile teraform
+eksctl create cluster --name my-cluster --region ap-northeast-2
+eksctl create cluster --name my-cluster --region ap-northeast-2 --profile teraform
 
-eksctl delete cluster --name testcluster-001 --region ap-northeast-2
+eksctl delete cluster --name my-cluster --region ap-northeast-2
 ```
 
 - kubectl 클러스터 통신 설정
@@ -43,8 +43,8 @@ eksctl delete cluster --name testcluster-001 --region ap-northeast-2
 
 ```sh
 aws sts get-caller-identity
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001 --profile kams
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile kams
 
 kubectl get pods -A -o wide
 ```
@@ -114,7 +114,7 @@ https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/managing-kube-proxy.html
 4. EKS kubeconfig setting
 
 ```sh
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
 kubectl get svc
 ```
 

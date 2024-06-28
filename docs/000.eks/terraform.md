@@ -108,7 +108,7 @@ output "test_policy_arn" {
 # 10-update-cluser.sh
 
 ```sh
-aws eks --region ap-northeast-2 update-kubeconfig --name testcluster-001
+aws eks --region ap-northeast-2 update-kubeconfig --name my-cluster
 ```
 
 - Next is to create a pod to test IAM roles for service accounts.
@@ -405,7 +405,7 @@ aws iam create-policy \
     --policy-document file://iam_policy.json
 
 
-oidc_id=$(aws eks describe-cluster --name testcluster-001 --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
+oidc_id=$(aws eks describe-cluster --name my-cluster --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
 
 aws iam list-open-id-connect-providers | grep $oidc_id | cut -d "/" -f4
 

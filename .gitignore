@@ -29,3 +29,6 @@ dist-ssr
 # gcp sa key
 gcp-sa-key.json
 script/tailscale-secret.yaml
+
+# terraform
+.terraform

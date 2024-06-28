@@ -70,7 +70,7 @@ kubectl version --client
 ```sh
 aws sts get-caller-identity
 
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
 
 # Edit SG for EKS inbound rules:
 # All traffic 172.16.0.0/16
@@ -89,10 +89,10 @@ aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001
 
 ```sh
 # The cluster configuration is created in ~/.kube/config
-eksctl create cluster --name testcluster-001 --region ap-northeast-2
-eksctl create cluster --name testcluster-001 --region ap-northeast-2 --profile kams
+eksctl create cluster --name my-cluster --region ap-northeast-2
+eksctl create cluster --name my-cluster --region ap-northeast-2 --profile kams
 
-eksctl delete cluster --name testcluster-001 --region ap-northeast-2
+eksctl delete cluster --name my-cluster --region ap-northeast-2
 ```
 
 - kubectl 클러스터 통신 설정
@@ -101,8 +101,8 @@ eksctl delete cluster --name testcluster-001 --region ap-northeast-2
 
 ```sh
 aws sts get-caller-identity
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001 --profile kams
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster --profile kams
 
 kubectl get no -o wide
 kubectl get pods -A -o wide
@@ -187,7 +187,7 @@ aws iam list-roles | grep RoleName
 4. EKS kubeconfig setting
 
 ```sh
-aws eks update-kubeconfig --region ap-northeast-2 --name testcluster-001
+aws eks update-kubeconfig --region ap-northeast-2 --name my-cluster
 kubectl get svc
 ```
 
@@ -299,7 +299,7 @@ aws eks describe-addon-configuration --addon-name kube-proxy --addon-version v1.
 # 이러한 연동을 가능하게 하는 것이 OIDC 라는 OAuth 2.0 을 이용해 만들어진 인증 레이어입니다.
 
 
-cluster_name=testcluster-001
+cluster_name=my-cluster
 echo $cluster_name
 oidc_id=$(aws eks describe-cluster --name $cluster_name --query "cluster.identity.oidc.issuer" --output text | cut -d '/' -f 5)
 echo $oidc_id
@@ -318,10 +318,10 @@ eksctl utils associate-iam-oidc-provider --cluster $cluster_name --approve
 
 # Determine ip Family of your cluster
 # "ipFamily": "ipv4"
-aws eks describe-cluster --name testcluster-001 | grep ipFamily
+aws eks describe-cluster --name my-cluster | grep ipFamily
 
 # View OIDC provider url
-aws eks describe-cluster --name testcluster-001 --query "cluster.identity.oidc.issuer" --output text
+aws eks describe-cluster --name my-cluster --query "cluster.identity.oidc.issuer" --output text
 https://oidc.eks.region-code.amazonaws.com/id/0E9285829A984AEA6C96A20F16C10A84
 
 cat > vpc-cni-trust-policy.json <<-EOF
@@ -383,52 +383,52 @@ aws iam detach-role-policy --role-name myAmazonEKSNodeRole --policy-arn arn:aws:
 
 
 kubectl describe daemonset aws-node --namespace kube-system | grep amazon-k8s-cni: | cut -d : -f 3
-aws eks describe-addon --cluster-name testcluster-001 --addon-name vpc-cni --query addon.addonVersion --output text
+aws eks describe-addon --cluster-name my-cluster --addon-name vpc-cni --query addon.addonVersion --output text
 kubectl get daemonset aws-node -n kube-system -o yaml > aws-k8s-cni-old.yaml
 
-aws eks create-addon --cluster-name testcluster-001 \
+aws eks create-addon --cluster-name my-cluster \
   --addon-name vpc-cni --addon-version v1.14.1-eksbuild.1 \
   --service-account-role-arn arn:aws:iam::094833749257:role/AmazonEKSVPCCNIRole \
   --configuration-values '{"resources":{"limits":{"cpu":"100m"}}}' \
   --resolve-conflicts OVERWRITE
 
-aws eks describe-addon --cluster-name testcluster-001 --addon-name vpc-cni --query addon.addonVersion --output text
+aws eks describe-addon --cluster-name my-cluster --addon-name vpc-cni --query addon.addonVersion --output text
 
-aws eks create-addon --cluster-name testcluster-001 \
+aws eks create-addon --cluster-name my-cluster \
   --addon-name coredns --addon-version 1.10.1-eksbuild.2 \
   --service-account-role-arn arn:aws:iam::094833749257:role/AmazonEKSVPCCNIRole \
   --configuration-values 'file://example.yaml' \
   --resolve-conflicts OVERWRITE
 
-aws eks create-addon --cluster-name testcluster-001 \
+aws eks create-addon --cluster-name my-cluster \
   --addon-name kube-proxy --addon-version v1.28.1-eksbuild.1 \
   --service-account-role-arn arn:aws:iam::094833749257:role/AmazonEKSVPCCNIRole \
   --configuration-values 'file://example.yaml' \
   --resolve-conflicts OVERWRITE
 
-aws eks list-addons --cluster-name testcluster-001
+aws eks list-addons --cluster-name my-cluster
 
-aws eks describe-addon --cluster-name testcluster-001 \
+aws eks describe-addon --cluster-name my-cluster \
   --addon-name vpc-cni --query "addon.addonVersion" --output text
 ```
 
 ```tf
 resource "aws_eks_addon" "vpc-cni" {
-  cluster_name                = aws_eks_cluster.testcluster-001.name
+  cluster_name                = aws_eks_cluster.my-cluster.name
   addon_name                  = "vpc-cni"
   addon_version               = "v1.14.1-eksbuild.1"
   resolve_conflicts_on_update = "PRESERVE"
 }
 
 resource "aws_eks_addon" "coredns" {
-  cluster_name                = aws_eks_cluster.testcluster-001.name
+  cluster_name                = aws_eks_cluster.my-cluster.name
   addon_name                  = "coredns"
   addon_version               = "1.10.1-eksbuild.2"
   resolve_conflicts_on_update = "PRESERVE"
 }
 
 resource "aws_eks_addon" "kube-proxy" {
-  cluster_name                = aws_eks_cluster.testcluster-001.name
+  cluster_name                = aws_eks_cluster.my-cluster.name
   addon_name                  = "kube-proxy"
   addon_version               = "v1.28.1-eksbuild.1"
   resolve_conflicts_on_update = "PRESERVE"
