@@ -1,23 +1,31 @@
 variable "eks_version" {
   description = "EKS version to use for the cluster"
   type        = string
-  default     = "1.21" # specify the default EKS version
+  default     = "1.30" # specify the default EKS version
 }
 
-variable "vpc_cni_version" {
-  description = "Version of the VPC CNI add-on"
-  type        = string
-  default     = "v1.7.5" # specify the default VPC CNI version
-}
 
-variable "coredns_version" {
-  description = "Version of the CoreDNS add-on"
-  type        = string
-  default     = "v1.8.0" # specify the default CoreDNS version
-}
-
-variable "kube_proxy_version" {
-  description = "Version of the KubeProxy add-on"
-  type        = string
-  default     = "v1.7.8" # specify the default KubeProxy version
+variable "addons" {
+  type = list(object({
+    name    = string
+    version = string
+  }))
+  default = [
+    {
+      name    = "vpc-cni"
+      version = "v1.18.2-eksbuild.1"
+    },
+    {
+      name    = "coredns"
+      version = "v1.11.1-eksbuild.9"
+    },
+    {
+      name    = "kube-proxy"
+      version = "v1.30.0-eksbuild.3",
+    },
+    //{
+    //  name    = "aws-ebs-csi-driver"
+    //  version = "v1.25.0-eksbuild.1"
+    //}
+  ]
 }
