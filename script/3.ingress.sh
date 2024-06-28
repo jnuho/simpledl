@@ -19,5 +19,5 @@ minikube addons enable ingress
 sleep 1
 
 # Define ingress routing rule
-kubectl apply -f ingress.yaml
+minikube kubectl -- apply -f ingress.yaml
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Get the name of the fe-nginx pod
-kubectl delete -f be/go/deployment.yaml
+minikube kubectl -- delete -f be/go/deployment.yaml
 
 sleep 2
 
-kubectl apply -f be/go/deployment.yaml
-kubectl get pod --watch
+minikube kubectl -- apply -f be/go/deployment.yaml
+minikube kubectl -- get pod --watch

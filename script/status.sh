@@ -1,33 +1,33 @@
 #!/bin/bash
 
 #echo ""
-#kubectl get namespace
+#minikube kubectl -- get namespace
 
 # echo ""
 # echo "-------[Node]-------"
-# kubectl get node
+# minikube kubectl -- get node
 
 echo ""
 echo "-------[Pod]-------"
-kubectl get pod
+minikube kubectl -- get pod
 
 # echo ""
 # echo "-------[Deployment]-------"
-# kubectl get deploy
+# minikube kubectl -- get deploy
 
 echo ""
 echo "-------[Service]-------"
-kubectl get service
+minikube kubectl -- get service
 
 echo ""
 echo "-------[Ingress]-------"
-kubectl get ingress
+minikube kubectl -- get ingress
 
 echo ""
 #echo "-------[Configmap]-------"
-#kubectl get configmap
+#minikube kubectl -- get configmap
 
 #echo ""
 #echo "-------[Secret]-------"
-#kubectl get secret
+#minikube kubectl -- get secret
 

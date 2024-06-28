@@ -1,20 +1,20 @@
 #!/bin/bash
 
 # Get the current configmap and save it to a file
-kubectl get configmap kube-proxy -n kube-system -o yaml > kube-proxy-configmap.yaml
+minikube kubectl -- get configmap kube-proxy -n kube-system -o yaml > kube-proxy-configmap.yaml
 
 # Use sed to replace the mode and strictARP values
 sed -i 's/mode: ""/mode: "ipvs"/g' kube-proxy-configmap.yaml
 sed -i 's/strictARP: false/strictARP: true/g' kube-proxy-configmap.yaml
 
 # Apply the changes to the configmap
-kubectl apply -f kube-proxy-configmap.yaml
+minikube kubectl -- apply -f kube-proxy-configmap.yaml
 
 # Clean up the temporary file
 rm kube-proxy-configmap.yaml
 
 
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
+minikube kubectl -- apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-frr.yaml
 
 
 cat <<EOF > configmap.yaml
@@ -37,7 +37,7 @@ spec:
   - nat
 EOF
 
-kubectl apply -f configmap.yaml
+minikube kubectl -- apply -f configmap.yaml
 
-kubectl rollout restart deployment controller -n metallb-system
+minikube kubectl -- rollout restart deployment controller -n metallb-system
 
