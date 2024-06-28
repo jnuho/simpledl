@@ -21,3 +21,6 @@ sleep 1
 # Define ingress routing rule
 minikube kubectl -- apply -f ingress.yaml
 
+sleep 1
+
+minikube kubectl -- port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80
