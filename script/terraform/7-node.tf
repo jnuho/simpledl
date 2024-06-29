@@ -38,7 +38,7 @@ resource "aws_iam_role_policy_attachment" "nodes_AmazonEC2ContainerRegistryReadO
 resource "aws_security_group" "eks_node_group_sg" {
   name        = "eks-node-group-sg"
   description = "Security group for EKS node group"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.vpc.id
 
   ingress {
     from_port   = 0
@@ -61,8 +61,8 @@ resource "aws_eks_node_group" "private_nodes" {
   node_role_arn   = aws_iam_role.nodes.arn
 
   subnet_ids = [
-    aws_subnet.private_ap_northeast_2a.id,
-    aws_subnet.private_ap_northeast_2b.id
+    aws_subnet.private-ap-northeast-2a.id,
+    aws_subnet.private-ap-northeast-2b.id
   ]
 
   capacity_type  = "ON_DEMAND"

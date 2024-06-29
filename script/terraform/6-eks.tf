@@ -70,7 +70,7 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
 # The vpc-cni plugin requires you to attach the following IAM policies to an IAM role:
 # AmazonEKS_CNI_Policy
 
-resource "aws_iam_policy_document" "vpc_cni_assume_role_policy" {
+data "aws_iam_policy_document" "vpc_cni_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -101,8 +101,9 @@ resource "aws_eks_addon" "addons" {
   addon_version           = each.value.version
   resolve_conflicts_on_update = "OVERWRITE"
 
-  provider {
-    if each.value.name == "vpc-cni" {
+  dynamic "provider" {
+    for_each = each.value.name == "vpc-cni" ? [1] : []
+    content {
       service_account_role_arn = aws_iam_role.eks_cni_role.arn
     }
   }
