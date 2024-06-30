@@ -26,6 +26,49 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
+# Security Group
+
+resource "aws_security_group" "eks_cluster_sg" {
+  name        = "eks-cluster-sg"
+  description = "Security group for EKS cluster"
+  vpc_id      = aws_vpc.vpc.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "eks-cluster-sg"
+  }
+}
+
+resource "aws_security_group" "alb_sg" {
+  name        = "alb-sg"
+  description = "Security group for ALB"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["xx.xx.xx.xx/32"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb-sg"
+  }
+}
+
 resource "aws_eks_cluster" "my-cluster" {
   name     = "my-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
@@ -38,6 +81,7 @@ resource "aws_eks_cluster" "my-cluster" {
       aws_subnet.public-ap-northeast-2a.id,
       aws_subnet.public-ap-northeast-2b.id
     ]
+    security_group_ids = [aws_security_group.eks_cluster_sg.id]
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_role_policy]
