@@ -51,14 +51,15 @@ resource "aws_eks_cluster" "my-cluster" {
 # If an add-on(vpc-cni) requires IAM permissions,
 # then you must have an IAM OpenID Connect (OIDC) provider for your cluster.
 
-# Create an OIDC provider for the EKS cluster
+
+# Ensure the EKS cluster is created before reading its data
+
 data "aws_eks_cluster" "my-cluster" {
-  name = "my-cluster"
+  name = aws_eks_cluster.my-cluster.name
+  depends_on = [aws_eks_cluster.my-cluster]
 }
 
-data "aws_eks_cluster_auth" "my-cluster" {
-  name = data.aws_eks_cluster.my-cluster.name
-}
+# Create an OIDC provider for the EKS cluster
 
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
   client_id_list  = ["sts.amazonaws.com"]
@@ -94,6 +95,7 @@ resource "aws_iam_role_policy_attachment" "eks_cni_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
+
 resource "aws_eks_addon" "addons" {
   for_each                = { for addon in var.addons : addon.name => addon }
   cluster_name            = aws_eks_cluster.my-cluster.name
@@ -101,10 +103,5 @@ resource "aws_eks_addon" "addons" {
   addon_version           = each.value.version
   resolve_conflicts_on_update = "OVERWRITE"
 
-  dynamic "provider" {
-    for_each = each.value.name == "vpc-cni" ? [1] : []
-    content {
-      service_account_role_arn = aws_iam_role.eks_cni_role.arn
-    }
-  }
+  service_account_role_arn = each.value.name == "vpc-cni" ? aws_iam_role.eks_cni_role.arn : null
 }
