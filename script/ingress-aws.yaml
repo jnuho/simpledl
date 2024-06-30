@@ -11,7 +11,7 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     # alb-sg specified in 6-eks.tf
-    alb.ingress.kubernetes.io/security-groups: sg-xxxxxxxx  # Add this annotation
+    alb.ingress.kubernetes.io/security-groups: sg-xxxxxxxxx  # Add this annotation
 
     # Enable HTTPS for your Ingress
     # ARN of an SSL/TLS certificate stored in AWS Certificate Manager (ACM).
