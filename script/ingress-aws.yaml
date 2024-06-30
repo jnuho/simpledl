@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fe-nginx-ingress
+  # this annotation is set to /$1, which captures the first group in the path. Since we are using exact paths, this annotation is not strictly necessary for the /web/cat path.
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: $1
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # instace (ec2) or ip (or pod)
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+
+    # Enable HTTPS for your Ingress
+    # ARN of an SSL/TLS certificate stored in AWS Certificate Manager (ACM).
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:region:account-id:certificate/certificate-id
+
+
+
+spec:
+  # This field is used to specify the class of the Ingress. The Ingress class is used by the Ingress Controller to determine whether or not it should act on a particular Ingress resource. For example, if you have multiple Ingress Controllers running in your cluster, you can use the ingressClassName field to specify which Ingress Controller should handle this Ingress12.
+  # ingressClassName: nginx
+  rules:
+  # - host: localhost
+  #- host: "simple-app.com"
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fe-nginx-service
+            port:
+              number: 8080
+      - path: /web/cat
+        pathType: Prefix
+        backend:
+          service:
+            name: be-go-service
+            port:
+              number: 3001
+      - path: /weather
+        pathType: Prefix
+        backend:
+          service:
+            name: be-go-service
+            port:
+              number: 3001
+      - path: /healthz
+        pathType: Prefix
+        backend:
+          service:
+            name: be-go-service
+            port:
+              number: 3001
+      # - path: /mongo-express
+      #   pathType: Prefix
+      #   backend:
+      #     service:
+      #       name: mongo-express-service
+      #       port:
+      #         number: 8081
