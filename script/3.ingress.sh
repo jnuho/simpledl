@@ -2,7 +2,7 @@
 
 # Enable nginx ingress controller
 # 1. minikube addon
-minikube addons enable ingress
+#minikube addons enable ingress
 
 #microk8s enable ingress
 #foo@ubuntu-2:~/simpledl/script$ k get pod -n ingress -o wide
@@ -16,11 +16,11 @@ minikube addons enable ingress
 # helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 # helm install ingress-nginx ingress-nginx/ingress-nginx
 
-sleep 1
+#sleep 1
 
 # Define ingress routing rule
-minikube kubectl -- apply -f ingress.yaml
+kubectl apply -f ingress-aws.yaml
 
-sleep 1
+#sleep 1
 
-minikube kubectl -- port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80
+#kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80
