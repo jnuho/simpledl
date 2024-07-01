@@ -1,3 +1,9 @@
+
+# Amazon EKS node IAM role
+# https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html
+
+# Subject to "ec2.amazonaws.com"
+
 data "aws_iam_policy_document" "nodes_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -18,16 +24,19 @@ resource "aws_iam_role" "nodes" {
   assume_role_policy = data.aws_iam_policy_document.nodes_assume_role_policy.json
 }
 
+# https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKSWorkerNodePolicy.html
 resource "aws_iam_role_policy_attachment" "nodes_AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.nodes.name
 }
 
+# https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKS_CNI_Policy.html
 resource "aws_iam_role_policy_attachment" "nodes_AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.nodes.name
 }
 
+# https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEC2ContainerRegistryReadOnly.html
 resource "aws_iam_role_policy_attachment" "nodes_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.nodes.name
@@ -35,25 +44,25 @@ resource "aws_iam_role_policy_attachment" "nodes_AmazonEC2ContainerRegistryReadO
 
 # Ensure that your nodes have the necessary security group rules to allow traffic.
 
-resource "aws_security_group" "eks_node_group_sg" {
-  name        = "eks-node-group-sg"
-  description = "Security group for EKS node group"
-  vpc_id      = aws_vpc.main.id
+# resource "aws_security_group" "eks_node_group_sg" {
+#   name        = "eks-node-group-sg"
+#   description = "Security group for EKS node group"
+#   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   ingress {
+#     from_port   = 0
+#     to_port     = 65535
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  egress {
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+#   egress {
+#     from_port   = 0
+#     to_port     = 65535
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# }
 
 resource "aws_eks_node_group" "private_nodes" {
   cluster_name    = aws_eks_cluster.my-cluster.name
@@ -66,6 +75,12 @@ resource "aws_eks_node_group" "private_nodes" {
   ]
 
   capacity_type  = "ON_DEMAND"
+
+  # disk_size = 30
+
+  # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
+  force_update_version = false
+
   instance_types = ["t3.medium"]
 
   scaling_config {

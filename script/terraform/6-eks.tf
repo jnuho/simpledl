@@ -1,6 +1,8 @@
-# specifies which entities (users, services, or accounts) are allowed to assume the role.
-# In the context of this .tf, it allows the Amazon EKS service to assume the role;
-# attach the required Amazon EKS IAM managed policy to it.
+# The policy that grants an entity permission to assume the role.
+# Used to access AWS resources that you might not normally have access to.
+# The role that Amazon EKS will use to create AWS reousrces for Kubernetes clusters
+
+# Subject to "eks.amazonaws.com"
 
 data "aws_iam_policy_document" "cluster-role-assume-policy" {
   statement {
@@ -10,7 +12,10 @@ data "aws_iam_policy_document" "cluster-role-assume-policy" {
       type        = "Service"
       identifiers = ["eks.amazonaws.com"]
     }
+    effect = "Allow"
   }
+
+  version = "2012-10-17"
 }
 
 # This role is assumed by the EKS control plane to manage the cluster.
@@ -28,46 +33,46 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy" {
 
 # Security Group
 
-resource "aws_security_group" "eks_cluster_sg" {
-  name        = "eks-cluster-sg"
-  description = "Security group for EKS cluster"
-  vpc_id      = aws_vpc.main.id
+# resource "aws_security_group" "eks_cluster_sg" {
+#   name        = "eks-cluster-sg"
+#   description = "Security group for EKS cluster"
+#   vpc_id      = aws_vpc.main.id
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  tags = {
-    Name = "eks-cluster-sg"
-  }
-}
+#   tags = {
+#     Name = "eks-cluster-sg"
+#   }
+# }
 
-resource "aws_security_group" "alb_sg" {
-  name        = "alb-sg"
-  description = "Security group for ALB"
-  vpc_id      = aws_vpc.main.id
+# resource "aws_security_group" "alb_sg" {
+#   name        = "alb-sg"
+#   description = "Security group for ALB"
+#   vpc_id      = aws_vpc.main.id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["xx.xx.xx.xx/32"]
-  }
+#   ingress {
+#     from_port   = 80
+#     to_port     = 80
+#     protocol    = "tcp"
+#     cidr_blocks = ["xx.xx.xx.xx/32"]
+#   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  tags = {
-    Name = "alb-sg"
-  }
-}
+#   tags = {
+#     Name = "alb-sg"
+#   }
+# }
 
 resource "aws_eks_cluster" "my-cluster" {
   name     = "my-cluster"
@@ -75,13 +80,23 @@ resource "aws_eks_cluster" "my-cluster" {
   version  = var.eks_version
 
   vpc_config {
+
+    # indicates whether the cluster's Kubernetes private API server endpoint is enabled
+    endpoint_private_access = false
+
+    # indidates whether the cluster's Kubernetes public API server endpoint is enabled
+    endpoint_public_access = true
+
+    # list of subnet ids to launch the cluster in
     subnet_ids = [
       aws_subnet.private_1.id,
       aws_subnet.private_2.id,
       aws_subnet.public_1.id,
       aws_subnet.public_2.id
     ]
-    security_group_ids = [aws_security_group.eks_cluster_sg.id]
+
+    # list of security group ids to associate with the cluster
+    # security_group_ids = [aws_security_group.eks_cluster_sg.id]
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_role_policy]
