@@ -56,6 +56,7 @@ resource "helm_release" "aws-lbc" {
     value = "aws-load-balancer-controller"
   }
 
+  # depends_on = [ aws_eks_node_group.private_nodes ]
   # depends_on = [helm_release.cluster_autoscaler]
-  depends_on = [ aws_eks_node_group.private_nodes ]
+  depends_on = [ helm_release.metric_server]
 }
