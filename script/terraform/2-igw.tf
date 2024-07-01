@@ -7,11 +7,11 @@
 // Without an Internet Gateway, your EKS cluster nodes would not be able to
 // communicate with the internet unless you set up a NAT Gateway or NAT instance for private subnets.
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc.id
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "igw"
+    Name = "main"
   }
 }
 

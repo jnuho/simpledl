@@ -6,17 +6,20 @@ metadata:
   # annotations:
   #   nginx.ingress.kubernetes.io/rewrite-target: $1
   annotations:
+    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    # instace (ec2) or ip (or pod)
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=devops
+    # instace (ec2) or ip (or pod)
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     # alb-sg specified in 6-eks.tf
     alb.ingress.kubernetes.io/security-groups: sg-02c6500ca5cf9bba6 # Add this annotation
+    alb.ingress.kubernetes.io/group-name: group-my-alb # Prevent multiple albs being created everytime
 
     # Enable HTTPS for your Ingress
     # ARN of an SSL/TLS certificate stored in AWS Certificate Manager (ACM).
     # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:region:account-id:certificate/certificate-id
-
+    # alb.ingress.kubernetes.io/ssl-redirect: '443'
 
 
 spec:

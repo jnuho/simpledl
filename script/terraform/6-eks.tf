@@ -31,7 +31,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy" {
 resource "aws_security_group" "eks_cluster_sg" {
   name        = "eks-cluster-sg"
   description = "Security group for EKS cluster"
-  vpc_id      = aws_vpc.vpc.id
+  vpc_id      = aws_vpc.main.id
 
   egress {
     from_port   = 0
@@ -48,7 +48,7 @@ resource "aws_security_group" "eks_cluster_sg" {
 resource "aws_security_group" "alb_sg" {
   name        = "alb-sg"
   description = "Security group for ALB"
-  vpc_id      = aws_vpc.vpc.id
+  vpc_id      = aws_vpc.main.id
 
   ingress {
     from_port   = 80
@@ -76,10 +76,10 @@ resource "aws_eks_cluster" "my-cluster" {
 
   vpc_config {
     subnet_ids = [
-      aws_subnet.private-ap-northeast-2a.id,
-      aws_subnet.private-ap-northeast-2b.id,
-      aws_subnet.public-ap-northeast-2a.id,
-      aws_subnet.public-ap-northeast-2b.id
+      aws_subnet.private_1.id,
+      aws_subnet.private_2.id,
+      aws_subnet.public_1.id,
+      aws_subnet.public_2.id
     ]
     security_group_ids = [aws_security_group.eks_cluster_sg.id]
   }
