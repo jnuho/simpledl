@@ -12,6 +12,8 @@ kubectl apply -f be/go/service.yaml
 kubectl apply -f be/py/deployment.yaml
 kubectl apply -f be/py/service.yaml
 
+kubectl apply -f hpa.yaml
+
 # mongodb, mongo-express
 # kubectl apply -f mongo/mongo-configmap.yaml
 # kubectl apply -f mongo/mongo-secret.yaml

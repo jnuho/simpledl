@@ -24,6 +24,10 @@ echo "-------[Ingress]-------"
 kubectl get ingress
 
 echo ""
+echo "-------[HPA]-------"
+kubectl get hpa
+
+echo ""
 #echo "-------[Configmap]-------"
 #kubectl get configmap
 
