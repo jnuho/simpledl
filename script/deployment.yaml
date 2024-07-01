@@ -5,7 +5,8 @@ metadata:
   labels:
     app: fe-nginx
 spec:
-  replicas: 1
+  # using HPA(Horizontal Pod Autoscaler) settings
+  # replicas: 1
   selector:
     matchLabels:
       app: fe-nginx
@@ -21,5 +22,13 @@ spec:
         ports:
         - name: web
           containerPort: 80
+        # for HPA to calculate usage in percentage
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 256Mi
+            cpu: 100m
       #imagePullSecrets:
       #- name: regcred
