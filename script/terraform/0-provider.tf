@@ -1,7 +1,7 @@
 
 # Configure the AWS Provider
 provider "aws" {
-  profile = "default"
+  profile = "terraform"
   region = "ap-northeast-2"
 }
 
