@@ -15,7 +15,6 @@ data "aws_iam_policy_document" "cluster-role-assume-policy" {
     }
     effect = "Allow"
   }
-  version = "2012-10-17"
 }
 # This role is assumed by the EKS control plane to manage the cluster.
 resource "aws_iam_role" "eks_cluster_role" {

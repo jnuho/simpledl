@@ -8,12 +8,12 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/tags: Environment=dev,Team=devops
     # instace (ec2) or ip (or pod)
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    # alb-sg specified in 6-eks.tf
+    alb.ingress.kubernetes.io/health-type: http
+    alb.ingress.kubernetes.io/health-path: /health
+    alb.ingress.kubernetes.io/tags: Environment=dev,Team=devops
     #alb.ingress.kubernetes.io/security-groups: sg-02c6500ca5cf9bba6 # Add this annotation
-    alb.ingress.kubernetes.io/group-name: group-my-alb # Prevent multiple albs being created everytime
 
     # Enable HTTPS for your Ingress
     # ARN of an SSL/TLS certificate stored in AWS Certificate Manager (ACM).
@@ -23,9 +23,9 @@ metadata:
 
 spec:
   # This field is used to specify the class of the Ingress. The Ingress class is used by the Ingress Controller to determine whether or not it should act on a particular Ingress resource. For example, if you have multiple Ingress Controllers running in your cluster, you can use the ingressClassName field to specify which Ingress Controller should handle this Ingress12.
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-  # - host: localhost
+  #- host: localhost
   #- host: "simple-app.com"
   - http:
       paths:
@@ -35,7 +35,7 @@ spec:
           service:
             name: fe-nginx-service
             port:
-              number: 80
+              number: 8080
       - path: /web/cat
         pathType: Prefix
         backend:

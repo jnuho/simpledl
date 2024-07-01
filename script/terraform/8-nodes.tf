@@ -15,7 +15,6 @@ data "aws_iam_policy_document" "nodes_assume_role_policy" {
     }
     effect = "Allow"
   }
-  version = "2012-10-17"
 }
 resource "aws_iam_role" "nodes" {
   name               = "eks-node-group-nodes"
@@ -78,6 +77,7 @@ resource "aws_eks_node_group" "private_nodes" {
 
   # disk_size = 30
 
+  # Creates EC2 Auto Scaling Group
   scaling_config {
     desired_size = 1
     max_size     = 5
