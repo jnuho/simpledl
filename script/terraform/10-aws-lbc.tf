@@ -1,17 +1,18 @@
 
 data "aws_iam_policy_document" "aws-lbc-assume-policy" {
   statement {
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession"
-    ]
+    effect = "Allow"
 
     principals {
       type        = "Service"
       # for IAM role to be used only by EKS services
-      identifiers = ["pod.eks.amazonaws.com"]
+      identifiers = ["pods.eks.amazonaws.com"]
     }
-    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
   }
 }
 # This role is assumed by the EKS control plane to manage the cluster.
