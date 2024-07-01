@@ -1,12 +1,14 @@
 
 # Configure the AWS Provider
 provider "aws" {
-  profile = "terraform"
-  region = "ap-northeast-2"
+  profile = local.profile
+  region  = local.region
 }
 
 # terraform version constraints
 terraform {
+  required_version = ">= 1.0"
+
   required_providers {
     aws = {
       source = "hashicorp/aws"

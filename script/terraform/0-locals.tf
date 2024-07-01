@@ -1,7 +1,11 @@
-variable "eks_version" {
-  description = "EKS version to use for the cluster"
-  type        = string
-  default     = "1.30" # specify the default EKS version
+locals {
+  env         = "dev"
+  profile     = "terraform"
+  region      = "ap-northeast-2"
+  zone1       = "ap-northeast-2a"
+  zone2       = "ap-northeast-2b"
+  eks_name    = "my-cluster"
+  eks_version = "1.30"
 }
 
 variable "addons" {

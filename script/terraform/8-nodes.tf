@@ -10,13 +10,13 @@ data "aws_iam_policy_document" "nodes_assume_role_policy" {
 
     principals {
       type        = "Service"
+      # for IAM role to be used only by EC2 services
       identifiers = ["ec2.amazonaws.com"]
     }
     effect = "Allow"
   }
   version = "2012-10-17"
 }
-
 resource "aws_iam_role" "nodes" {
   name               = "eks-node-group-nodes"
   assume_role_policy = data.aws_iam_policy_document.nodes_assume_role_policy.json
@@ -64,22 +64,19 @@ resource "aws_iam_role_policy_attachment" "nodes_AmazonEC2ContainerRegistryReadO
 
 resource "aws_eks_node_group" "private_nodes" {
   cluster_name    = aws_eks_cluster.my-cluster.name
+  version         = local.eks_version
   node_group_name = "private-nodes"
   node_role_arn   = aws_iam_role.nodes.arn
 
   subnet_ids = [
-    aws_subnet.private_1.id,
-    aws_subnet.private_2.id
+    aws_subnet.private_zone1.id,
+    aws_subnet.private_zone2.id
   ]
 
   capacity_type  = "ON_DEMAND"
+  instance_types = ["t3.medium"]
 
   # disk_size = 30
-
-  # Force version update if existing pods are unable to be drained due to a pod disruption budget issue.
-  force_update_version = false
-
-  instance_types = ["t3.medium"]
 
   scaling_config {
     desired_size = 1
@@ -115,6 +112,11 @@ resource "aws_eks_node_group" "private_nodes" {
     aws_iam_role_policy_attachment.nodes_AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.nodes_AmazonEC2ContainerRegistryReadOnly,
   ]
+
+  # Allow external changes without Terraform plan difference
+  lifecycle {
+    ignore_changes = [scaling_config[0].desired_size]
+  }
 }
 
 # resource "aws_launch_template" "eks_with_disks" {

@@ -8,53 +8,33 @@
 
 # Two NAT gateways and Eips in case of 1 of the availability zone is down for high availability!
 
-resource "aws_eip" "nat_eip_01" {
+resource "aws_eip" "nat_eip" {
   # Indicates if this EIP is for use in VPC (vpc).
   domain   = "vpc"
 
   # EIP may require IGW to be created first
   # Use depends_on to set an explicit dependency on the IGW.
-  depends_on = [ aws_internet_gateway.main ]
+  depends_on = [ aws_internet_gateway.igw ]
+
+  tags = {
+    Name = "${local.env}-nat-eip"
+  }
 }
 
-resource "aws_eip" "nat_eip_02" {
-  # Indicates if this EIP is for use in VPC (vpc).
-  domain   = "vpc"
-
-  # EIP may require IGW to be created first
-  # Use depends_on to set an explicit dependency on the IGW.
-  depends_on = [ aws_internet_gateway.main ]
-}
 
 // NAT gateway
-resource "aws_nat_gateway" "nat_gw_01" {
+resource "aws_nat_gateway" "nat_gw" {
   # allocation id of the EIP address for the gateway
-  allocation_id = aws_eip.nat_eip_01.id
+  allocation_id = aws_eip.nat_eip.id
 
   # subnet id of the public subnet in which to place the gateway
-  subnet_id     = aws_subnet.public_1.id
+  subnet_id     = aws_subnet.public_zone1.id
 
   tags = {
-    Name = "NAT GW 1"
+    Name = "${local.env}-nat-gw"
   }
 
   depends_on = [
-    aws_internet_gateway.main,
-  ]
-}
-
-resource "aws_nat_gateway" "nat_gw_02" {
-  # allocation id of the EIP address for the gateway
-  allocation_id = aws_eip.nat_eip_02.id
-
-  # subnet id of the public subnet in which to place the gateway
-  subnet_id     = aws_subnet.public_2.id
-
-  tags = {
-    Name = "NAT GW 2"
-  }
-
-  depends_on = [
-    aws_internet_gateway.main,
+    aws_internet_gateway.igw,
   ]
 }

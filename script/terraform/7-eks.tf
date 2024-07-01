@@ -10,21 +10,20 @@ data "aws_iam_policy_document" "cluster-role-assume-policy" {
 
     principals {
       type        = "Service"
+      # for IAM role to be used only by EKS services
       identifiers = ["eks.amazonaws.com"]
     }
     effect = "Allow"
   }
   version = "2012-10-17"
 }
-
 # This role is assumed by the EKS control plane to manage the cluster.
-# : attach AmazonEKSClusterPolicy to this role
-
 resource "aws_iam_role" "eks_cluster_role" {
   name = "eks-cluster-role"
   assume_role_policy = data.aws_iam_policy_document.cluster-role-assume-policy.json
 }
 
+# attach AmazonEKSClusterPolicy to this role
 resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy" {
   role       = aws_iam_role.eks_cluster_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
@@ -74,28 +73,31 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_role_policy" {
 # }
 
 resource "aws_eks_cluster" "my-cluster" {
-  name     = "my-cluster"
+  name     = local.eks_name
+  version  = local.eks_version
   role_arn = aws_iam_role.eks_cluster_role.arn
-  version  = var.eks_version
 
   vpc_config {
 
-    # indicates whether the cluster's Kubernetes private API server endpoint is enabled
+    # cluster's Kubernetes private API server endpoint is disabled
     endpoint_private_access = false
 
-    # indidates whether the cluster's Kubernetes public API server endpoint is enabled
+    # cluster's Kubernetes public API server endpoint is enabled
     endpoint_public_access = true
 
-    # list of subnet ids to launch the cluster in
+    # EKS requires at least two private subnets in different Availability Zones
     subnet_ids = [
-      aws_subnet.private_1.id,
-      aws_subnet.private_2.id,
-      aws_subnet.public_1.id,
-      aws_subnet.public_2.id
+      aws_subnet.private_zone1.id,
+      aws_subnet.private_zone2.id,
     ]
-
     # list of security group ids to associate with the cluster
     # security_group_ids = [aws_security_group.eks_cluster_sg.id]
+  }
+
+  access_config {
+    authentication_mode                         = "API"
+    # to deploy helm chart and plain yaml
+    bootstrap_cluster_creator_admin_permissions = true
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_role_policy]
