@@ -14,7 +14,6 @@ data "aws_iam_policy_document" "cluster-role-assume-policy" {
     }
     effect = "Allow"
   }
-
   version = "2012-10-17"
 }
 

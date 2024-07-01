@@ -18,7 +18,7 @@ resource "aws_subnet" "public_1" {
     Name                        = "public-ap-northeast-2a"
     # Required for EKS.
     # subnet is shared with the EKS cluster.
-    "kubernetes.io/cluster/eks" = "shared"
+    "kubernetes.io/cluster/my-cluster" = "shared"
     # subnet can be used for external load balancers.
     "kubernetes.io/role/elb"    = "1"
   }
@@ -37,7 +37,7 @@ resource "aws_subnet" "public_2" {
     Name                        = "public-ap-northeast-2b"
     # Required for EKS.
     # subnet is shared with the EKS cluster.
-    "kubernetes.io/cluster/eks" = "shared"
+    "kubernetes.io/cluster/my-cluster" = "shared"
     # subnet can be used for external load balancers.
     "kubernetes.io/role/elb"    = "1"
   }
@@ -53,7 +53,7 @@ resource "aws_subnet" "private_1" {
     Name                              = "private-ap-northeast-2a"
     # Required for EKS.
     # subnet is shared with the EKS cluster.
-    "kubernetes.io/cluster/eks"       = "shared"
+    "kubernetes.io/cluster/my-cluster" = "shared"
     # subnet can be used for internal private load balancers.
     "kubernetes.io/role/internal-elb" = "1"
   }
@@ -68,7 +68,7 @@ resource "aws_subnet" "private_2" {
     Name                              = "private-ap-northeast-2b"
     # Required for EKS.
     # subnet is shared with the EKS cluster.
-    "kubernetes.io/cluster/eks"       = "shared"
+    "kubernetes.io/cluster/my-cluster" = "shared"
     # subnet can be used for internal privateload balancers.
     "kubernetes.io/role/internal-elb" = "1"
   }

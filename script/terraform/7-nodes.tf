@@ -12,10 +12,8 @@ data "aws_iam_policy_document" "nodes_assume_role_policy" {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
-
     effect = "Allow"
   }
-
   version = "2012-10-17"
 }
 
@@ -85,7 +83,7 @@ resource "aws_eks_node_group" "private_nodes" {
 
   scaling_config {
     desired_size = 1
-    max_size     = 1
+    max_size     = 5
     min_size     = 0
   }
 
@@ -93,6 +91,10 @@ resource "aws_eks_node_group" "private_nodes" {
     max_unavailable = 1
   }
 
+  # NOTE:
+  # You can use labels to instruct kubernetes scheduler to use
+  # a perticular node group by using affinity or node selector
+  # Speicfy deployment object to only create pods in node groups with role="general"
   labels = {
     role = "general"
   }

@@ -24,9 +24,9 @@ resource "aws_vpc" "main" {
   }
 }
 
-output "vpc_id" {
-  value = aws_vpc.main.id
-  description = "VPC id."
-  # Setting an output value as sensitive will mask it in the console output
-  sensitive = false
-}
+# output "vpc_id" {
+#   value = aws_vpc.main.id
+#   description = "VPC id."
+#   # Setting an output value as sensitive will mask it in the console output
+#   sensitive = false
+# }

@@ -5,6 +5,7 @@ provider "aws" {
   region = "ap-northeast-2"
 }
 
+# terraform version constraints
 terraform {
   required_providers {
     aws = {

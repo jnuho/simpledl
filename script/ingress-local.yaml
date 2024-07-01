@@ -19,7 +19,7 @@ spec:
           service:
             name: fe-nginx-service
             port:
-              number: 8080
+              number: 80
       - path: /web/cat
         pathType: Prefix
         backend:

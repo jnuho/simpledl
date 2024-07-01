@@ -4,7 +4,6 @@ variable "eks_version" {
   default     = "1.30" # specify the default EKS version
 }
 
-
 variable "addons" {
   type = list(object({
     name    = string
