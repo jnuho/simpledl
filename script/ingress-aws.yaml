@@ -9,8 +9,8 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     # instace (ec2) or ip (or pod)
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/tags: Environment=dev,Team=devops
     #alb.ingress.kubernetes.io/security-groups: sg-02c6500ca5cf9bba6 # Add this annotation
 
